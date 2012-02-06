@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="hello">Hello World, ListViewExampleActivity!</string>
+    <string name="app_name">ListViewExample</string>
+    <string name="Sticky_list_name">Your Sticky List</string>
+    <string name="NewSticky_Header">Add New Sticky</string>
+    <string name="NewSticky_Text">Sticky Text</string>
+    <string name="NewSticky_Title">Title</string>
+    <string name="NewSticky_DueDate">Due Date</string>
+    <string name="NewSticky_Type">Sticky Type</string>
+    <string name="NewSticky_Priority">Sticky Priority</string>
+    <string name="NewSticky_SaveButton">Save</string>
+
+    <string-array name="StickyType_Array">
+        <item>Public</item>
+        <item>Private</item>
+        <item>Work</item>
+        <item>Other</item>
+    </string-array>
+    
+    <string-array name="StickyPriority_Array">
+        <item>Low</item>
+        <item>Medium</item>
+        <item>High</item>
+        <item>Urgent</item>
+    </string-array>
+</resources>

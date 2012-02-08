@@ -33,14 +33,13 @@ public final class R {
         public static final int videos_white=0x7f02000f;
     }
     public static final class id {
-        public static final int PublicListing=0x7f070010;
         public static final int TextView01=0x7f070000;
         public static final int TextView02=0x7f070001;
         public static final int TextView03=0x7f070002;
         public static final int TextView04=0x7f070003;
         public static final int TextView6=0x7f07000e;
         public static final int dueDateButton=0x7f07000d;
-        public static final int newsticky=0x7f070011;
+        public static final int newsticky=0x7f070010;
         public static final int saveButton=0x7f07000f;
         public static final int stickyPriority=0x7f07000b;
         public static final int stickyText=0x7f070005;
@@ -54,11 +53,12 @@ public final class R {
     }
     public static final class layout {
         public static final int listview=0x7f030000;
-        public static final int main=0x7f030001;
-        public static final int newsticky=0x7f030002;
-        public static final int private_layout=0x7f030003;
-        public static final int public_layout=0x7f030004;
-        public static final int work_layout=0x7f030005;
+        public static final int listviewwork=0x7f030001;
+        public static final int main=0x7f030002;
+        public static final int newsticky=0x7f030003;
+        public static final int private_layout=0x7f030004;
+        public static final int public_layout=0x7f030005;
+        public static final int work_layout=0x7f030006;
     }
     public static final class menu {
         public static final int menu=0x7f060000;

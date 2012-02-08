@@ -19,13 +19,12 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import android.app.Activity;
 import android.app.TabActivity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.Resources;
 import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -34,14 +33,10 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
 import android.widget.BaseAdapter;
-import android.widget.ListView;
 import android.widget.TabHost;
 import android.widget.TabHost.TabSpec;
 import android.widget.TextView;
-import android.widget.Toast;
 
 public class ListViewExampleActivity extends TabActivity {
 
@@ -64,8 +59,8 @@ public class ListViewExampleActivity extends TabActivity {
 	private static String[] sampleStr4 = { "sampleText04" };
 
 	public ListViewExampleActivity() {
-		getStickyData();
-		Log.i(LIST_EXAMPLE, "SIZE===>" + stickyDataList.size());
+//		getStickyData();
+//		Log.i(LIST_EXAMPLE, "SIZE===>" + stickyDataList.size());
 	}
 
 	private class StickyListAdapter extends BaseAdapter {
@@ -139,12 +134,36 @@ public class ListViewExampleActivity extends TabActivity {
 
 		// Context mContext = getApplicationContext();
 		SystemVariable appState = ((SystemVariable) getApplicationContext());
-
 		// appState.setLoginStatus("System Variable");
 		Log.w(LIST_EXAMPLE, "STATE_VAR==>" + appState.getLoginStatus());
 
 		setContentView(R.layout.main);
+		
+//		LayoutInflater inflater = LayoutInflater.from(getBaseContext());
+//	    View publicView = inflater.inflate(R.layout.public_layout,null);
+	    
+//		ListView l1 = (ListView) publicView.findViewById(R.id.PublicListing);
+//		ColorDrawable divcolor = new ColorDrawable(Color.DKGRAY);
+//		l1.setDivider(divcolor);
+//		l1.setDividerHeight(2);
+//
+//		l1.setOnItemClickListener(new OnItemClickListener() {
+//			@Override
+//			public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
+//					long arg3) {
+//				// arg1.setBackgroundColor(Color.YELLOW);
+//
+//				Toast.makeText(getBaseContext(),
+//						"You clciked " + stickyDataList.get(arg2).getId(),
+//						Toast.LENGTH_LONG).show();
+//			}
+//		});
+//
+//		StickyListAdapter stickyAdapter = new StickyListAdapter(this);
+//		l1.setAdapter(stickyAdapter);
 
+		
+	    Resources res = getResources(); // Resource object to get Drawables
 		//Setting Up Tabs
 		TabHost tabHost = getTabHost();
 
@@ -172,33 +191,10 @@ public class ListViewExampleActivity extends TabActivity {
 		privatespec.setContent(privateIntent);
 
 		// Adding all TabSpec to TabHost
-		tabHost.addTab(publicspec); // Adding photos tab
-		tabHost.addTab(workspec); // Adding songs tab
-		tabHost.addTab(privatespec); // Adding videos tab
-		
-		
-		
-		
-//
-//		ListView l1 = (ListView) findViewById(R.id.PublicListing);
-//		ColorDrawable divcolor = new ColorDrawable(Color.DKGRAY);
-//		l1.setDivider(divcolor);
-//		l1.setDividerHeight(2);
-//
-//		l1.setOnItemClickListener(new OnItemClickListener() {
-//			@Override
-//			public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
-//					long arg3) {
-//				// arg1.setBackgroundColor(Color.YELLOW);
-//
-//				Toast.makeText(getBaseContext(),
-//						"You clciked " + stickyDataList.get(arg2).getId(),
-//						Toast.LENGTH_LONG).show();
-//			}
-//		});
-//
-//		StickyListAdapter stickyAdapter = new StickyListAdapter(this);
-//		l1.setAdapter(stickyAdapter);
+		tabHost.addTab(publicspec); // Adding public tab
+		tabHost.addTab(workspec); // Adding work tab
+		tabHost.addTab(privatespec); // Adding private tab
+		tabHost.setCurrentTab(0);
 
 	}
 

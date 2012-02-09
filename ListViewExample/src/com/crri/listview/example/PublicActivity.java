@@ -21,6 +21,8 @@ import org.json.JSONObject;
 
 import android.app.ListActivity;
 import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
@@ -37,70 +39,94 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 public class PublicActivity extends ListActivity {
-	
+
 	public static final String LIST_EXAMPLE = "PublicActivity";
 	private static List<StickyData> stickyDataList = new ArrayList<StickyData>();
-	
+
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		//setContentView(R.layout.public_layout);
-//		
-//		ListView l1 = (ListView) findViewById(R.id.PublicListing);
-//		ColorDrawable divcolor = new ColorDrawable(Color.DKGRAY);
-//		l1.setDivider(divcolor);
-//		l1.setDividerHeight(2);
-//
-//		l1.setOnItemClickListener(new OnItemClickListener() {
-//			@Override
-//			public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
-//					long arg3) {
-//				// arg1.setBackgroundColor(Color.YELLOW);
-//
-//				Toast.makeText(getBaseContext(),
-//						"You clciked " + stickyDataList.get(arg2).getId(),
-//						Toast.LENGTH_LONG).show();
-//			}
-//		});
-//
-//		StickyListAdapter stickyAdapter = new StickyListAdapter(this);
-//		l1.setAdapter(stickyAdapter);
+		// setContentView(R.layout.public_layout);
 
-//		StickyListAdapter stickyAdapter = new StickyListAdapter(this);
-//		setListAdapter(stickyAdapter);
-//		
-//		ListView list = getListView();
-//		ColorDrawable divcolor = new ColorDrawable(Color.DKGRAY);
-//		list.setDivider(divcolor);
-//		list.setDividerHeight(2);
-//
-//		list.setOnItemClickListener(new OnItemClickListener() {
-//			@Override
-//			public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
-//					long arg3) {
-//				// arg1.setBackgroundColor(Color.YELLOW);
-//
-//				Toast.makeText(getBaseContext(),
-//						"You clciked " + stickyDataList.get(arg2).getId(),
-//						Toast.LENGTH_LONG).show();
-//			}
-//		});
-		
-		String[] values = new String[] { "Android", "iPhone", "WindowsMobile",
-				"Blackberry", "WebOS", "Ubuntu", "Windows7", "Max OS X",
-				"Linux", "OS/2" };
-		ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
-				android.R.layout.simple_list_item_1, values);
-		setListAdapter(adapter);
-		
-	}
+		// ListView l1 = (ListView) findViewById(R.id.PublicListing);
+		// ColorDrawable divcolor = new ColorDrawable(Color.DKGRAY);
+		// l1.setDivider(divcolor);
+		// l1.setDividerHeight(2);
+		//
+		// l1.setOnItemClickListener(new OnItemClickListener() {
+		// @Override
+		// public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
+		// long arg3) {
+		// // arg1.setBackgroundColor(Color.YELLOW);
+		//
+		// Toast.makeText(getBaseContext(),
+		// "You clciked " + stickyDataList.get(arg2).getId(),
+		// Toast.LENGTH_LONG).show();
+		// }
+		// });
+		//
+		// StickyListAdapter stickyAdapter = new StickyListAdapter(this);
+		// l1.setAdapter(stickyAdapter);
 
-	public PublicActivity()
-	{
-		//loading public data from web
-		getStickyData();
+		StickyListAdapter stickyAdapter = new StickyListAdapter(this);
+		setListAdapter(stickyAdapter);
+
+		ListView list = getListView();
+		ColorDrawable divcolor = new ColorDrawable(Color.DKGRAY);
+		list.setDivider(divcolor);
+		list.setDividerHeight(2);
+
+		list.setOnItemClickListener(new OnItemClickListener() {
+			@Override
+			public void onItemClick(AdapterView<?> arg0, View arg1, int position,
+					long arg3) {
+				// arg1.setBackgroundColor(Color.YELLOW);
+
+				Bundle bunData = prepareEditStickyData(stickyDataList.get(position));
+				
+				Intent editStickyIntent = new Intent(PublicActivity.this,
+						EditSticky.class);
+				editStickyIntent.putExtras(bunData);
+				startActivityForResult(editStickyIntent, 1);
+
+//				Toast.makeText(getBaseContext(),
+//						"You clciked " + stickyDataList.get(position).getId(),
+//						Toast.LENGTH_LONG).show();
+			}
+		});
+		list.setClickable(true);
+
+		// String[] values = new String[] { "Android", "iPhone",
+		// "WindowsMobile",
+		// "Blackberry", "WebOS", "Ubuntu", "Windows7", "Max OS X",
+		// "Linux", "OS/2" };
+		// ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
+		// android.R.layout.simple_list_item_1, values);
+		// setListAdapter(adapter);
+
 	}
 	
+	private Bundle prepareEditStickyData(StickyData stickyObj)
+	{
+		Bundle bl = new Bundle();
+		bl.putInt("Id", stickyObj.getId());
+		bl.putString("Name", stickyObj.getName());
+		bl.putString("Priority", stickyObj.getPriority());
+		bl.putString("Text", stickyObj.getText());
+		bl.putString("DueDate", stickyObj.getDueDate());
+
+		Log.i(LIST_EXAMPLE, "Data_ID" + stickyObj.getId());
+		Log.i(LIST_EXAMPLE, "Text" + stickyObj.getText());
+
+		return bl;
+		
+	}
+
+	public PublicActivity() {
+		// loading public data from web
+		getStickyData();
+	}
+
 	private class StickyListAdapter extends BaseAdapter {
 		private LayoutInflater mInflater;
 
@@ -125,6 +151,7 @@ public class PublicActivity extends ListActivity {
 			ViewHolder holder;
 			if (convertView == null) {
 				convertView = mInflater.inflate(R.layout.listview, null);
+
 				holder = new ViewHolder();
 				holder.text = (TextView) convertView
 						.findViewById(R.id.TextView01);
@@ -165,7 +192,7 @@ public class PublicActivity extends ListActivity {
 			TextView text4;
 		}
 	}// close StickyListAdapter Class
-	
+
 	public boolean getStickyData() {
 
 		// Create a new HttpClient and Post Header

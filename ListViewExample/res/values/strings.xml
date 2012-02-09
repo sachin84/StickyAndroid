@@ -11,6 +11,7 @@
     <string name="NewSticky_Type">Sticky Type</string>
     <string name="NewSticky_Priority">Sticky Priority</string>
     <string name="NewSticky_SaveButton">Save</string>
+    <string name="NewSticky_EditButton">Edit</string>
 
     <string-array name="StickyType_Array">
         <item>Public</item>
@@ -18,11 +19,11 @@
         <item>Work</item>
         <item>Other</item>
     </string-array>
-    
     <string-array name="StickyPriority_Array">
         <item>Low</item>
         <item>Medium</item>
         <item>High</item>
         <item>Urgent</item>
     </string-array>
+
 </resources>

@@ -22,7 +22,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        
         <activity
             android:name=".NewSticky"
             android:label="@string/app_name" >
@@ -32,16 +31,24 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
-        
-        <!--  Public Activity -->
+        <activity
+            android:name=".EditSticky"
+            android:label="@string/app_name" >
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+
+        <!-- Public Activity -->
         <activity android:name=".PublicActivity" />
-        
-        <!--  Work Activity -->
+
+        <!-- Work Activity -->
         <activity android:name=".WorkActivity" />
-        
-        <!--  Private Activity -->
+
+        <!-- Private Activity -->
         <activity android:name=".PrivateActivity" />
-                
     </application>
 
 </manifest>

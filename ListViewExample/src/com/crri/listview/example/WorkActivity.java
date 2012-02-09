@@ -169,8 +169,8 @@ public class WorkActivity extends ListActivity {
 
 		// Create a new HttpClient and Post Header
 		HttpClient httpclient = new DefaultHttpClient();
-		// String uristr = "http://10.0.2.2/sticky/ajax/getsticky.php";
-		String uristr = "http://puskin.in/sticky/ajax/getsticky.php?stickyFilterType=work";
+		//String uristr = "http://10.0.2.2/sticky/ajax/getsticky.php";
+		String uristr = "http://puskin.in/sticky/ajax/getsticky.php";
 
 		/* login.php returns true if username and password is equal to saranga */
 		HttpPost httppost = new HttpPost(uristr);
@@ -181,7 +181,7 @@ public class WorkActivity extends ListActivity {
 			// Add user name and password
 			List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(1);
 			nameValuePairs.add(new BasicNameValuePair("stickyFilterType",
-					"public"));
+					"work"));
 			httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
 
 			// Execute HTTP Post Request

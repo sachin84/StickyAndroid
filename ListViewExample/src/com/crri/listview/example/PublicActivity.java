@@ -20,11 +20,10 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.app.ListActivity;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -32,16 +31,17 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
-import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 public class PublicActivity extends ListActivity {
 
 	public static final String LIST_EXAMPLE = "PublicActivity";
-	private static List<StickyData> stickyDataList = new ArrayList<StickyData>();
+	private List<StickyData> stickyDataList = new ArrayList<StickyData>();
+	private StickyListAdapter stickyAdapter;
+	private ProgressDialog m_ProgressDialog = null;
+	private Runnable runbleThread;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -68,63 +68,73 @@ public class PublicActivity extends ListActivity {
 		// StickyListAdapter stickyAdapter = new StickyListAdapter(this);
 		// l1.setAdapter(stickyAdapter);
 
-		StickyListAdapter stickyAdapter = new StickyListAdapter(this);
+		stickyAdapter = new StickyListAdapter(this);
 		setListAdapter(stickyAdapter);
 
 		ListView list = getListView();
-		ColorDrawable divcolor = new ColorDrawable(Color.DKGRAY);
-		list.setDivider(divcolor);
-		list.setDividerHeight(2);
+		// Setting Custom Selector
+		list.setSelector(getResources().getDrawable(R.drawable.list_selector));
 
 		list.setOnItemClickListener(new OnItemClickListener() {
 			@Override
-			public void onItemClick(AdapterView<?> arg0, View arg1, int position,
-					long arg3) {
+			public void onItemClick(AdapterView<?> arg0, View arg1,
+					int position, long arg3) {
 				// arg1.setBackgroundColor(Color.YELLOW);
 
-				Bundle bunData = prepareEditStickyData(stickyDataList.get(position));
-				
+				Bundle bunData = prepareEditStickyData(stickyDataList
+						.get(position));
+
 				Intent editStickyIntent = new Intent(PublicActivity.this,
 						EditSticky.class);
 				editStickyIntent.putExtras(bunData);
 				startActivityForResult(editStickyIntent, 1);
-
-//				Toast.makeText(getBaseContext(),
-//						"You clciked " + stickyDataList.get(position).getId(),
-//						Toast.LENGTH_LONG).show();
+				overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+				 
+				// Toast.makeText(getBaseContext(),
+				// "You clciked " + stickyDataList.get(position).getId(),
+				// Toast.LENGTH_LONG).show();
 			}
+
 		});
 		list.setClickable(true);
 
-		// String[] values = new String[] { "Android", "iPhone",
-		// "WindowsMobile",
-		// "Blackberry", "WebOS", "Ubuntu", "Windows7", "Max OS X",
-		// "Linux", "OS/2" };
-		// ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
-		// android.R.layout.simple_list_item_1, values);
-		// setListAdapter(adapter);
+		Thread thread = new Thread(null, runbleThread, "MagentoBackground");
+		thread.start();
+		m_ProgressDialog = ProgressDialog.show(PublicActivity.this,
+				"Please wait...", "Retrieving data ...", true);
+
+		new LoadPublicSticky().execute(null);
 
 	}
 	
-	private Bundle prepareEditStickyData(StickyData stickyObj)
-	{
+	@Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
+
+        // TODO Auto-generated method stub
+        super.onActivityResult(requestCode, resultCode, data);
+        if(resultCode==RESULT_OK){
+	  		Log.i(LIST_EXAMPLE, "Edit Completed");
+        }
+        else{
+	  		Log.i(LIST_EXAMPLE, "Edit Completed");
+        }
+    }
+
+	private Bundle prepareEditStickyData(StickyData stickyObj) {
 		Bundle bl = new Bundle();
 		bl.putInt("Id", stickyObj.getId());
-		bl.putString("Name", stickyObj.getName());
+		bl.putString("Title", stickyObj.getName());
 		bl.putString("Priority", stickyObj.getPriority());
 		bl.putString("Text", stickyObj.getText());
 		bl.putString("DueDate", stickyObj.getDueDate());
+		bl.putString("Type", "Public");
 
 		Log.i(LIST_EXAMPLE, "Data_ID" + stickyObj.getId());
 		Log.i(LIST_EXAMPLE, "Text" + stickyObj.getText());
 
 		return bl;
-		
-	}
 
-	public PublicActivity() {
-		// loading public data from web
-		getStickyData();
 	}
 
 	private class StickyListAdapter extends BaseAdapter {
@@ -166,14 +176,14 @@ public class PublicActivity extends ListActivity {
 				holder = (ViewHolder) convertView.getTag();
 			}
 
-			convertView.setBackgroundColor((position & 1) == 1 ? Color.WHITE
-					: Color.LTGRAY);
-
+			int selecterId =  R.drawable.list_item_selector_normal;
+			convertView.setBackgroundResource(selecterId);
 			StickyData dataObj = stickyDataList.get(position);
 
 			Log.i(LIST_EXAMPLE, "Data_ID" + dataObj.getId());
-			Log.i(LIST_EXAMPLE, "Data_ID" + dataObj.getText());
+			Log.i(LIST_EXAMPLE, "Data_Text" + dataObj.getText());
 			Log.i(LIST_EXAMPLE, "DueDate" + dataObj.getDueDate());
+			Log.i(LIST_EXAMPLE, "Priority" + dataObj.getPriority());
 
 			// convertView.setBackgroundDrawable
 			holder.text.setText(String.valueOf(dataObj.getId()));
@@ -193,6 +203,50 @@ public class PublicActivity extends ListActivity {
 		}
 	}// close StickyListAdapter Class
 
+	private class LoadPublicSticky extends AsyncTask<String, Void, String> {
+
+		@Override
+		protected String doInBackground(String... params) {
+			// perform long running operation operation
+			getStickyData();
+			return null;
+		}
+
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see android.os.AsyncTask#onPostExecute(java.lang.Object)
+		 */
+		@Override
+		protected void onPostExecute(String result) {
+			// execution of result of Long time consuming operation
+			m_ProgressDialog.dismiss();
+			stickyAdapter.notifyDataSetChanged();
+		}
+
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see android.os.AsyncTask#onPreExecute()
+		 */
+		@Override
+		protected void onPreExecute() {
+			// Things to be done before execution of long running operation. For
+			// example showing ProgessDialog
+		}
+
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see android.os.AsyncTask#onProgressUpdate(Progress[])
+		 */
+		@Override
+		protected void onProgressUpdate(Void... values) {
+			// Things to be done while execution of long running operation is in
+			// progress. For example updating ProgessDialog
+		}
+	}
+
 	public boolean getStickyData() {
 
 		// Create a new HttpClient and Post Header
@@ -200,7 +254,6 @@ public class PublicActivity extends ListActivity {
 		// String uristr = "http://10.0.2.2/sticky/ajax/getsticky.php";
 		String uristr = "http://puskin.in/sticky/ajax/getsticky.php?stickyFilterType=public";
 
-		/* login.php returns true if username and password is equal to saranga */
 		HttpPost httppost = new HttpPost(uristr);
 		boolean status = false;
 
@@ -217,8 +270,8 @@ public class PublicActivity extends ListActivity {
 
 			HttpResponse response = httpclient.execute(httppost);
 
-			String str = parseAndPrepareData(response.getEntity().getContent())
-					.toString();
+			String str = parseResponseAndPrepareData(
+					response.getEntity().getContent()).toString();
 			Log.w(LIST_EXAMPLE, str);
 
 		} catch (ClientProtocolException e) {
@@ -230,7 +283,7 @@ public class PublicActivity extends ListActivity {
 		return status;
 	}
 
-	private StringBuilder parseAndPrepareData(InputStream is) {
+	private StringBuilder parseResponseAndPrepareData(InputStream is) {
 		String line = "";
 		StringBuilder jsonResp = new StringBuilder();
 		// Wrap a BufferedReader around the InputStream
@@ -248,8 +301,6 @@ public class PublicActivity extends ListActivity {
 		try {
 			stickyrespjson = new JSONObject(jsonResp.toString());
 			JSONArray stickyJsonArray = stickyrespjson.getJSONArray("result");
-
-			String returnString = "";
 
 			for (int i = 0; i < stickyJsonArray.length(); i++) {
 				StickyData stkData = new StickyData();

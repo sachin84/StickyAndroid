@@ -3,107 +3,114 @@
     android:layout_width="fill_parent"
     android:layout_height="wrap_content" >
 
-    <LinearLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        android:layout_width="match_parent"
-        android:layout_height="fill_parent"
-        android:orientation="vertical"
-        android:weightSum="1" >
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:background="#3d3d3d" >
 
-        <TextView
-            android:id="@+id/textView1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp"
-            android:layout_marginTop="5dp"
-            android:text="@string/NewSticky_Text" />
-
-        <EditText
-            android:id="@+id/stickyText"
+        <LinearLayout
+            xmlns:android="http://schemas.android.com/apk/res/android"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:inputType="textMultiLine"
-            android:lines="5" />
+            android:layout_height="fill_parent"
+            android:orientation="vertical"
+            android:weightSum="1" >
 
-        <TextView
-            android:id="@+id/textView2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp"
-            android:text="@string/NewSticky_Title" />
+            <TextView
+                android:id="@+id/textView1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="5dip"
+                android:layout_marginTop="5dp"
+                android:text="@string/NewSticky_Text" />
 
-        <EditText
-            android:id="@+id/stickyTitle"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:inputType="textPersonName" />
+            <EditText
+                android:id="@+id/stickyText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textMultiLine"
+                android:lines="5" />
 
-        <TextView
-            android:id="@+id/textView3"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp"
-            android:text="@string/NewSticky_Type" />
+            <TextView
+                android:id="@+id/textView2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="5dip"
+                android:text="@string/NewSticky_Title" />
 
-        <Spinner
-            android:id="@+id/stickyType"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:prompt="@string/NewSticky_Type" />
+            <EditText
+                android:id="@+id/stickyTitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textPersonName" />
 
-        <TextView
-            android:id="@+id/textView4"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp"
-            android:text="@string/NewSticky_Priority" />
+            <TextView
+                android:id="@+id/textView3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="5dip"
+                android:text="@string/NewSticky_Type" />
 
-        <Spinner
-            android:id="@+id/stickyPriority"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:prompt="@string/NewSticky_Type" />
+            <Spinner
+                android:id="@+id/stickyType"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:prompt="@string/NewSticky_Type" />
 
-        <TextView
-            android:id="@+id/textView5"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp"
-            android:text="@string/NewSticky_DueDate" />
+            <TextView
+                android:id="@+id/textView4"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="5dip"
+                android:text="@string/NewSticky_Priority" />
 
-        <!--
+            <Spinner
+                android:id="@+id/stickyPriority"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:prompt="@string/NewSticky_Type" />
+
+            <TextView
+                android:id="@+id/textView5"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="5dip"
+                android:text="@string/NewSticky_DueDate" />
+
+            <!--
          <DatePicker
         android:id="@+id/dueDate"
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content" />        -->
+        android:layout_height="wrap_content" />
+            -->
 
-        <LinearLayout
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
-            android:layout_weight="1"
-            android:orientation="horizontal" >
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:orientation="horizontal" >
+
+                <Button
+                    android:id="@+id/dueDateButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Select Due Date" />
+
+                <TextView
+                    android:id="@+id/dueDateText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="5dip" />
+            </LinearLayout>
 
             <Button
-                android:id="@+id/dueDateButton"
-                android:layout_width="wrap_content"
+                android:id="@+id/saveButton"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Select Due Date" />
-
-            <TextView
-                android:id="@+id/TextView6"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
-                android:text="na" />
+                android:layout_marginLeft="30dip"
+                android:layout_marginRight="30dip"
+                android:gravity="center"
+                android:text="@string/NewSticky_SaveButton" />
         </LinearLayout>
-
-        <Button
-            android:id="@+id/saveButton"
-            android:layout_width="match_parent"
-            android:layout_height="40dp"
-            android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp"
-            android:text="@string/NewSticky_SaveButton" />
-    </LinearLayout>
+    </RelativeLayout>
 
 </ScrollView>

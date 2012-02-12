@@ -4,37 +4,23 @@
     android:layout_height="match_parent"
     android:orientation="vertical" >
 
-    <!-- Screen Design for Photos -->
-
-    <TextView
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:padding="15dip"
-        android:text="Public TAB"
-        android:textSize="18dip" />
-
-    <TextView
-        android:id="@+id/TextView01"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center_vertical|center_horizontal"
-        android:text="@string/Sticky_list_name"
-        android:textStyle="normal|bold" >
-    </TextView>
-
     <ListView
+        android:id="@android:id/list"
+        android:layout_width="fill_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:divider="#efefef"
+        android:dividerHeight="1dip"
+        android:fadingEdge="none" />
+
+    <!--
+         <ListView
         android:id="@+android:id/list"
+        style="@style/ListView"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:drawSelectorOnTop="false"
-        android:visibility="gone" />
-<!-- 
-    <ListView
-        android:id="@+id/PublicListing"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:drawSelectorOnTop="true"
-        android:listSelector="@drawable/list_selector" >
-    </ListView> -->
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:listSelector="@drawable/list_selector" />
+    -->
 
 </LinearLayout>

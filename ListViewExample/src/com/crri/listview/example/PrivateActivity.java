@@ -20,9 +20,12 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.app.ListActivity;
+import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -38,68 +41,78 @@ import android.widget.Toast;
 public class PrivateActivity extends ListActivity {
 
 	public static final String LIST_EXAMPLE = "WorkActivity";
-	private static List<StickyData> stickyDataList = new ArrayList<StickyData>();
-
+	private List<StickyData> stickyDataList = new ArrayList<StickyData>();
+	private StickyListAdapter stickyAdapter;
+	private ProgressDialog m_ProgressDialog = null;
+	private Runnable runbleThread;
+	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		// setContentView(R.layout.public_layout);
-		//
-		// ListView l1 = (ListView) findViewById(R.id.PublicListing);
-		// ColorDrawable divcolor = new ColorDrawable(Color.DKGRAY);
-		// l1.setDivider(divcolor);
-		// l1.setDividerHeight(2);
-		//
-		// l1.setOnItemClickListener(new OnItemClickListener() {
-		// @Override
-		// public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
-		// long arg3) {
-		// // arg1.setBackgroundColor(Color.YELLOW);
-		//
-		// Toast.makeText(getBaseContext(),
-		// "You clciked " + stickyDataList.get(arg2).getId(),
-		// Toast.LENGTH_LONG).show();
-		// }
-		// });
-		//
-		// StickyListAdapter stickyAdapter = new StickyListAdapter(this);
-		// l1.setAdapter(stickyAdapter);
 
-		StickyListAdapter stickyAdapter = new StickyListAdapter(this);
+		stickyAdapter = new StickyListAdapter(this);
 		setListAdapter(stickyAdapter);
 
 		ListView list = getListView();
-		ColorDrawable divcolor = new ColorDrawable(Color.DKGRAY);
-		list.setDivider(divcolor);
-		list.setDividerHeight(2);
+		list.setSelector(getResources().getDrawable(R.drawable.list_selector));
 
 		list.setOnItemClickListener(new OnItemClickListener() {
 			@Override
-			public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
-					long arg3) {
+			public void onItemClick(AdapterView<?> arg0, View arg1,
+					int position, long arg3) {
 				// arg1.setBackgroundColor(Color.YELLOW);
 
-				Toast.makeText(getBaseContext(),
-						"You clciked " + stickyDataList.get(arg2).getId(),
-						Toast.LENGTH_LONG).show();
+				Bundle bunData = prepareEditStickyData(stickyDataList
+						.get(position));
+
+				Intent editStickyIntent = new Intent(PrivateActivity.this,
+						EditSticky.class);
+				editStickyIntent.putExtras(bunData);
+				startActivityForResult(editStickyIntent, 1);
+				overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);				
 			}
 		});
+		list.setClickable(true);
 
-		// String[] values = new String[] { "Android", "iPhone",
-		// "WindowsMobile",
-		// "Blackberry", "WebOS", "Ubuntu", "Windows7", "Max OS X",
-		// "Linux", "OS/2" };
-		// ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
-		// android.R.layout.simple_list_item_1, values);
-		// setListAdapter(adapter);
+		Thread thread = new Thread(null, runbleThread, "MagentoBackground");
+		thread.start();
+		m_ProgressDialog = ProgressDialog.show(PrivateActivity.this,
+				"Please wait...", "Retrieving data ...", true);
+		
+		//loading Async Sticky
+		new LoadPrivateSticky().execute("");
+	}
+	
+	@Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
+
+        // TODO Auto-generated method stub
+        super.onActivityResult(requestCode, resultCode, data);
+        if(resultCode==RESULT_OK){
+	  		Log.i(LIST_EXAMPLE, "Edit Completed");
+        }
+        else{
+	  		Log.i(LIST_EXAMPLE, "Edit Completed");
+        }
+    }
+
+	private Bundle prepareEditStickyData(StickyData stickyObj) {
+		Bundle bl = new Bundle();
+		bl.putInt("Id", stickyObj.getId());
+		bl.putString("Title", stickyObj.getName());
+		bl.putString("Priority", stickyObj.getPriority());
+		bl.putString("Text", stickyObj.getText());
+		bl.putString("DueDate", stickyObj.getDueDate());
+		bl.putString("Type", "Public");
+
+		Log.i(LIST_EXAMPLE, "Data_ID" + stickyObj.getId());
+		Log.i(LIST_EXAMPLE, "Text" + stickyObj.getText());
+
+		return bl;
 
 	}
-
-	public PrivateActivity() {
-		// loading public data from web
-		getStickyData();
-	}
-
+	
 	private class StickyListAdapter extends BaseAdapter {
 		private LayoutInflater mInflater;
 
@@ -137,16 +150,12 @@ public class PrivateActivity extends ListActivity {
 			} else {
 				holder = (ViewHolder) convertView.getTag();
 			}
-
-			convertView.setBackgroundColor((position & 1) == 1 ? Color.WHITE
-					: Color.LTGRAY);
+			
+			int selecterId =  R.drawable.list_item_selector_normal;
+			convertView.setBackgroundResource(selecterId);
 
 			StickyData dataObj = stickyDataList.get(position);
-
-			Log.i(LIST_EXAMPLE, "Data_ID" + dataObj.getId());
-			Log.i(LIST_EXAMPLE, "Data_ID" + dataObj.getText());
-			Log.i(LIST_EXAMPLE, "DueDate" + dataObj.getDueDate());
-
+			
 			// convertView.setBackgroundDrawable
 			holder.text.setText(String.valueOf(dataObj.getId()));
 			holder.text2.setText(dataObj.getText());
@@ -165,11 +174,54 @@ public class PrivateActivity extends ListActivity {
 		}
 	}// close StickyListAdapter Class
 
+	private class LoadPrivateSticky extends AsyncTask<String, Void, String> {
+
+		@Override
+		protected String doInBackground(String... params) {
+			// perform long running operation operation
+			getStickyData();
+			return null;
+		}
+
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see android.os.AsyncTask#onPostExecute(java.lang.Object)
+		 */
+		@Override
+		protected void onPostExecute(String result) {
+			// execution of result of Long time consuming operation
+			m_ProgressDialog.dismiss();
+			stickyAdapter.notifyDataSetChanged();
+		}
+
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see android.os.AsyncTask#onPreExecute()
+		 */
+		@Override
+		protected void onPreExecute() {
+			// Things to be done before execution of long running operation. For
+			// example showing ProgessDialog
+		}
+
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see android.os.AsyncTask#onProgressUpdate(Progress[])
+		 */
+		@Override
+		protected void onProgressUpdate(Void... values) {
+			// Things to be done while execution of long running operation is in
+			// progress. For example updating ProgessDialog
+		}
+	}
+
 	public boolean getStickyData() {
 
 		// Create a new HttpClient and Post Header
 		HttpClient httpclient = new DefaultHttpClient();
-		//String uristr = "http://10.0.2.2/sticky/ajax/getsticky.php";
 		String uristr = "http://puskin.in/sticky/ajax/getsticky.php";
 
 		/* login.php returns true if username and password is equal to saranga */

@@ -6,22 +6,18 @@
     android:gravity="left|center"
     android:paddingBottom="5dp"
     android:paddingLeft="5dp"
-    android:paddingTop="5dp" >
--->
+    android:paddingTop="5dp" >-->
+
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
-    android:layout_weight="1"
-    android:orientation="vertical" android:baselineAligned="false">
+    android:layout_height="wrap_content"
+    android:orientation="vertical" >
 
     <LinearLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:gravity="left|center"
-        android:paddingBottom="5dp"
-        android:paddingLeft="5dp"
-        android:paddingTop="5dp" >
+        android:gravity="left|center" >
 
         <TextView
             android:id="@+id/TextView01"
@@ -29,41 +25,51 @@
             android:layout_height="wrap_content"
             android:background="@drawable/ic_launcher"
             android:gravity="center"
-            android:textColor="#000000" >
+            android:textColor="@color/Black" >
         </TextView>
 
         <TextView
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            android:id="@+id/TextView02"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:textColor="@color/Black" />
+
+        <!--
+             <TextView
             android:id="@+id/TextView02"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="10dp"
-            android:text="@+id/TextView02"
-            android:textColor="#000000" >
-        </TextView>
+            android:text="@+id/TextView02" >
+        </TextView>
+        -->
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
+        android:layout_height="0dip"
         android:layout_weight="1"
         android:orientation="horizontal" >
 
         <TextView
+            xmlns:android="http://schemas.android.com/apk/res/android"
             android:id="@+id/TextView03"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp"
             android:text="@+id/TextView02"
-            android:textColor="#000000" >
+            android:textColor="@color/Black" >
         </TextView>
 
         <TextView
+            xmlns:android="http://schemas.android.com/apk/res/android"
             android:id="@+id/TextView04"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp"
             android:text="@+id/TextView02"
-            android:textColor="#000000" >
+            android:paddingLeft="10dip"
+            android:textColor="@color/Black" >
         </TextView>
     </LinearLayout>
 

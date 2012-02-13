@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
     android:orientation="vertical" >
 
     <ListView
@@ -10,17 +10,45 @@
         android:layout_height="0dp"
         android:layout_weight="1"
         android:divider="#efefef"
-        android:dividerHeight="1dip"
+        android:dividerHeight="1px"
         android:fadingEdge="none" />
 
-    <!--
-         <ListView
-        android:id="@+android:id/list"
-        style="@style/ListView"
-        android:layout_width="wrap_content"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:listSelector="@drawable/list_selector" />
-    -->
+    <LinearLayout
+        style="@android:style/ButtonBar"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:background="#7057b3e2" >
+
+        <TextView
+            android:id="@+id/Action01"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/ic_menu_refresh"
+            android:gravity="center"
+            android:textColor="@color/Black" />
+        <TextView
+            android:id="@+id/Action01"
+            android:layout_width="32dip"
+            android:layout_height="32dip"
+            android:background="@drawable/list_add"
+            android:gravity="center"
+            android:textColor="@color/Black" />
+        
+        <TextView
+            android:id="@+id/Action02"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/ic_menu_delete"
+            android:gravity="center"
+            android:textColor="@color/Black" />
+        
+        <Button
+            android:layout_width="0dp"
+            android:layout_height="fill_parent"
+            android:layout_gravity="center_vertical"
+            android:layout_weight="1"
+            android:text="@string/NewSticky_Header" />
+    </LinearLayout>
 
 </LinearLayout>

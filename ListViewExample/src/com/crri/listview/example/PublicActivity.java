@@ -46,7 +46,7 @@ public class PublicActivity extends ListActivity {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		// setContentView(R.layout.public_layout);
+		 setContentView(R.layout.public_layout);
 
 		// ListView l1 = (ListView) findViewById(R.id.PublicListing);
 		// ColorDrawable divcolor = new ColorDrawable(Color.DKGRAY);
@@ -159,8 +159,9 @@ public class PublicActivity extends ListActivity {
 
 		public View getView(int position, View convertView, ViewGroup parent) {
 			ViewHolder holder;
+			
 			if (convertView == null) {
-				convertView = mInflater.inflate(R.layout.listview, null);
+				convertView = mInflater.inflate(R.layout.listview,parent,  false);
 
 				holder = new ViewHolder();
 				holder.text = (TextView) convertView

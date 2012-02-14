@@ -28,12 +28,15 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.BaseAdapter;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class PublicActivity extends ListActivity {
 
@@ -46,7 +49,7 @@ public class PublicActivity extends ListActivity {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		 setContentView(R.layout.public_layout);
+		setContentView(R.layout.public_layout);
 
 		// ListView l1 = (ListView) findViewById(R.id.PublicListing);
 		// ColorDrawable divcolor = new ColorDrawable(Color.DKGRAY);
@@ -88,8 +91,9 @@ public class PublicActivity extends ListActivity {
 						EditSticky.class);
 				editStickyIntent.putExtras(bunData);
 				startActivityForResult(editStickyIntent, 1);
-				overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
-				 
+				overridePendingTransition(R.anim.slide_in_right,
+						R.anim.slide_out_left);
+
 				// Toast.makeText(getBaseContext(),
 				// "You clciked " + stickyDataList.get(position).getId(),
 				// Toast.LENGTH_LONG).show();
@@ -97,6 +101,22 @@ public class PublicActivity extends ListActivity {
 
 		});
 		list.setClickable(true);
+
+		ImageView searchView = (ImageView) findViewById(R.id.PublicSearch);
+		searchView.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				Log.d(LIST_EXAMPLE, "OnClick is called");
+				Toast.makeText(
+						v.getContext(), // <- Line changed
+						"The favorite list would appear on clicking this icon",
+						Toast.LENGTH_LONG).show();
+
+			}
+
+		});
 
 		Thread thread = new Thread(null, runbleThread, "MagentoBackground");
 		thread.start();
@@ -106,20 +126,19 @@ public class PublicActivity extends ListActivity {
 		new LoadPublicSticky().execute(null);
 
 	}
-	
-	@Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
 
-        // TODO Auto-generated method stub
-        super.onActivityResult(requestCode, resultCode, data);
-        if(resultCode==RESULT_OK){
-	  		Log.i(LIST_EXAMPLE, "Edit Completed");
-        }
-        else{
-	  		Log.i(LIST_EXAMPLE, "Edit Completed");
-        }
-    }
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
+
+		// TODO Auto-generated method stub
+		super.onActivityResult(requestCode, resultCode, data);
+		if (resultCode == RESULT_OK) {
+			Log.i(LIST_EXAMPLE, "Edit Completed");
+		} else {
+			Log.i(LIST_EXAMPLE, "Edit Completed");
+		}
+	}
 
 	private Bundle prepareEditStickyData(StickyData stickyObj) {
 		Bundle bl = new Bundle();
@@ -159,9 +178,10 @@ public class PublicActivity extends ListActivity {
 
 		public View getView(int position, View convertView, ViewGroup parent) {
 			ViewHolder holder;
-			
+
 			if (convertView == null) {
-				convertView = mInflater.inflate(R.layout.listview,parent,  false);
+				convertView = mInflater.inflate(R.layout.listview, parent,
+						false);
 
 				holder = new ViewHolder();
 				holder.text = (TextView) convertView
@@ -177,7 +197,7 @@ public class PublicActivity extends ListActivity {
 				holder = (ViewHolder) convertView.getTag();
 			}
 
-			int selecterId =  R.drawable.list_item_selector_normal;
+			int selecterId = R.drawable.list_item_selector_normal;
 			convertView.setBackgroundResource(selecterId);
 			StickyData dataObj = stickyDataList.get(position);
 

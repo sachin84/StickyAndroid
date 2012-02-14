@@ -10,7 +10,7 @@
         android:layout_height="0dp"
         android:layout_weight="1"
         android:divider="#efefef"
-        android:dividerHeight="1px"
+        android:dividerHeight="1dip"
         android:fadingEdge="none" />
 
     <LinearLayout
@@ -18,55 +18,57 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:background="#5057b3e2"
-        android:orientation="horizontal" 
-        android:gravity="center">
+        android:gravity="center"
+        android:orientation="horizontal" >
 
         <ImageView
-            android:id="@+id/imageView1"
+            android:id="@+id/PublicSearch"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_gravity="center"
             android:layout_weight="1"
-            android:src="@drawable/ic_menu_edit" />
+            android:contentDescription="Search"
+            android:src="@drawable/search" />
 
         <ImageView
-            android:id="@+id/Action01"
+            android:id="@+id/PublicShare"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@drawable/ic_menu_search"
             android:layout_gravity="center"
             android:layout_weight="1"
-            android:textColor="@color/Black" />
+            android:src="@drawable/share" />
 
         <ImageView
-            android:id="@+id/Action03"
+            android:id="@+id/PublicAdd"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@drawable/file_add_48"
             android:layout_gravity="center"
             android:layout_weight="1"
-            android:layout_marginLeft="12dip"
-            android:layout_marginRight="12dip"
-            android:textColor="@color/Black" />
-        
+            android:src="@drawable/add" />
+
         <ImageView
-            android:id="@+id/Action02"
+            android:id="@+id/PublicRefresh"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@drawable/menu_refresh72"
             android:layout_gravity="center"
             android:layout_weight="1"
-            android:layout_marginLeft="12dip"
-            android:layout_marginRight="12dip"
-            android:textColor="@color/Black" />
-        
+            android:src="@drawable/refresh" />
+
         <ImageView
-            android:id="@+id/Action04"
+            android:id="@+id/PublicEdit"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@drawable/ic_menu_delete"
             android:layout_gravity="center"
             android:layout_weight="1"
-            android:textColor="@color/Black" />
+            android:src="@drawable/edit" />
+
+        <ImageView
+            android:id="@+id/PublicDelete"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_weight="1"
+            android:src="@drawable/delete" />
 
         <!--
              <Button
@@ -74,7 +76,7 @@
             android:layout_height="fill_parent"
             android:layout_gravity="center_vertical"
             android:layout_weight="1"
-            android:text="@string/NewSticky_Header" />
+            android:text="@string/NewSticky_Header" />
         -->
     </LinearLayout>
 

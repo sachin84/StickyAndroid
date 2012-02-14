@@ -17,38 +17,65 @@
         style="@android:style/ButtonBar"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:background="#7057b3e2" >
+        android:background="#5057b3e2"
+        android:orientation="horizontal" 
+        android:gravity="center">
 
-        <TextView
+        <ImageView
+            android:id="@+id/imageView1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:src="@drawable/ic_menu_edit" />
+
+        <ImageView
             android:id="@+id/Action01"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@drawable/ic_menu_refresh"
-            android:gravity="center"
+            android:background="@drawable/ic_menu_search"
+            android:layout_gravity="center"
+            android:layout_weight="1"
             android:textColor="@color/Black" />
-        <TextView
-            android:id="@+id/Action01"
-            android:layout_width="32dip"
-            android:layout_height="32dip"
-            android:background="@drawable/list_add"
-            android:gravity="center"
+
+        <ImageView
+            android:id="@+id/Action03"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/file_add_48"
+            android:layout_gravity="center"
+            android:layout_weight="1"
+            android:layout_marginLeft="12dip"
+            android:layout_marginRight="12dip"
             android:textColor="@color/Black" />
         
-        <TextView
+        <ImageView
             android:id="@+id/Action02"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@drawable/ic_menu_delete"
-            android:gravity="center"
+            android:background="@drawable/menu_refresh72"
+            android:layout_gravity="center"
+            android:layout_weight="1"
+            android:layout_marginLeft="12dip"
+            android:layout_marginRight="12dip"
             android:textColor="@color/Black" />
         
-        <Button
+        <ImageView
+            android:id="@+id/Action04"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/ic_menu_delete"
+            android:layout_gravity="center"
+            android:layout_weight="1"
+            android:textColor="@color/Black" />
+
+        <!--
+             <Button
             android:layout_width="0dp"
             android:layout_height="fill_parent"
             android:layout_gravity="center_vertical"
             android:layout_weight="1"
-            android:text="@string/NewSticky_Header" />
+            android:text="@string/NewSticky_Header" />
+        -->
     </LinearLayout>
 
 </LinearLayout>

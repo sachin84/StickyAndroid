@@ -32,6 +32,7 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -43,7 +44,7 @@ public class PublicActivity extends ListActivity {
 	public static final String LIST_EXAMPLE = "PublicActivity";
 	private List<StickyData> stickyDataList = new ArrayList<StickyData>();
 	private StickyListAdapter stickyAdapter;
-	private ProgressDialog m_ProgressDialog = null;
+	protected ProgressDialog m_ProgressDialog = null;
 	private Runnable runbleThread;
 
 	@Override
@@ -78,12 +79,33 @@ public class PublicActivity extends ListActivity {
 		// Setting Custom Selector
 		list.setSelector(getResources().getDrawable(R.drawable.list_selector));
 
-		list.setOnItemClickListener(new OnItemClickListener() {
-			@Override
-			public void onItemClick(AdapterView<?> arg0, View arg1,
-					int position, long arg3) {
-				// arg1.setBackgroundColor(Color.YELLOW);
+//		list.setOnItemClickListener(new OnItemClickListener() {
+//			@Override
+//			public void onItemClick(AdapterView<?> arg0, View arg1,
+//					int position, long arg3) {
+//				// arg1.setBackgroundColor(Color.YELLOW);
+//
+//				Bundle bunData = prepareEditStickyData(stickyDataList
+//						.get(position));
+//
+//				Intent editStickyIntent = new Intent(PublicActivity.this,
+//						EditSticky.class);
+//				editStickyIntent.putExtras(bunData);
+//				startActivityForResult(editStickyIntent, 1);
+//				overridePendingTransition(R.anim.slide_in_right,
+//						R.anim.slide_out_left);
+//
+//				// Toast.makeText(getBaseContext(),
+//				// "You clciked " + stickyDataList.get(position).getId(),
+//				// Toast.LENGTH_LONG).show();
+//			}
+//
+//		});
 
+		list.setOnItemLongClickListener(new OnItemLongClickListener() {
+			@Override
+			public boolean onItemLongClick(AdapterView<?> arg0, View arg1,
+					final int position, long arg3) {
 				Bundle bunData = prepareEditStickyData(stickyDataList
 						.get(position));
 
@@ -93,13 +115,10 @@ public class PublicActivity extends ListActivity {
 				startActivityForResult(editStickyIntent, 1);
 				overridePendingTransition(R.anim.slide_in_right,
 						R.anim.slide_out_left);
-
-				// Toast.makeText(getBaseContext(),
-				// "You clciked " + stickyDataList.get(position).getId(),
-				// Toast.LENGTH_LONG).show();
+				return true;
 			}
-
 		});
+
 		list.setClickable(true);
 
 		setSearchClickListener();
@@ -107,13 +126,15 @@ public class PublicActivity extends ListActivity {
 		setRefreshClickListener();
 		setAddClickListener();
 		setEditClickListener();
-		setDeleteClickListener(); 
-		
-		Thread thread = new Thread(null, runbleThread, "MagentoBackground");
-		thread.start();
-		m_ProgressDialog = ProgressDialog.show(PublicActivity.this,
-				"Please wait...", "Retrieving data ...", true);
+		setDeleteClickListener();
 
+		// Thread thread = new Thread(null, runbleThread, "MagentoBackground");
+		// thread.start();
+		// m_ProgressDialog = ProgressDialog.show(PublicActivity.this,
+		// "Please wait...", "Retrieving data ...", true);
+
+		// LoadPublicSticky asyncTask = new LoadPublicSticky();
+		// asyncTask.execute("");
 		new LoadPublicSticky().execute("");
 
 	}
@@ -143,13 +164,15 @@ public class PublicActivity extends ListActivity {
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
 				Log.d(LIST_EXAMPLE, "OnClick is called");
-				Toast.makeText(v.getContext(), // <- Line changed
-						"You Can Share Your Tasks To Anyone.", Toast.LENGTH_LONG)
-						.show();
+				Toast.makeText(
+						v.getContext(), // <- Line changed
+						"You Can Share Your Tasks To Anyone.",
+						Toast.LENGTH_LONG).show();
 			}
 
 		});
 	}
+
 	private void setRefreshClickListener() {
 		ImageView refreshView = (ImageView) findViewById(R.id.PublicRefresh);
 		refreshView.setOnClickListener(new OnClickListener() {
@@ -158,14 +181,17 @@ public class PublicActivity extends ListActivity {
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
 				Log.d(LIST_EXAMPLE, "OnClick is called");
-				Toast.makeText(v.getContext(), // <- Line changed
-						"Sync Your Task With Server.", Toast.LENGTH_LONG)
-						.show();
+				// Toast.makeText(v.getContext(), // <- Line changed
+				// "Sync Your Task With Server.", Toast.LENGTH_LONG)
+				// .show();
+
+				new LoadPublicSticky().execute("");
+
 			}
 
 		});
 	}
-	
+
 	private void setEditClickListener() {
 		ImageView editView = (ImageView) findViewById(R.id.PublicEdit);
 		editView.setOnClickListener(new OnClickListener() {
@@ -175,12 +201,11 @@ public class PublicActivity extends ListActivity {
 				// TODO Auto-generated method stub
 				Log.d(LIST_EXAMPLE, "OnClick is called");
 				Toast.makeText(v.getContext(), // <- Line changed
-						"You Can Edit Your Tasks.", Toast.LENGTH_LONG)
-						.show();
+						"You Can Edit Your Tasks.", Toast.LENGTH_LONG).show();
 			}
 		});
 	}
-	
+
 	private void setAddClickListener() {
 		ImageView addView = (ImageView) findViewById(R.id.PublicAdd);
 		addView.setOnClickListener(new OnClickListener() {
@@ -190,12 +215,12 @@ public class PublicActivity extends ListActivity {
 				// TODO Auto-generated method stub
 				Log.d(LIST_EXAMPLE, "OnClick is called");
 				Toast.makeText(v.getContext(), // <- Line changed
-						"You Can Add Your Tasks.", Toast.LENGTH_LONG)
-						.show();
+						"You Can Add Your Tasks.", Toast.LENGTH_LONG).show();
 			}
 
 		});
 	}
+
 	private void setDeleteClickListener() {
 		ImageView deleteView = (ImageView) findViewById(R.id.PublicDelete);
 		deleteView.setOnClickListener(new OnClickListener() {
@@ -204,14 +229,16 @@ public class PublicActivity extends ListActivity {
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
 				Log.d(LIST_EXAMPLE, "OnClick is called");
-				Toast.makeText(v.getContext(), // <- Line changed
-						"You Can Delete Your Tasks.", Toast.LENGTH_LONG)
-						.show();
+//				ListView list = getListView();
+//				StickyData stickyObj = (StickyData) list.getSelectedItem();
+//				
+//				Toast.makeText(v.getContext(), // <- Line changed
+//						"You Can Delete Your Tasks."+stickyObj.getId(), Toast.LENGTH_LONG).show();
 			}
 
 		});
 	}
-	
+
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
@@ -311,46 +338,42 @@ public class PublicActivity extends ListActivity {
 
 	private class LoadPublicSticky extends AsyncTask<String, Void, String> {
 
+		private ProgressDialog prgDialog;
+
+		public LoadPublicSticky() {
+			m_ProgressDialog = new ProgressDialog(getApplicationContext());
+		}
+
 		@Override
 		protected String doInBackground(String... params) {
 			// perform long running operation operation
 			getStickyData();
+
 			return null;
 		}
 
-		/*
-		 * (non-Javadoc)
-		 * 
-		 * @see android.os.AsyncTask#onPostExecute(java.lang.Object)
-		 */
+		@Override
+		protected void onPreExecute() {
+			// Things to be done before execution of long running operation. For
+			m_ProgressDialog = ProgressDialog.show(PublicActivity.this,
+					"Please wait...", "Connecting To Server...", true);
+		}
+
 		@Override
 		protected void onPostExecute(String result) {
 			// execution of result of Long time consuming operation
+			m_ProgressDialog.setMessage("Records Loaded Successfully...");
+
 			m_ProgressDialog.dismiss();
 			stickyAdapter.notifyDataSetChanged();
 		}
 
-		/*
-		 * (non-Javadoc)
-		 * 
-		 * @see android.os.AsyncTask#onPreExecute()
-		 */
-		@Override
-		protected void onPreExecute() {
-			// Things to be done before execution of long running operation. For
-			// example showing ProgessDialog
-		}
-
-		/*
-		 * (non-Javadoc)
-		 * 
-		 * @see android.os.AsyncTask#onProgressUpdate(Progress[])
-		 */
 		@Override
 		protected void onProgressUpdate(Void... values) {
 			// Things to be done while execution of long running operation is in
 			// progress. For example updating ProgessDialog
 		}
+
 	}
 
 	public boolean getStickyData() {
@@ -402,6 +425,8 @@ public class PublicActivity extends ListActivity {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+
+		stickyDataList = new ArrayList<StickyData>();
 
 		JSONObject stickyrespjson;
 		try {

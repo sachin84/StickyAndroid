@@ -102,6 +102,23 @@ public class PublicActivity extends ListActivity {
 		});
 		list.setClickable(true);
 
+		setSearchClickListener();
+		setShareClickListener();
+		setRefreshClickListener();
+		setAddClickListener();
+		setEditClickListener();
+		setDeleteClickListener(); 
+		
+		Thread thread = new Thread(null, runbleThread, "MagentoBackground");
+		thread.start();
+		m_ProgressDialog = ProgressDialog.show(PublicActivity.this,
+				"Please wait...", "Retrieving data ...", true);
+
+		new LoadPublicSticky().execute("");
+
+	}
+
+	private void setSearchClickListener() {
 		ImageView searchView = (ImageView) findViewById(R.id.PublicSearch);
 		searchView.setOnClickListener(new OnClickListener() {
 
@@ -109,24 +126,92 @@ public class PublicActivity extends ListActivity {
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
 				Log.d(LIST_EXAMPLE, "OnClick is called");
-				Toast.makeText(
-						v.getContext(), // <- Line changed
-						"The favorite list would appear on clicking this icon",
-						Toast.LENGTH_LONG).show();
+				Toast.makeText(v.getContext(), // <- Line changed
+						"You Can Search Your Tasks Here", Toast.LENGTH_LONG)
+						.show();
 
 			}
 
 		});
-
-		Thread thread = new Thread(null, runbleThread, "MagentoBackground");
-		thread.start();
-		m_ProgressDialog = ProgressDialog.show(PublicActivity.this,
-				"Please wait...", "Retrieving data ...", true);
-
-		new LoadPublicSticky().execute(null);
-
 	}
 
+	private void setShareClickListener() {
+		ImageView shareView = (ImageView) findViewById(R.id.PublicShare);
+		shareView.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				Log.d(LIST_EXAMPLE, "OnClick is called");
+				Toast.makeText(v.getContext(), // <- Line changed
+						"You Can Share Your Tasks To Anyone.", Toast.LENGTH_LONG)
+						.show();
+			}
+
+		});
+	}
+	private void setRefreshClickListener() {
+		ImageView refreshView = (ImageView) findViewById(R.id.PublicRefresh);
+		refreshView.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				Log.d(LIST_EXAMPLE, "OnClick is called");
+				Toast.makeText(v.getContext(), // <- Line changed
+						"Sync Your Task With Server.", Toast.LENGTH_LONG)
+						.show();
+			}
+
+		});
+	}
+	
+	private void setEditClickListener() {
+		ImageView editView = (ImageView) findViewById(R.id.PublicEdit);
+		editView.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				Log.d(LIST_EXAMPLE, "OnClick is called");
+				Toast.makeText(v.getContext(), // <- Line changed
+						"You Can Edit Your Tasks.", Toast.LENGTH_LONG)
+						.show();
+			}
+		});
+	}
+	
+	private void setAddClickListener() {
+		ImageView addView = (ImageView) findViewById(R.id.PublicAdd);
+		addView.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				Log.d(LIST_EXAMPLE, "OnClick is called");
+				Toast.makeText(v.getContext(), // <- Line changed
+						"You Can Add Your Tasks.", Toast.LENGTH_LONG)
+						.show();
+			}
+
+		});
+	}
+	private void setDeleteClickListener() {
+		ImageView deleteView = (ImageView) findViewById(R.id.PublicDelete);
+		deleteView.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				Log.d(LIST_EXAMPLE, "OnClick is called");
+				Toast.makeText(v.getContext(), // <- Line changed
+						"You Can Delete Your Tasks.", Toast.LENGTH_LONG)
+						.show();
+			}
+
+		});
+	}
+	
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);

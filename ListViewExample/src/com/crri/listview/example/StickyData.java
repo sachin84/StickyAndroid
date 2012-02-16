@@ -5,6 +5,7 @@ private int Id;
 private String Text;
 private String DueDate;
 private String Name;
+private boolean isSelected;
 public int getId() {
 	return Id;
 }
@@ -19,6 +20,12 @@ public void setText(String text) {
 }
 public String getDueDate() {
 	return DueDate;
+}
+public boolean isSelected() {
+	return isSelected;
+}
+public void setSelected(boolean isSelected) {
+	this.isSelected = isSelected;
 }
 public void setDueDate(String dueDate) {
 	DueDate = dueDate;

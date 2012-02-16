@@ -23,16 +23,19 @@ import android.app.ListActivity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.text.format.DateUtils;
+import android.text.method.DateTimeKeyListener;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemLongClickListener;
+import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -75,9 +78,12 @@ public class PublicActivity extends ListActivity {
 		stickyAdapter = new StickyListAdapter(this);
 		setListAdapter(stickyAdapter);
 
-		ListView list = getListView();
+		final ListView list = getListView();
 		// Setting Custom Selector
-		list.setSelector(getResources().getDrawable(R.drawable.list_selector));
+//		list.setSelector(getResources().getDrawable(R.drawable.list_selector));
+		list.setFocusableInTouchMode(true);
+		list.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
+		list.setFocusable(true);
 
 //		list.setOnItemClickListener(new OnItemClickListener() {
 //			@Override
@@ -102,20 +108,44 @@ public class PublicActivity extends ListActivity {
 //
 //		});
 
+		list.setOnItemSelectedListener(new OnItemSelectedListener() {
+
+			@Override
+			public void onItemSelected(AdapterView<?> arg0, View arg1,
+					int arg2, long arg3) {
+				Toast.makeText(PublicActivity.this, ""+arg2, Toast.LENGTH_LONG).show();
+				ImageView editView = (ImageView) findViewById(R.id.PublicShare);
+				editView.setImageResource(R.drawable.share_on);
+				ImageView delView = (ImageView) findViewById(R.id.PublicDelete);
+				delView.setImageResource(R.drawable.delete_on);
+			}
+
+			@Override
+			public void onNothingSelected(AdapterView<?> arg0) {
+				// TODO Auto-generated method stub
+				ImageView editView = (ImageView) findViewById(R.id.PublicShare);
+				editView.setImageResource(R.drawable.share);
+				ImageView delView = (ImageView) findViewById(R.id.PublicDelete);
+				delView.setImageResource(R.drawable.delete);
+			}
+		});
 		list.setOnItemLongClickListener(new OnItemLongClickListener() {
 			@Override
 			public boolean onItemLongClick(AdapterView<?> arg0, View arg1,
 					final int position, long arg3) {
-				Bundle bunData = prepareEditStickyData(stickyDataList
-						.get(position));
-
-				Intent editStickyIntent = new Intent(PublicActivity.this,
-						EditSticky.class);
-				editStickyIntent.putExtras(bunData);
-				startActivityForResult(editStickyIntent, 1);
-				overridePendingTransition(R.anim.slide_in_right,
-						R.anim.slide_out_left);
-				return true;
+				list.setSelection(position);
+				stickyAdapter.setSelected(position);
+				stickyAdapter.notifyDataSetChanged();
+//				Bundle bunData = prepareEditStickyData(stickyDataList
+//						.get(position));
+//
+//				Intent editStickyIntent = new Intent(PublicActivity.this,
+//						EditSticky.class);
+//				editStickyIntent.putExtras(bunData);
+//				startActivityForResult(editStickyIntent, 1);
+//				overridePendingTransition(R.anim.slide_in_right,
+//						R.anim.slide_out_left);
+				return false;
 			}
 		});
 
@@ -229,6 +259,7 @@ public class PublicActivity extends ListActivity {
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
 				Log.d(LIST_EXAMPLE, "OnClick is called");
+				
 //				ListView list = getListView();
 //				StickyData stickyObj = (StickyData) list.getSelectedItem();
 //				
@@ -287,10 +318,29 @@ public class PublicActivity extends ListActivity {
 		public long getItemId(int position) {
 			return position;
 		}
+		
+		public void setSelected(int position){
+			int count =0;
+			for (StickyData data : stickyDataList) {
+				if(count == position){
+					data.setSelected(true);
+				}else{
+					data.setSelected(false);
+				}
+				count++;
+			}
+		}
 
+		public StickyData getSelectedItem(){
+			for (StickyData data : stickyDataList) {
+				if(data.isSelected()){
+					return data;
+				}
+			}
+			return null;
+		}
 		public View getView(int position, View convertView, ViewGroup parent) {
 			ViewHolder holder;
-
 			if (convertView == null) {
 				convertView = mInflater.inflate(R.layout.listview, parent,
 						false);
@@ -308,9 +358,9 @@ public class PublicActivity extends ListActivity {
 			} else {
 				holder = (ViewHolder) convertView.getTag();
 			}
-
+			
 			int selecterId = R.drawable.list_item_selector_normal;
-			convertView.setBackgroundResource(selecterId);
+//			convertView.setBackgroundResource(selecterId);
 			StickyData dataObj = stickyDataList.get(position);
 
 			Log.i(LIST_EXAMPLE, "Data_ID" + dataObj.getId());
@@ -324,6 +374,12 @@ public class PublicActivity extends ListActivity {
 
 			holder.text3.setText(dataObj.getPriority());
 			holder.text4.setText(dataObj.getDueDate());
+			
+			if(dataObj.isSelected()){
+				convertView.setBackgroundColor(Color.RED);
+			}else{
+				convertView.setBackgroundColor(Color.TRANSPARENT);
+			}
 
 			return convertView;
 		}

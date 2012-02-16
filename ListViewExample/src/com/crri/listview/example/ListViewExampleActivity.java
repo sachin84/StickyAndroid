@@ -92,7 +92,7 @@ public class ListViewExampleActivity extends TabActivity {
 
 		// Tab for Photos
 		TabSpec publicspec = tabHost.newTabSpec("Public");
-		publicspec.setIndicator("Public",
+		publicspec.setIndicator("",
 				getResources().getDrawable(R.drawable.icon_public_tab));
 		Intent publicIntent = new Intent(this, PublicActivity.class);
 		publicspec.setContent(publicIntent);
@@ -100,14 +100,14 @@ public class ListViewExampleActivity extends TabActivity {
 		// Tab for Works
 		TabSpec workspec = tabHost.newTabSpec("Work");
 		// setting Title and Icon for the Tab
-		workspec.setIndicator("Work",
+		workspec.setIndicator("",
 				getResources().getDrawable(R.drawable.icon_work_tab));
 		Intent workIntent = new Intent(this, WorkActivity.class);
 		workspec.setContent(workIntent);
 
 		// Tab for Videos
 		TabSpec privatespec = tabHost.newTabSpec("Private");
-		privatespec.setIndicator("Private",
+		privatespec.setIndicator("",
 				getResources().getDrawable(R.drawable.icon_private_tab));
 
 		Intent privateIntent = new Intent(this, PrivateActivity.class);

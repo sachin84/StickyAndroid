@@ -26,16 +26,14 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.text.format.DateUtils;
-import android.text.method.DateTimeKeyListener;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemLongClickListener;
-import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -48,7 +46,6 @@ public class PublicActivity extends ListActivity {
 	private List<StickyData> stickyDataList = new ArrayList<StickyData>();
 	private StickyListAdapter stickyAdapter;
 	protected ProgressDialog m_ProgressDialog = null;
-	private Runnable runbleThread;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -80,55 +77,54 @@ public class PublicActivity extends ListActivity {
 
 		final ListView list = getListView();
 		// Setting Custom Selector
-//		list.setSelector(getResources().getDrawable(R.drawable.list_selector));
+		list.setSelector(getResources().getDrawable(R.drawable.list_selector));
 		list.setFocusableInTouchMode(true);
 		list.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
 		list.setFocusable(true);
 
-//		list.setOnItemClickListener(new OnItemClickListener() {
+		list.setOnItemClickListener(new OnItemClickListener() {
+			@Override
+			public void onItemClick(AdapterView<?> arg0, View arg1,
+					int position, long arg3) {
+				// arg1.setBackgroundColor(Color.YELLOW);
+
+				Bundle bunData = prepareEditStickyData(stickyDataList
+						.get(position));
+
+				Intent editStickyIntent = new Intent(PublicActivity.this,
+						ViewSticky.class);
+				editStickyIntent.putExtras(bunData);
+				startActivityForResult(editStickyIntent, 1);
+				overridePendingTransition(R.anim.slide_in_right,
+						R.anim.slide_out_left);
+
+			}
+
+		});
+		
+//
+//		list.setOnItemSelectedListener(new OnItemSelectedListener() {
+//
 //			@Override
-//			public void onItemClick(AdapterView<?> arg0, View arg1,
-//					int position, long arg3) {
-//				// arg1.setBackgroundColor(Color.YELLOW);
-//
-//				Bundle bunData = prepareEditStickyData(stickyDataList
-//						.get(position));
-//
-//				Intent editStickyIntent = new Intent(PublicActivity.this,
-//						EditSticky.class);
-//				editStickyIntent.putExtras(bunData);
-//				startActivityForResult(editStickyIntent, 1);
-//				overridePendingTransition(R.anim.slide_in_right,
-//						R.anim.slide_out_left);
-//
-//				// Toast.makeText(getBaseContext(),
-//				// "You clciked " + stickyDataList.get(position).getId(),
-//				// Toast.LENGTH_LONG).show();
+//			public void onItemSelected(AdapterView<?> arg0, View arg1,
+//					int arg2, long arg3) {
+//				Toast.makeText(PublicActivity.this, ""+arg2, Toast.LENGTH_LONG).show();
+//				ImageView editView = (ImageView) findViewById(R.id.PublicShare);
+//				editView.setImageResource(R.drawable.share_on);
+//				ImageView delView = (ImageView) findViewById(R.id.PublicDelete);
+//				delView.setImageResource(R.drawable.delete_on);
 //			}
 //
+//			@Override
+//			public void onNothingSelected(AdapterView<?> arg0) {
+//				// TODO Auto-generated method stub
+//				ImageView editView = (ImageView) findViewById(R.id.PublicShare);
+//				editView.setImageResource(R.drawable.share);
+//				ImageView delView = (ImageView) findViewById(R.id.PublicDelete);
+//				delView.setImageResource(R.drawable.delete);
+//			}
 //		});
-
-		list.setOnItemSelectedListener(new OnItemSelectedListener() {
-
-			@Override
-			public void onItemSelected(AdapterView<?> arg0, View arg1,
-					int arg2, long arg3) {
-				Toast.makeText(PublicActivity.this, ""+arg2, Toast.LENGTH_LONG).show();
-				ImageView editView = (ImageView) findViewById(R.id.PublicShare);
-				editView.setImageResource(R.drawable.share_on);
-				ImageView delView = (ImageView) findViewById(R.id.PublicDelete);
-				delView.setImageResource(R.drawable.delete_on);
-			}
-
-			@Override
-			public void onNothingSelected(AdapterView<?> arg0) {
-				// TODO Auto-generated method stub
-				ImageView editView = (ImageView) findViewById(R.id.PublicShare);
-				editView.setImageResource(R.drawable.share);
-				ImageView delView = (ImageView) findViewById(R.id.PublicDelete);
-				delView.setImageResource(R.drawable.delete);
-			}
-		});
+		
 		list.setOnItemLongClickListener(new OnItemLongClickListener() {
 			@Override
 			public boolean onItemLongClick(AdapterView<?> arg0, View arg1,
@@ -152,11 +148,8 @@ public class PublicActivity extends ListActivity {
 		list.setClickable(true);
 
 		setSearchClickListener();
-		setShareClickListener();
 		setRefreshClickListener();
 		setAddClickListener();
-		setEditClickListener();
-		setDeleteClickListener();
 
 		// Thread thread = new Thread(null, runbleThread, "MagentoBackground");
 		// thread.start();
@@ -186,22 +179,7 @@ public class PublicActivity extends ListActivity {
 		});
 	}
 
-	private void setShareClickListener() {
-		ImageView shareView = (ImageView) findViewById(R.id.PublicShare);
-		shareView.setOnClickListener(new OnClickListener() {
 
-			@Override
-			public void onClick(View v) {
-				// TODO Auto-generated method stub
-				Log.d(LIST_EXAMPLE, "OnClick is called");
-				Toast.makeText(
-						v.getContext(), // <- Line changed
-						"You Can Share Your Tasks To Anyone.",
-						Toast.LENGTH_LONG).show();
-			}
-
-		});
-	}
 
 	private void setRefreshClickListener() {
 		ImageView refreshView = (ImageView) findViewById(R.id.PublicRefresh);
@@ -222,19 +200,7 @@ public class PublicActivity extends ListActivity {
 		});
 	}
 
-	private void setEditClickListener() {
-		ImageView editView = (ImageView) findViewById(R.id.PublicEdit);
-		editView.setOnClickListener(new OnClickListener() {
 
-			@Override
-			public void onClick(View v) {
-				// TODO Auto-generated method stub
-				Log.d(LIST_EXAMPLE, "OnClick is called");
-				Toast.makeText(v.getContext(), // <- Line changed
-						"You Can Edit Your Tasks.", Toast.LENGTH_LONG).show();
-			}
-		});
-	}
 
 	private void setAddClickListener() {
 		ImageView addView = (ImageView) findViewById(R.id.PublicAdd);
@@ -251,24 +217,6 @@ public class PublicActivity extends ListActivity {
 		});
 	}
 
-	private void setDeleteClickListener() {
-		ImageView deleteView = (ImageView) findViewById(R.id.PublicDelete);
-		deleteView.setOnClickListener(new OnClickListener() {
-
-			@Override
-			public void onClick(View v) {
-				// TODO Auto-generated method stub
-				Log.d(LIST_EXAMPLE, "OnClick is called");
-				
-//				ListView list = getListView();
-//				StickyData stickyObj = (StickyData) list.getSelectedItem();
-//				
-//				Toast.makeText(v.getContext(), // <- Line changed
-//						"You Can Delete Your Tasks."+stickyObj.getId(), Toast.LENGTH_LONG).show();
-			}
-
-		});
-	}
 
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -360,7 +308,7 @@ public class PublicActivity extends ListActivity {
 			}
 			
 			int selecterId = R.drawable.list_item_selector_normal;
-//			convertView.setBackgroundResource(selecterId);
+			convertView.setBackgroundResource(selecterId);
 			StickyData dataObj = stickyDataList.get(position);
 
 			Log.i(LIST_EXAMPLE, "Data_ID" + dataObj.getId());
@@ -375,11 +323,11 @@ public class PublicActivity extends ListActivity {
 			holder.text3.setText(dataObj.getPriority());
 			holder.text4.setText(dataObj.getDueDate());
 			
-			if(dataObj.isSelected()){
-				convertView.setBackgroundColor(Color.RED);
-			}else{
-				convertView.setBackgroundColor(Color.TRANSPARENT);
-			}
+//			if(dataObj.isSelected()){
+//				convertView.setBackgroundColor(Color.RED);
+//			}else{
+//				//convertView.setBackgroundColor(Color.TRANSPARENT);
+//			}
 
 			return convertView;
 		}

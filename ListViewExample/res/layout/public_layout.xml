@@ -31,14 +31,6 @@
             android:src="@drawable/search" />
 
         <ImageView
-            android:id="@+id/PublicShare"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_weight="1"
-            android:src="@drawable/share" />
-
-        <ImageView
             android:id="@+id/PublicRefresh"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -53,22 +45,6 @@
             android:layout_gravity="center"
             android:layout_weight="1"
             android:src="@drawable/add" />
-
-        <ImageView
-            android:id="@+id/PublicEdit"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_weight="1"
-            android:src="@drawable/edit" />
-
-        <ImageView
-            android:id="@+id/PublicDelete"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_weight="1"
-            android:src="@drawable/delete" />
 
         <!--
              <Button

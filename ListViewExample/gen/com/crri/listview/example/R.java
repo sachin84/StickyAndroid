@@ -166,6 +166,7 @@ public final class R {
         public static final int WhiteSmoke=0x7f050027;
         public static final int Yellow=0x7f050004;
         public static final int YellowGreen=0x7f050051;
+        public static final int bluetab=0x7f05008d;
     }
     public static final class drawable {
         public static final int add=0x7f020000;
@@ -201,43 +202,58 @@ public final class R {
         public static final int list_selector_on_top_pressed=0x7f02001e;
         public static final int list_selector_pressed=0x7f02001f;
         public static final int list_selector_selected=0x7f020020;
-        public static final int menu_refresh=0x7f020021;
-        public static final int menu_refresh72=0x7f020022;
-        public static final int normallist=0x7f020023;
-        public static final int photos_gray=0x7f020024;
-        public static final int photos_white=0x7f020025;
-        public static final int refresh=0x7f020026;
-        public static final int search=0x7f020027;
-        public static final int selectedlist=0x7f020028;
-        public static final int share=0x7f020029;
-        public static final int share_on=0x7f02002a;
-        public static final int songs_gray=0x7f02002b;
-        public static final int songs_white=0x7f02002c;
-        public static final int videos_gray=0x7f02002d;
-        public static final int videos_white=0x7f02002e;
+        public static final int lock64=0x7f020021;
+        public static final int lock72=0x7f020022;
+        public static final int lock_open_72=0x7f020023;
+        public static final int menu_refresh=0x7f020024;
+        public static final int menu_refresh72=0x7f020025;
+        public static final int normallist=0x7f020026;
+        public static final int photos_gray=0x7f020027;
+        public static final int photos_white=0x7f020028;
+        public static final int privatetask=0x7f020029;
+        public static final int public64=0x7f02002a;
+        public static final int publictask=0x7f02002b;
+        public static final int refresh=0x7f02002c;
+        public static final int search=0x7f02002d;
+        public static final int selectedlist=0x7f02002e;
+        public static final int share=0x7f02002f;
+        public static final int share_on=0x7f020030;
+        public static final int songs_gray=0x7f020031;
+        public static final int songs_white=0x7f020032;
+        public static final int videos_gray=0x7f020033;
+        public static final int videos_white=0x7f020034;
+        public static final int work128=0x7f020035;
+        public static final int worktask=0x7f020036;
     }
     public static final class id {
         public static final int Action01=0x7f0a0011;
         public static final int Action02=0x7f0a0014;
         public static final int Action03=0x7f0a0013;
         public static final int Action04=0x7f0a0016;
-        public static final int PublicAdd=0x7f0a001a;
-        public static final int PublicDelete=0x7f0a001c;
-        public static final int PublicEdit=0x7f0a001b;
-        public static final int PublicRefresh=0x7f0a0019;
+        public static final int PublicAdd=0x7f0a0019;
+        public static final int PublicDelete=0x7f0a0023;
+        public static final int PublicEdit=0x7f0a0022;
+        public static final int PublicRefresh=0x7f0a0018;
         public static final int PublicSearch=0x7f0a0017;
-        public static final int PublicShare=0x7f0a0018;
+        public static final int PublicShare=0x7f0a0021;
         public static final int TextView01=0x7f0a000c;
         public static final int TextView02=0x7f0a000d;
         public static final int TextView03=0x7f0a000e;
         public static final int TextView04=0x7f0a000f;
+        public static final int commandLayout=0x7f0a001c;
+        public static final int contentLayout=0x7f0a001d;
         public static final int dueDateButton=0x7f0a0009;
         public static final int dueDateText=0x7f0a000a;
         public static final int editButton=0x7f0a000b;
         public static final int imageView1=0x7f0a0015;
         public static final int imageView2=0x7f0a0012;
-        public static final int newsticky=0x7f0a001d;
+        public static final int newsticky=0x7f0a0024;
+        public static final int relativeLayout=0x7f0a001a;
         public static final int saveButton=0x7f0a0010;
+        public static final int scrollView=0x7f0a001b;
+        public static final int shareButton=0x7f0a0020;
+        public static final int shareEmail=0x7f0a001e;
+        public static final int shareMessage=0x7f0a001f;
         public static final int stickyPriority=0x7f0a0007;
         public static final int stickyText=0x7f0a0001;
         public static final int stickyTitle=0x7f0a0003;
@@ -256,7 +272,9 @@ public final class R {
         public static final int newsticky=0x7f030004;
         public static final int private_layout=0x7f030005;
         public static final int public_layout=0x7f030006;
-        public static final int work_layout=0x7f030007;
+        public static final int sharesticky=0x7f030007;
+        public static final int viewsticky=0x7f030008;
+        public static final int work_layout=0x7f030009;
     }
     public static final class menu {
         public static final int menu=0x7f090000;
@@ -270,6 +288,8 @@ public final class R {
         public static final int NewSticky_Text=0x7f060004;
         public static final int NewSticky_Title=0x7f060005;
         public static final int NewSticky_Type=0x7f060007;
+        public static final int ShareSticky_ShareButton=0x7f06000c;
+        public static final int ShareSticky_ShareEmail=0x7f06000b;
         public static final int Sticky_list_name=0x7f060002;
         public static final int app_name=0x7f060001;
         public static final int hello=0x7f060000;

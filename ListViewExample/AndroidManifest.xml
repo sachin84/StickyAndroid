@@ -40,6 +40,24 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".ViewSticky"
+            android:label="@string/app_name" >
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".ShareSticky"
+            android:label="@string/app_name" >
+            <intent-filter>
+                <action android:name="android.intent.action.SEND" />
+                <category android:name="android.intent.category.LAUNCHER" />
+                <data android:mimeType="text/*" ></data>
+            </intent-filter>
+        </activity>
 
         <!-- Public Activity -->
         <activity android:name=".PublicActivity" />

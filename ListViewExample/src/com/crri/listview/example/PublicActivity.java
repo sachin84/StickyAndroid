@@ -209,9 +209,13 @@ public class PublicActivity extends ListActivity {
 			@Override
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
-				Log.d(LIST_EXAMPLE, "OnClick is called");
-				Toast.makeText(v.getContext(), // <- Line changed
-						"You Can Add Your Tasks.", Toast.LENGTH_LONG).show();
+				Log.d(LIST_EXAMPLE, "Add Task is called");
+				Intent newStickyIntent = new Intent(PublicActivity.this,
+						NewSticky.class);
+				
+				startActivityForResult(newStickyIntent, 1);
+				overridePendingTransition(R.anim.slide_in_right,
+						R.anim.slide_out_left);
 			}
 
 		});
@@ -225,7 +229,7 @@ public class PublicActivity extends ListActivity {
 		// TODO Auto-generated method stub
 		super.onActivityResult(requestCode, resultCode, data);
 		if (resultCode == RESULT_OK) {
-			Log.i(LIST_EXAMPLE, "Edit Completed");
+			Log.i(LIST_EXAMPLE, "Add/Edit Completed");
 		} else {
 			Log.i(LIST_EXAMPLE, "Edit Completed");
 		}

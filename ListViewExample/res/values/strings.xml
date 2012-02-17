@@ -12,6 +12,8 @@
     <string name="NewSticky_Priority">Sticky Priority</string>
     <string name="NewSticky_SaveButton">Save</string>
     <string name="NewSticky_EditButton">Edit</string>
+    <string name="ShareSticky_ShareEmail">Share</string>
+    <string name="ShareSticky_ShareButton">Share</string>
 
     <string-array name="StickyType_Array">
         <item>Public</item>

@@ -188,10 +188,13 @@ public class ViewSticky extends Activity {
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
 				Log.d(VIEW_STICKY, "OnClick is called");
-				Toast.makeText(
-						v.getContext(), // <- Line changed
-						"You Can Share Your Tasks To Anyone.",
-						Toast.LENGTH_LONG).show();
+
+				Intent shareIntent = new Intent();
+				shareIntent.setAction(Intent.ACTION_SEND);
+				shareIntent.setType("text/plain");
+				shareIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, "Subject Here");
+				shareIntent.putExtra(android.content.Intent.EXTRA_TEXT, "Test body");
+				startActivity(Intent.createChooser(shareIntent, "Share via"));
 			}
 
 		});
@@ -213,6 +216,7 @@ public class ViewSticky extends Activity {
 								new DialogInterface.OnClickListener() {
 									public void onClick(DialogInterface dialog,
 											int id) {
+										deleteSticky();
 										ViewSticky.this.finish();
 									}
 								})
@@ -289,52 +293,22 @@ public class ViewSticky extends Activity {
 		int loggedInUserId = settings.getInt("loggedInUserId", 0);
 
 		try {
-			// Add user name and password
-			TextView stickyTextObj = (TextView) findViewById(R.id.stickyText);
-			String stickyText = stickyTextObj.getText().toString();
+			
 
-			TextView stickyTitleObj = (TextView) findViewById(R.id.stickyTitle);
-			String stickyTitle = stickyTitleObj.getText().toString();
-
-			Spinner spnrStickyType = (Spinner) findViewById(R.id.stickyType);
-			String stickyType = spnrStickyType.getSelectedItem().toString();
-
-			Spinner spnrStickyPriority = (Spinner) findViewById(R.id.stickyPriority);
-			String stickyPriority = spnrStickyPriority.getSelectedItem()
-					.toString();
-
-			TextView stickydueDateObj = (TextView) findViewById(R.id.dueDateText);
-			String stickyDueDate = stickydueDateObj.getText().toString();
-
-			Log.i(VIEW_STICKY, "stickyDueDate=" + stickyDueDate);
-			Log.i(VIEW_STICKY, stickyTitle);
-			Log.i(VIEW_STICKY, stickyPriority);
-			Log.i(VIEW_STICKY, stickyText);
-			Log.i(VIEW_STICKY, stickyType);
 			Log.i(VIEW_STICKY, "loggedInUserId==" + loggedInUserId);
 			Log.i(VIEW_STICKY, "StickyId==" + StickyId);
 
 			// Create a new HttpClient and Post Header
 			HttpClient httpclient = new DefaultHttpClient();
-			String uristr = "http://www.puskin.in/sticky/ajax/updateSticky.php";
+			String uristr = "http://www.puskin.in/sticky/ajax/delsticky.php";
 
 			HttpPost httppost = new HttpPost(uristr);
 
 			List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
-			nameValuePairs.add(new BasicNameValuePair("color", "yellow"));
-			nameValuePairs.add(new BasicNameValuePair("stickyId", Integer
+			nameValuePairs.add(new BasicNameValuePair("delStickyId", Integer
 					.toString(StickyId)));
 			nameValuePairs.add(new BasicNameValuePair("userId", Integer
 					.toString(loggedInUserId)));
-
-			nameValuePairs.add(new BasicNameValuePair("priority",
-					stickyPriority));
-			nameValuePairs.add(new BasicNameValuePair("text", stickyText));
-			nameValuePairs.add(new BasicNameValuePair("title", stickyTitle));
-			nameValuePairs
-					.add(new BasicNameValuePair("filterType", stickyType));
-			nameValuePairs
-					.add(new BasicNameValuePair("dueDate", stickyDueDate));
 
 			httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
 

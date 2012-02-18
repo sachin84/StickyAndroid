@@ -27,6 +27,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -50,8 +51,6 @@ public class ViewSticky extends Activity {
 	public int StickyId;
 	public String StickyType;
 
-	// public String Name;
-	// public String Text;
 	public String DueDate;
 	public String Priority;
 	public Bundle stickyDataBndl;
@@ -88,69 +87,15 @@ public class ViewSticky extends Activity {
 		// making string CamelCase StickyPriority_Array
 		Priority = Priority.substring(0, 1).toUpperCase()
 				+ Priority.substring(1).toLowerCase();
+		
 		Log.i(VIEW_STICKY, "Priority==>" + Priority);
 		Log.i(VIEW_STICKY, "Type==>" + StickyType);
 
-		Resources res = getResources();
-		String[] stickyTypeArr = res.getStringArray(R.array.StickyType_Array);
+		TextView stickyTypeObj = (TextView) findViewById(R.id.stickyType);
+		stickyTypeObj.setText(stickyDataBndl.getString("Type"));
 
-		// setting up forms elements
-		Spinner spinnerType = (Spinner) findViewById(R.id.stickyType);
-		ArrayAdapter<CharSequence> adapterType = ArrayAdapter
-				.createFromResource(this, R.array.StickyType_Array,
-						android.R.layout.simple_spinner_item);
-
-		adapterType
-				.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-
-		spinnerType.setAdapter(adapterType);
-		int typePos = adapterType.getPosition(StickyType);
-		spinnerType.setSelection(typePos);
-		Log.i(VIEW_STICKY, "StickyTypePOS==>" + typePos);
-
-		spinnerType.setOnItemSelectedListener(new OnItemSelectedListener() {
-			@Override
-			public void onItemSelected(AdapterView<?> parent, View view,
-					int pos, long id) {
-				// parent.getItemAtPosition(pos).toString()
-			}
-
-			@Override
-			public void onNothingSelected(AdapterView<?> arg0) {
-				// TODO Auto-generated method stub
-
-			}
-
-		});
-
-		Spinner spinnerPriority = (Spinner) findViewById(R.id.stickyPriority);
-		ArrayAdapter<CharSequence> adapterPriority = ArrayAdapter
-				.createFromResource(this, R.array.StickyPriority_Array,
-						android.R.layout.simple_spinner_item);
-
-		adapterPriority
-				.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-
-		spinnerPriority.setAdapter(adapterPriority);
-		int priorityPos = adapterPriority.getPosition(Priority);
-		spinnerPriority.setSelection(priorityPos);
-
-		Log.i(VIEW_STICKY, "StickyPriorityPOS==>" + priorityPos);
-
-		spinnerPriority.setOnItemSelectedListener(new OnItemSelectedListener() {
-			@Override
-			public void onItemSelected(AdapterView<?> parent, View view,
-					int pos, long id) {
-				parent.getItemAtPosition(pos).toString();
-			}
-
-			@Override
-			public void onNothingSelected(AdapterView<?> arg0) {
-				// TODO Auto-generated method stub
-
-			}
-
-		});
+		TextView stickyPriorityObj = (TextView) findViewById(R.id.stickyPriority);
+		stickyPriorityObj.setText(Priority);
 
 		setShareClickListener();
 		setEditClickListener();
@@ -182,19 +127,28 @@ public class ViewSticky extends Activity {
 
 	private void setShareClickListener() {
 		ImageView shareView = (ImageView) findViewById(R.id.PublicShare);
+		shareView.setImageResource(R.drawable.share);
+
 		shareView.setOnClickListener(new OnClickListener() {
 
 			@Override
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
 				Log.d(VIEW_STICKY, "OnClick is called");
+				ImageView sharebtn = (ImageView) findViewById(R.id.PublicShare);
+				sharebtn.setImageResource(R.drawable.share_on);
 
-				Intent shareIntent = new Intent();
+				Intent shareIntent = new Intent(ViewSticky.this,
+						ShareSticky.class);
+				// Intent shareIntent = new Intent();
 				shareIntent.setAction(Intent.ACTION_SEND);
 				shareIntent.setType("text/plain");
-				shareIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, "Subject Here");
-				shareIntent.putExtra(android.content.Intent.EXTRA_TEXT, "Test body");
-				startActivity(Intent.createChooser(shareIntent, "Share via"));
+				shareIntent.putExtra(android.content.Intent.EXTRA_SUBJECT,
+						stickyDataBndl.getString("Title"));
+				shareIntent.putExtra(android.content.Intent.EXTRA_TEXT,
+						stickyDataBndl.getString("Text"));
+				startActivityForResult(Intent.createChooser(shareIntent, "Share via"), 2);
+
 			}
 
 		});
@@ -208,6 +162,9 @@ public class ViewSticky extends Activity {
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
 				Log.d(VIEW_STICKY, "OnClick is called");
+				ImageView deletebtn = (ImageView) findViewById(R.id.PublicDelete);
+				deletebtn.setImageResource(R.drawable.delete_on);
+				
 				AlertDialog.Builder builder = new AlertDialog.Builder(
 						ViewSticky.this);
 				builder.setMessage("Are you sure you want to delete?")
@@ -217,7 +174,8 @@ public class ViewSticky extends Activity {
 									public void onClick(DialogInterface dialog,
 											int id) {
 										deleteSticky();
-										ViewSticky.this.finish();
+										setResult(2);
+										finish();
 									}
 								})
 						.setNegativeButton("No",
@@ -225,6 +183,8 @@ public class ViewSticky extends Activity {
 									public void onClick(DialogInterface dialog,
 											int id) {
 										dialog.cancel();
+										ImageView deletebtn = (ImageView) findViewById(R.id.PublicDelete);
+										deletebtn.setImageResource(R.drawable.delete);
 									}
 								});
 				AlertDialog alert = builder.create();
@@ -246,6 +206,14 @@ public class ViewSticky extends Activity {
 		} else {
 			Log.i(VIEW_STICKY, "Edit Completed");
 		}
+		ImageView sharebtn = (ImageView) findViewById(R.id.PublicShare);
+		sharebtn.setImageResource(R.drawable.share);
+	}
+
+	@Override
+	public void onBackPressed() {
+		this.finish();
+		// super.onBackPressed();
 	}
 
 	private boolean isNullOrBlank(String s) {
@@ -257,35 +225,7 @@ public class ViewSticky extends Activity {
 		txt.setText(new StringBuilder().append(day).append('-').append(month)
 				.append('-').append(year));
 	}
-
-	private DatePickerDialog.OnDateSetListener dateListener = new DatePickerDialog.OnDateSetListener() {
-
-		@Override
-		public void onDateSet(DatePicker view, int yr, int monthOfYear,
-				int dayOfMonth) {
-			year = yr;
-			month = monthOfYear;
-			day = dayOfMonth;
-			updateDate();
-		}
-	};
-
-	protected Dialog onCreateDialog(int id) {
-		final Calendar cal = Calendar.getInstance();
-		if (year == 0) {
-			year = cal.get(Calendar.YEAR);
-			month = cal.get(Calendar.MONTH);
-			day = cal.get(Calendar.DAY_OF_MONTH);
-		}
-		return new DatePickerDialog(this, dateListener, year, month, day);
-	}
-
-	@Override
-	public void onBackPressed() {
-		this.finish();
-		// super.onBackPressed();
-	}
-
+	
 	public boolean deleteSticky() {
 
 		boolean status = false;
@@ -293,7 +233,6 @@ public class ViewSticky extends Activity {
 		int loggedInUserId = settings.getInt("loggedInUserId", 0);
 
 		try {
-			
 
 			Log.i(VIEW_STICKY, "loggedInUserId==" + loggedInUserId);
 			Log.i(VIEW_STICKY, "StickyId==" + StickyId);

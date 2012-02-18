@@ -4,7 +4,7 @@
     <string name="hello">Hello World, ListViewExampleActivity!</string>
     <string name="app_name">ListViewExample</string>
     <string name="Sticky_list_name">Your Sticky List</string>
-    <string name="NewSticky_Header">Add New Sticky</string>
+    <string name="NewSticky_Header">Add Sticky</string>
     <string name="NewSticky_Text">Sticky Text</string>
     <string name="NewSticky_Title">Title</string>
     <string name="NewSticky_DueDate">Due Date</string>
@@ -12,8 +12,11 @@
     <string name="NewSticky_Priority">Sticky Priority</string>
     <string name="NewSticky_SaveButton">Save</string>
     <string name="NewSticky_EditButton">Edit</string>
-    <string name="ShareSticky_ShareEmail">Share</string>
-    <string name="ShareSticky_ShareButton">Share</string>
+    <string name="ShareSticky_Email">Email Address</string>
+    <string name="ShareSticky_Button">Share</string>
+    <string name="ShareSticky_Title">Sticky Title</string>
+    <string name="ShareSticky_Msg">Sticky Message</string>
+    <string name="EditSticky_Header">Edit Sticky</string>
 
     <string-array name="StickyType_Array">
         <item>Public</item>

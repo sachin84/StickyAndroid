@@ -15,6 +15,31 @@
             android:orientation="vertical"
             android:weightSum="1" >
 
+            <LinearLayout
+                android:id="@+id/header"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/header_gradient"
+                android:paddingBottom="1dip"
+                android:paddingTop="1dip" >
+
+                <ImageView
+                    android:id="@+id/AddImg"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/add" />
+
+                <TextView
+                    android:id="@+id/header"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text="@string/NewSticky_Header"
+                    android:textColor="@color/icongray"
+                    android:textSize="18dip"
+                    android:paddingRight="32dip" />
+            </LinearLayout>
+
             <TextView
                 android:id="@+id/textView1"
                 android:layout_width="wrap_content"
@@ -80,7 +105,7 @@
          <DatePicker
         android:id="@+id/dueDate"
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content" />
             -->
 
             <LinearLayout

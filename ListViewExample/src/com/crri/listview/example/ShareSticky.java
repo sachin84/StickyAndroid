@@ -5,7 +5,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 
 import org.apache.http.HttpResponse;
@@ -20,26 +19,26 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.app.Activity;
-import android.app.DatePickerDialog;
-import android.app.Dialog;
+import android.content.ContentResolver;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.database.Cursor;
 import android.os.Bundle;
+import android.provider.ContactsContract;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.Window;
-import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
-import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.SimpleCursorAdapter;
 import android.widget.Spinner;
 import android.widget.TextView;
 
 public class ShareSticky extends Activity {
-	public static final String SHARE_STICKY = "New Sticky";
+	public static final String SHARE_STICKY = "Share Sticky";
 	static final int DATE_DIALOG_ID = 999;
 	public int StickyId;
 	public String StickyType;
@@ -48,45 +47,87 @@ public class ShareSticky extends Activity {
 	public String Priority;
 	public Bundle stickyDataBndl;
 
+	public AutoCompleteTextView userEmail;
+	public ArrayList<String> contactsEmail = new ArrayList<String>();
+	public ArrayList<String> c_Number = new ArrayList<String>();
+
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
-		
+
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.sharesticky);
-		 Intent intent = getIntent();
+
+		Intent intent = getIntent();
 		stickyDataBndl = intent.getExtras();
 		String action = intent.getAction();
-		if (Intent.ACTION_SEND.equals(action))
-	    {
-			
-//			EditText stickyEmailObj = (EditText) findViewById(R.id.shareEmail);
-//			stickyEmailObj.setText(stickyDataBndl.getString("Text"));
+		if (Intent.ACTION_SEND.equals(action)) {
+			String title = (String) stickyDataBndl
+					.get(android.content.Intent.EXTRA_SUBJECT);
+			String msg = (String) stickyDataBndl
+					.get(android.content.Intent.EXTRA_TEXT);
 
-			EditText stickyMsgObj = (EditText) findViewById(R.id.shareMessage);
-			stickyMsgObj.setText(stickyDataBndl.getString("Text"));
-			
-		
-	    }
+			Log.i(SHARE_STICKY, title);
+			Log.i(SHARE_STICKY, msg);
 
+			TextView stickyTitleObj = (TextView) findViewById(R.id.shareTaskTitleText);
+			stickyTitleObj.setText(title);
+
+			TextView stickyMsgObj = (TextView) findViewById(R.id.shareTaskMsgText);
+			stickyMsgObj.setText(msg);
+
+		}
+
+		userEmail = (AutoCompleteTextView) findViewById(R.id.shareEmail);
+		searchContactsEmail();
 		
+		ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
+				android.R.layout.simple_dropdown_item_1line, contactsEmail);
+		userEmail.setAdapter(adapter);
+		userEmail.setThreshold(0);
+
 		Button saveButton = (Button) findViewById(R.id.shareButton);
 		saveButton.setOnClickListener(new OnClickListener() {
 
 			@Override
 			public void onClick(View v) {
-//				createSticky();
-				setResult(RESULT_OK);
+				// createSticky();
+
+				setResult(2);
 				finish();
 			}
-
 		});
-		
+
 	}
+
+	protected void searchContactsEmail()
+	{
+		ContentResolver cr = getContentResolver();
+		Cursor managedCursor1 = cr.query(
+				ContactsContract.CommonDataKinds.Email.CONTENT_URI, null, null,
+				null, null);
+
+		if (managedCursor1.moveToFirst()) {
+			do {
+				// if the email addresses were stored in an array
+				String email = managedCursor1
+						.getString(managedCursor1
+								.getColumnIndex(ContactsContract.CommonDataKinds.Email.DATA));
+				String emailType = managedCursor1
+						.getString(managedCursor1
+								.getColumnIndex(ContactsContract.CommonDataKinds.Email.TYPE));
+				Log.i(SHARE_STICKY, "emailADDRESS==>" + email);
+				Log.i(SHARE_STICKY, "emailType==>" + emailType);
+
+				contactsEmail.add(email);
+			} while (managedCursor1.moveToNext());
+
+		}
+	}
+	
 	private boolean isNullOrBlank(String s) {
 		return (s == null || s.trim().equals("") || s.trim().equals("null"));
 	}
-	
 	
 	public boolean createSticky() {
 
@@ -119,9 +160,9 @@ public class ShareSticky extends Activity {
 			Log.i(SHARE_STICKY, stickyType);
 			Log.i(SHARE_STICKY, "loggedInUserId==" + loggedInUserId);
 
-			if(stickyDueDate == "0-0-0")
+			if (stickyDueDate == "0-0-0")
 				stickyDueDate = "null";
-			
+
 			// Create a new HttpClient and Post Header
 			HttpClient httpclient = new DefaultHttpClient();
 			String uristr = "http://www.puskin.in/sticky/ajax/addSticky.php";
@@ -134,7 +175,8 @@ public class ShareSticky extends Activity {
 			nameValuePairs.add(new BasicNameValuePair("userId", Integer
 					.toString(loggedInUserId)));
 
-			nameValuePairs.add(new BasicNameValuePair("priority",stickyPriority));
+			nameValuePairs.add(new BasicNameValuePair("priority",
+					stickyPriority));
 			nameValuePairs.add(new BasicNameValuePair("text", stickyText));
 			nameValuePairs.add(new BasicNameValuePair("title", stickyTitle));
 			nameValuePairs
@@ -203,5 +245,5 @@ public class ShareSticky extends Activity {
 		// Return full string
 		return status;
 	}
-	
+
 }

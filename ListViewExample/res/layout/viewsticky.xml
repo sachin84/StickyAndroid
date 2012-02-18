@@ -16,8 +16,25 @@
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:fadingEdge="vertical"
-            android:orientation="vertical"
-            android:padding="5dip" >
+            android:orientation="vertical" >
+
+  		<LinearLayout android:id="@+id/header"
+  				android:layout_width="fill_parent"
+  				android:layout_height="wrap_content"
+  				android:background="@drawable/header_gradient" 
+  				android:paddingTop="1dip"
+  				android:paddingBottom="1dip">
+
+                <TextView
+                    android:id="@+id/header"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:gravity="center"
+                    android:text="Sticky Details"
+                    android:textColor="@color/icongray"
+                    android:textSize="18dip" />
+            </LinearLayout>
 
             <TextView
                 android:id="@+id/textView2"
@@ -61,13 +78,13 @@
                 android:textColor="@color/Black"
                 android:textSize="16dip" />
 
-            <Spinner
+            <TextView
                 android:id="@+id/stickyType"
-                android:layout_width="fill_parent"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="5dp"
-                android:clickable="false"
-                android:prompt="@string/NewSticky_Type" />
+                android:inputType="textPersonName"
+                android:textColor="@color/Black" />
 
             <TextView
                 android:id="@+id/textView4"
@@ -77,13 +94,13 @@
                 android:textColor="@color/Black"
                 android:textSize="16dip" />
 
-            <Spinner
+            <TextView
                 android:id="@+id/stickyPriority"
-                android:layout_width="fill_parent"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="5dp"
-                android:clickable="false"
-                android:prompt="@string/NewSticky_Type" />
+                android:inputType="textPersonName"
+                android:textColor="@color/Black" />
 
             <TextView
                 android:id="@+id/textView5"
@@ -107,7 +124,7 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:background="#5057b3e2"
+        android:background="#183842"
         android:orientation="horizontal"
         android:paddingTop="5dip" >
 

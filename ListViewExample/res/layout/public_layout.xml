@@ -9,7 +9,7 @@
         android:layout_width="fill_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        android:divider="@color/blueheader"
+        android:divider="#4783fb"
         android:dividerHeight="1dip"
         android:fadingEdge="none" />
 
@@ -27,7 +27,6 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_weight="1"
-            android:contentDescription="Search"
             android:src="@drawable/search" />
 
         <ImageView
@@ -46,14 +45,6 @@
             android:layout_weight="1"
             android:src="@drawable/add" />
 
-        <!--
-             <Button
-            android:layout_width="0dp"
-            android:layout_height="fill_parent"
-            android:layout_gravity="center_vertical"
-            android:layout_weight="1"
-            android:text="@string/NewSticky_Header" />
-        -->
     </LinearLayout>
 
 </LinearLayout>

@@ -105,13 +105,17 @@ public class ViewSticky extends Activity {
 
 	private void setEditClickListener() {
 		ImageView editView = (ImageView) findViewById(R.id.PublicEdit);
+
+
 		editView.setOnClickListener(new OnClickListener() {
 
 			@Override
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
 				Log.d(VIEW_STICKY, "OnClick is called");
-
+				ImageView editView = (ImageView) findViewById(R.id.PublicEdit);				
+				editView.setImageResource(R.drawable.edit_on);
+				
 				Intent editStickyIntent = new Intent(ViewSticky.this,
 						EditSticky.class);
 				editStickyIntent.putExtras(stickyDataBndl);
@@ -215,6 +219,10 @@ public class ViewSticky extends Activity {
 		}
 		ImageView sharebtn = (ImageView) findViewById(R.id.PublicShare);
 		sharebtn.setImageResource(R.drawable.share);
+		
+		ImageView editView = (ImageView) findViewById(R.id.PublicEdit);
+		editView.setImageResource(R.drawable.edit);
+
 	}
 
 	@Override

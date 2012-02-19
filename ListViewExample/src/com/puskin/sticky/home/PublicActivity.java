@@ -102,49 +102,50 @@ public class PublicActivity extends ListActivity {
 			}
 
 		});
-		
-//
-//		list.setOnItemSelectedListener(new OnItemSelectedListener() {
-//
-//			@Override
-//			public void onItemSelected(AdapterView<?> arg0, View arg1,
-//					int arg2, long arg3) {
-//				Toast.makeText(PublicActivity.this, ""+arg2, Toast.LENGTH_LONG).show();
-//				ImageView editView = (ImageView) findViewById(R.id.PublicShare);
-//				editView.setImageResource(R.drawable.share_on);
-//				ImageView delView = (ImageView) findViewById(R.id.PublicDelete);
-//				delView.setImageResource(R.drawable.delete_on);
-//			}
-//
-//			@Override
-//			public void onNothingSelected(AdapterView<?> arg0) {
-//				// TODO Auto-generated method stub
-//				ImageView editView = (ImageView) findViewById(R.id.PublicShare);
-//				editView.setImageResource(R.drawable.share);
-//				ImageView delView = (ImageView) findViewById(R.id.PublicDelete);
-//				delView.setImageResource(R.drawable.delete);
-//			}
-//		});
-		
-		list.setOnItemLongClickListener(new OnItemLongClickListener() {
-			@Override
-			public boolean onItemLongClick(AdapterView<?> arg0, View arg1,
-					final int position, long arg3) {
-				list.setSelection(position);
-				stickyAdapter.setSelected(position);
-				stickyAdapter.notifyDataSetChanged();
-//				Bundle bunData = prepareEditStickyData(stickyDataList
-//						.get(position));
-//
-//				Intent editStickyIntent = new Intent(PublicActivity.this,
-//						EditSticky.class);
-//				editStickyIntent.putExtras(bunData);
-//				startActivityForResult(editStickyIntent, 1);
-//				overridePendingTransition(R.anim.slide_in_right,
-//						R.anim.slide_out_left);
-				return false;
-			}
-		});
+
+		//
+		// list.setOnItemSelectedListener(new OnItemSelectedListener() {
+		//
+		// @Override
+		// public void onItemSelected(AdapterView<?> arg0, View arg1,
+		// int arg2, long arg3) {
+		// Toast.makeText(PublicActivity.this, ""+arg2,
+		// Toast.LENGTH_LONG).show();
+		// ImageView editView = (ImageView) findViewById(R.id.PublicShare);
+		// editView.setImageResource(R.drawable.share_on);
+		// ImageView delView = (ImageView) findViewById(R.id.PublicDelete);
+		// delView.setImageResource(R.drawable.delete_on);
+		// }
+		//
+		// @Override
+		// public void onNothingSelected(AdapterView<?> arg0) {
+		// // TODO Auto-generated method stub
+		// ImageView editView = (ImageView) findViewById(R.id.PublicShare);
+		// editView.setImageResource(R.drawable.share);
+		// ImageView delView = (ImageView) findViewById(R.id.PublicDelete);
+		// delView.setImageResource(R.drawable.delete);
+		// }
+		// });
+
+		// list.setOnItemLongClickListener(new OnItemLongClickListener() {
+		// @Override
+		// public boolean onItemLongClick(AdapterView<?> arg0, View arg1,
+		// final int position, long arg3) {
+		// list.setSelection(position);
+		// stickyAdapter.setSelected(position);
+		// stickyAdapter.notifyDataSetChanged();
+		// // Bundle bunData = prepareEditStickyData(stickyDataList
+		// // .get(position));
+		// //
+		// // Intent editStickyIntent = new Intent(PublicActivity.this,
+		// // EditSticky.class);
+		// // editStickyIntent.putExtras(bunData);
+		// // startActivityForResult(editStickyIntent, 1);
+		// // overridePendingTransition(R.anim.slide_in_right,
+		// // R.anim.slide_out_left);
+		// return false;
+		// }
+		// });
 
 		list.setClickable(true);
 
@@ -152,13 +153,6 @@ public class PublicActivity extends ListActivity {
 		setRefreshClickListener();
 		setAddClickListener();
 
-		// Thread thread = new Thread(null, runbleThread, "MagentoBackground");
-		// thread.start();
-		// m_ProgressDialog = ProgressDialog.show(PublicActivity.this,
-		// "Please wait...", "Retrieving data ...", true);
-
-		// LoadPublicSticky asyncTask = new LoadPublicSticky();
-		// asyncTask.execute("");
 		new LoadPublicSticky().execute("");
 
 	}
@@ -180,8 +174,6 @@ public class PublicActivity extends ListActivity {
 		});
 	}
 
-
-
 	private void setRefreshClickListener() {
 		ImageView refreshView = (ImageView) findViewById(R.id.PublicRefresh);
 		refreshView.setOnClickListener(new OnClickListener() {
@@ -201,8 +193,6 @@ public class PublicActivity extends ListActivity {
 		});
 	}
 
-
-
 	private void setAddClickListener() {
 		ImageView addView = (ImageView) findViewById(R.id.PublicAdd);
 		addView.setOnClickListener(new OnClickListener() {
@@ -213,7 +203,7 @@ public class PublicActivity extends ListActivity {
 				Log.d(LIST_EXAMPLE, "Add Task is called");
 				Intent newStickyIntent = new Intent(PublicActivity.this,
 						NewSticky.class);
-				
+
 				startActivityForResult(newStickyIntent, 1);
 				overridePendingTransition(R.anim.slide_in_right,
 						R.anim.slide_out_left);
@@ -221,7 +211,6 @@ public class PublicActivity extends ListActivity {
 
 		});
 	}
-
 
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -271,27 +260,28 @@ public class PublicActivity extends ListActivity {
 		public long getItemId(int position) {
 			return position;
 		}
-		
-		public void setSelected(int position){
-			int count =0;
+
+		public void setSelected(int position) {
+			int count = 0;
 			for (StickyData data : stickyDataList) {
-				if(count == position){
+				if (count == position) {
 					data.setSelected(true);
-				}else{
+				} else {
 					data.setSelected(false);
 				}
 				count++;
 			}
 		}
 
-		public StickyData getSelectedItem(){
+		public StickyData getSelectedItem() {
 			for (StickyData data : stickyDataList) {
-				if(data.isSelected()){
+				if (data.isSelected()) {
 					return data;
 				}
 			}
 			return null;
 		}
+
 		public View getView(int position, View convertView, ViewGroup parent) {
 			ViewHolder holder;
 			if (convertView == null) {
@@ -299,19 +289,21 @@ public class PublicActivity extends ListActivity {
 						false);
 
 				holder = new ViewHolder();
-				holder.text = (TextView) convertView
-						.findViewById(R.id.TextView01);
-				holder.text2 = (TextView) convertView
-						.findViewById(R.id.TextView02);
-				holder.text3 = (TextView) convertView
-						.findViewById(R.id.TextView03);
-				holder.text4 = (TextView) convertView
-						.findViewById(R.id.TextView04);
+				holder.stickyId = (TextView) convertView
+						.findViewById(R.id.StickyId);
+				holder.stickyTitle = (TextView) convertView
+						.findViewById(R.id.StickyTitle);
+				holder.stickyDueDate = (TextView) convertView
+						.findViewById(R.id.StickyDueDate);
+
+				holder.stickyPriority = (ImageView) convertView
+						.findViewById(R.id.stickyPriority);
+
 				convertView.setTag(holder);
 			} else {
 				holder = (ViewHolder) convertView.getTag();
 			}
-			
+
 			int selecterId = R.drawable.list_item_selector_normal;
 			convertView.setBackgroundResource(selecterId);
 			StickyData dataObj = stickyDataList.get(position);
@@ -321,27 +313,31 @@ public class PublicActivity extends ListActivity {
 			Log.i(LIST_EXAMPLE, "DueDate" + dataObj.getDueDate());
 			Log.i(LIST_EXAMPLE, "Priority" + dataObj.getPriority());
 
-			// convertView.setBackgroundDrawable
-			holder.text.setText(String.valueOf(dataObj.getId()));
-			holder.text2.setText(dataObj.getText());
-
-			holder.text3.setText(dataObj.getPriority());
-			holder.text4.setText(dataObj.getDueDate());
-			
-//			if(dataObj.isSelected()){
-//				convertView.setBackgroundColor(Color.RED);
-//			}else{
-//				//convertView.setBackgroundColor(Color.TRANSPARENT);
-//			}
+			holder.stickyId.setText(String.valueOf(dataObj.getId()));
+			holder.stickyTitle.setText(dataObj.getName());
+			// holder.stickyText.setText(dataObj.getText());
+			holder.stickyDueDate.setText(dataObj.getDueDate());
+			if (dataObj.getPriority().contains("high")
+					|| dataObj.getPriority().contains("High")) {
+				holder.stickyPriority.setImageResource(R.drawable.edit_on);
+			}
+			else if (dataObj.getPriority().contains("low")
+					|| dataObj.getPriority().contains("Low")) {
+				holder.stickyPriority.setImageResource(R.drawable.pri_low);
+			}
+			// holder.stickyPriority.setText(dataObj.getPriority());
+			// editView.setImageResource(R.drawable.edit_on);
 
 			return convertView;
 		}
 
 		class ViewHolder {
-			TextView text;
-			TextView text2;
-			TextView text3;
-			TextView text4;
+			TextView stickyId;
+			TextView stickyTitle;
+			TextView stickyText;
+			TextView stickyDueDate;
+			ImageView stickyPriority;
+
 		}
 	}// close StickyListAdapter Class
 

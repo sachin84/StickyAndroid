@@ -1,4 +1,4 @@
-package com.crri.listview.example;
+package com.puskin.sticky.home;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -39,6 +39,7 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
+import com.puskin.sticky.home.R;
 
 public class PublicActivity extends ListActivity {
 

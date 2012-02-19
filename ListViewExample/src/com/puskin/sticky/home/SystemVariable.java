@@ -1,6 +1,7 @@
-package com.crri.listview.example;
+package com.puskin.sticky.home;
 
 import android.app.Application;
+import com.puskin.sticky.home.R;
 
 public class SystemVariable extends Application {
 

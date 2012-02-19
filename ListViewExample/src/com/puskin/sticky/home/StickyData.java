@@ -1,4 +1,6 @@
-package com.crri.listview.example;
+package com.puskin.sticky.home;
+
+import com.puskin.sticky.home.R;
 
 public class StickyData {
 private int Id;

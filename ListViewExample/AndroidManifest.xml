@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.crri.listview.example"
+    package="com.puskin.sticky.home"
     android:theme="@android:style/Theme.NoTitleBar"
     android:versionCode="1"
     android:versionName="1.0" >
@@ -12,11 +12,11 @@
     <uses-permission android:name="android.permission.GET_ACCOUNTS" />
     
     <application
-        android:name=".SystemVariable"
+        android:name="com.puskin.sticky.home.SystemVariable"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name" >
         <activity
-            android:name=".ListViewExampleActivity"
+            android:name="com.puskin.sticky.home.ListViewExampleActivity"
             android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -25,7 +25,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".NewSticky"
+            android:name="com.puskin.sticky.home.NewSticky"
             android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
@@ -34,7 +34,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".EditSticky"
+            android:name="com.puskin.sticky.home.EditSticky"
             android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
@@ -43,7 +43,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".ViewSticky"
+            android:name="com.puskin.sticky.home.ViewSticky"
             android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
@@ -58,7 +58,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".ShareSticky"
+            android:name="com.puskin.sticky.home.ShareSticky"
             android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
@@ -72,13 +72,13 @@
         </activity>
 
         <!-- Public Activity -->
-        <activity android:name=".PublicActivity" />
+        <activity android:name="com.puskin.sticky.home.PublicActivity" />
 
         <!-- Work Activity -->
-        <activity android:name=".WorkActivity" />
+        <activity android:name="com.puskin.sticky.home.WorkActivity" />
 
         <!-- Private Activity -->
-        <activity android:name=".PrivateActivity" />
+        <activity android:name="com.puskin.sticky.home.PrivateActivity" />
     </application>
 
 </manifest>

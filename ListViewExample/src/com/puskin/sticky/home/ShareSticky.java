@@ -1,4 +1,4 @@
-package com.crri.listview.example;
+package com.puskin.sticky.home;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -36,6 +36,7 @@ import android.widget.EditText;
 import android.widget.SimpleCursorAdapter;
 import android.widget.Spinner;
 import android.widget.TextView;
+import com.puskin.sticky.home.R;
 
 public class ShareSticky extends Activity {
 	public static final String SHARE_STICKY = "Share Sticky";

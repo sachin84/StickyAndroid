@@ -1,4 +1,4 @@
-package com.crri.listview.example;
+package com.puskin.sticky.home;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -34,36 +34,37 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.BaseAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
+import com.puskin.sticky.home.R;
 
-public class WorkActivity extends ListActivity {
+public class PrivateActivity extends ListActivity {
 
 	public static final String LIST_EXAMPLE = "WorkActivity";
 	private List<StickyData> stickyDataList = new ArrayList<StickyData>();
 	private StickyListAdapter stickyAdapter;
 	private ProgressDialog m_ProgressDialog = null;
 	private Runnable runbleThread;
-
+	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.work_layout);
+		 setContentView(R.layout.private_layout);
 
 		stickyAdapter = new StickyListAdapter(this);
 		setListAdapter(stickyAdapter);
 
 		ListView list = getListView();
-		// Setting Custom Selector
 		list.setSelector(getResources().getDrawable(R.drawable.list_selector));
 
 		list.setOnItemClickListener(new OnItemClickListener() {
 			@Override
 			public void onItemClick(AdapterView<?> arg0, View arg1,
 					int position, long arg3) {
-				
+				// arg1.setBackgroundColor(Color.YELLOW);
+
 				Bundle bunData = prepareEditStickyData(stickyDataList
 						.get(position));
 
-				Intent editStickyIntent = new Intent(WorkActivity.this,
+				Intent editStickyIntent = new Intent(PrivateActivity.this,
 						EditSticky.class);
 				editStickyIntent.putExtras(bunData);
 				startActivityForResult(editStickyIntent, 1);
@@ -74,13 +75,43 @@ public class WorkActivity extends ListActivity {
 
 		Thread thread = new Thread(null, runbleThread, "MagentoBackground");
 		thread.start();
-		m_ProgressDialog = ProgressDialog.show(WorkActivity.this,
+		m_ProgressDialog = ProgressDialog.show(PrivateActivity.this,
 				"Please wait...", "Retrieving data ...", true);
-
-		// loading Async Sticky
-		new LoadWorkSticky().execute("");
+		
+		//loading Async Sticky
+		new LoadPrivateSticky().execute("");
 	}
+	
+	@Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
 
+        // TODO Auto-generated method stub
+        super.onActivityResult(requestCode, resultCode, data);
+        if(resultCode==RESULT_OK){
+	  		Log.i(LIST_EXAMPLE, "Edit Completed");
+        }
+        else{
+	  		Log.i(LIST_EXAMPLE, "Edit Completed");
+        }
+    }
+
+	private Bundle prepareEditStickyData(StickyData stickyObj) {
+		Bundle bl = new Bundle();
+		bl.putInt("Id", stickyObj.getId());
+		bl.putString("Title", stickyObj.getName());
+		bl.putString("Priority", stickyObj.getPriority());
+		bl.putString("Text", stickyObj.getText());
+		bl.putString("DueDate", stickyObj.getDueDate());
+		bl.putString("Type", "Public");
+
+		Log.i(LIST_EXAMPLE, "Data_ID" + stickyObj.getId());
+		Log.i(LIST_EXAMPLE, "Text" + stickyObj.getText());
+
+		return bl;
+
+	}
+	
 	private class StickyListAdapter extends BaseAdapter {
 		private LayoutInflater mInflater;
 
@@ -118,10 +149,12 @@ public class WorkActivity extends ListActivity {
 			} else {
 				holder = (ViewHolder) convertView.getTag();
 			}
-			StickyData dataObj = stickyDataList.get(position);
-			int selecterId = R.drawable.list_item_selector_normal;
+			
+			int selecterId =  R.drawable.list_item_selector_normal;
 			convertView.setBackgroundResource(selecterId);
 
+			StickyData dataObj = stickyDataList.get(position);
+			
 			// convertView.setBackgroundDrawable
 			holder.text.setText(String.valueOf(dataObj.getId()));
 			holder.text2.setText(dataObj.getText());
@@ -140,7 +173,7 @@ public class WorkActivity extends ListActivity {
 		}
 	}// close StickyListAdapter Class
 
-	private class LoadWorkSticky extends AsyncTask<String, Void, String> {
+	private class LoadPrivateSticky extends AsyncTask<String, Void, String> {
 
 		@Override
 		protected String doInBackground(String... params) {
@@ -184,40 +217,10 @@ public class WorkActivity extends ListActivity {
 		}
 	}
 
-	private Bundle prepareEditStickyData(StickyData stickyObj) {
-		Bundle bl = new Bundle();
-		bl.putInt("Id", stickyObj.getId());
-		bl.putString("Title", stickyObj.getName());
-		bl.putString("Priority", stickyObj.getPriority());
-		bl.putString("Text", stickyObj.getText());
-		bl.putString("DueDate", stickyObj.getDueDate());
-		bl.putString("Type", "Public");
-
-		Log.i(LIST_EXAMPLE, "Data_ID" + stickyObj.getId());
-		Log.i(LIST_EXAMPLE, "Text" + stickyObj.getText());
-
-		return bl;
-
-	}
-
-	@Override
-	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
-
-		// TODO Auto-generated method stub
-		super.onActivityResult(requestCode, resultCode, data);
-		if (resultCode == RESULT_OK) {
-			Log.i(LIST_EXAMPLE, "Edit Completed");
-		} else {
-			Log.i(LIST_EXAMPLE, "Edit Completed");
-		}
-	}
-
-	protected boolean getStickyData() {
+	public boolean getStickyData() {
 
 		// Create a new HttpClient and Post Header
 		HttpClient httpclient = new DefaultHttpClient();
-		// String uristr = "http://10.0.2.2/sticky/ajax/getsticky.php";
 		String uristr = "http://puskin.in/sticky/ajax/getsticky.php";
 
 		/* login.php returns true if username and password is equal to saranga */
@@ -229,7 +232,7 @@ public class WorkActivity extends ListActivity {
 			// Add user name and password
 			List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(1);
 			nameValuePairs.add(new BasicNameValuePair("stickyFilterType",
-					"work"));
+					"private"));
 			httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
 
 			// Execute HTTP Post Request

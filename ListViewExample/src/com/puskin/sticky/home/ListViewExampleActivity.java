@@ -1,4 +1,4 @@
-package com.crri.listview.example;
+package com.puskin.sticky.home;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,6 +15,7 @@ import android.view.MenuItem;
 import android.view.Window;
 import android.widget.TabHost;
 import android.widget.TabHost.TabSpec;
+import com.puskin.sticky.home.R;
 
 public class ListViewExampleActivity extends TabActivity {
 

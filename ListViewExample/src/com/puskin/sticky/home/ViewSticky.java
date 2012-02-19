@@ -1,11 +1,10 @@
-package com.crri.listview.example;
+package com.puskin.sticky.home;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 
 import org.apache.http.HttpResponse;
@@ -21,26 +20,18 @@ import org.json.JSONObject;
 
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.DatePickerDialog;
-import android.app.Dialog;
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.res.Resources;
-import android.graphics.drawable.Drawable;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.Window;
-import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemSelectedListener;
-import android.widget.ArrayAdapter;
-import android.widget.DatePicker;
 import android.widget.ImageView;
-import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
 
 public class ViewSticky extends Activity {
 	public static final String VIEW_STICKY = "View Sticky";
@@ -54,6 +45,9 @@ public class ViewSticky extends Activity {
 	public String DueDate;
 	public String Priority;
 	public Bundle stickyDataBndl;
+	protected ProgressDialog m_ProgressDialog = null;
+	AlertDialog.Builder confirmDialog = null;
+	AlertDialog alertDialog;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -87,7 +81,7 @@ public class ViewSticky extends Activity {
 		// making string CamelCase StickyPriority_Array
 		Priority = Priority.substring(0, 1).toUpperCase()
 				+ Priority.substring(1).toLowerCase();
-		
+
 		Log.i(VIEW_STICKY, "Priority==>" + Priority);
 		Log.i(VIEW_STICKY, "Type==>" + StickyType);
 
@@ -96,6 +90,10 @@ public class ViewSticky extends Activity {
 
 		TextView stickyPriorityObj = (TextView) findViewById(R.id.stickyPriority);
 		stickyPriorityObj.setText(Priority);
+
+		// m_ProgressDialog = new ProgressDialog(getApplicationContext());
+
+		createConfirmDialog();
 
 		setShareClickListener();
 		setEditClickListener();
@@ -147,7 +145,8 @@ public class ViewSticky extends Activity {
 						stickyDataBndl.getString("Title"));
 				shareIntent.putExtra(android.content.Intent.EXTRA_TEXT,
 						stickyDataBndl.getString("Text"));
-				startActivityForResult(Intent.createChooser(shareIntent, "Share via"), 2);
+				startActivityForResult(
+						Intent.createChooser(shareIntent, "Share via"), 2);
 
 			}
 
@@ -164,34 +163,42 @@ public class ViewSticky extends Activity {
 				Log.d(VIEW_STICKY, "OnClick is called");
 				ImageView deletebtn = (ImageView) findViewById(R.id.PublicDelete);
 				deletebtn.setImageResource(R.drawable.delete_on);
-				
-				AlertDialog.Builder builder = new AlertDialog.Builder(
-						ViewSticky.this);
-				builder.setMessage("Are you sure you want to delete?")
-						.setCancelable(false)
-						.setPositiveButton("Yes",
-								new DialogInterface.OnClickListener() {
-									public void onClick(DialogInterface dialog,
-											int id) {
-										deleteSticky();
-										setResult(2);
-										finish();
-									}
-								})
-						.setNegativeButton("No",
-								new DialogInterface.OnClickListener() {
-									public void onClick(DialogInterface dialog,
-											int id) {
-										dialog.cancel();
-										ImageView deletebtn = (ImageView) findViewById(R.id.PublicDelete);
-										deletebtn.setImageResource(R.drawable.delete);
-									}
-								});
-				AlertDialog alert = builder.create();
-				alert.show();
+
+				alertDialog.show();
 			}
 
 		});
+	}
+
+	private void createConfirmDialog() {
+
+		confirmDialog = new AlertDialog.Builder(ViewSticky.this);
+		confirmDialog.setMessage("Are you sure you want to delete?");
+		confirmDialog.setCancelable(false);
+		confirmDialog.setPositiveButton("Yes",
+				new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog, int id) {
+
+						 dialog.dismiss();
+							new DeleteSticky().execute("");
+
+					}
+				});
+		confirmDialog.setNegativeButton("No",
+				new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog, int id) {
+						dialog.cancel();
+						ImageView deletebtn = (ImageView) findViewById(R.id.PublicDelete);
+						deletebtn.setImageResource(R.drawable.delete);
+					}
+				});
+		alertDialog = confirmDialog.create();
+	}
+
+	public void finishActivity() {
+
+		setResult(2);
+		finish();
 	}
 
 	@Override
@@ -216,6 +223,12 @@ public class ViewSticky extends Activity {
 		// super.onBackPressed();
 	}
 
+	// @Override
+	// public void onStop() {
+	// super.onStop();
+	// m_ProgressDialog = null;
+	// }
+
 	private boolean isNullOrBlank(String s) {
 		return (s == null || s.trim().equals("") || s.trim().equals("null"));
 	}
@@ -225,7 +238,47 @@ public class ViewSticky extends Activity {
 		txt.setText(new StringBuilder().append(day).append('-').append(month)
 				.append('-').append(year));
 	}
-	
+
+	private class DeleteSticky extends AsyncTask<String, Void, String> {
+
+		private ProgressDialog prgDialog;
+
+		public DeleteSticky() {
+			m_ProgressDialog = new ProgressDialog(getApplicationContext());
+		}
+
+		@Override
+		protected String doInBackground(String... params) {
+			// perform long running operation operation
+
+			deleteSticky();
+
+			return "success";
+		}
+
+		@Override
+		protected void onPreExecute() {
+			// Things to be done before execution of long running operation. For
+			m_ProgressDialog = ProgressDialog.show(ViewSticky.this,
+					"Please wait...", "Connecting To Server...", true);
+		}
+
+		@Override
+		protected void onPostExecute(String result) {
+			// execution of result of Long time consuming operation
+			m_ProgressDialog.setMessage("Record Deleted Successfully...");
+			m_ProgressDialog.dismiss();
+			finishActivity();
+		}
+
+		@Override
+		protected void onProgressUpdate(Void... values) {
+			// Things to be done while execution of long running operation is in
+			// progress. For example updating ProgessDialog
+		}
+		
+	}
+
 	public boolean deleteSticky() {
 
 		boolean status = false;

@@ -17,7 +17,8 @@
     <string name="ShareSticky_Title">Sticky Title</string>
     <string name="ShareSticky_Msg">Sticky Message</string>
     <string name="EditSticky_Header">Edit Sticky</string>
-
+	<string name="ViewSticky_Header">Sticky Details</string>
+	
     <string-array name="StickyType_Array">
         <item>Public</item>
         <item>Private</item>

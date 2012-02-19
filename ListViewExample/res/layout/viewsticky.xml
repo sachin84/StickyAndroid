@@ -1,8 +1,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/relativeLayout"
     android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
-    android:background="@color/WhiteSmoke" >
+    android:layout_height="fill_parent" >
 
     <ScrollView
         android:id="@+id/scrollView"
@@ -15,25 +14,37 @@
             android:id="@+id/contentLayout"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
+            android:background="#e1e2e4"
             android:fadingEdge="vertical"
             android:orientation="vertical" >
 
-  		<LinearLayout android:id="@+id/header"
-  				android:layout_width="fill_parent"
-  				android:layout_height="wrap_content"
-  				android:background="@drawable/header_gradient" 
-  				android:paddingTop="1dip"
-  				android:paddingBottom="1dip">
+            <LinearLayout
+                android:id="@+id/editheaderLayout"
+                android:layout_width="fill_parent"
+                android:layout_height="50dp"
+                android:layout_gravity="center"
+                android:background="@drawable/stickyheader1"
+                android:gravity="center"
+                android:paddingBottom="1dip"
+                android:paddingTop="1dip" >
+
+                <ImageView
+                    android:id="@+id/ViewImg"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/view" />
 
                 <TextView
-                    android:id="@+id/header"
+                    android:id="@+id/newStickyHeader"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:gravity="center"
-                    android:text="Sticky Details"
-                    android:textColor="@color/icongray"
-                    android:textSize="18dip" />
+                    android:paddingRight="48dip"
+                    android:text="@string/ViewSticky_Header"
+                    android:textColor="@color/White"
+                    android:textSize="26dip"
+                    android:textStyle="bold" />
             </LinearLayout>
 
             <TextView
@@ -118,13 +129,13 @@
                 android:textColor="@color/Black" />
         </LinearLayout>
     </ScrollView>
-
+
     <LinearLayout
         android:id="@+id/commandLayout"
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="45dip"
         android:layout_alignParentBottom="true"
-        android:background="#183842"
+        android:background="@drawable/stickyheader1"
         android:orientation="horizontal"
         android:paddingTop="5dip" >
 

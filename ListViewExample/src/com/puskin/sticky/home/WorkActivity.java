@@ -28,13 +28,15 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.BaseAdapter;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
-import com.puskin.sticky.home.R;
+import android.widget.Toast;
 
 public class WorkActivity extends ListActivity {
 
@@ -42,7 +44,6 @@ public class WorkActivity extends ListActivity {
 	private List<StickyData> stickyDataList = new ArrayList<StickyData>();
 	private StickyListAdapter stickyAdapter;
 	private ProgressDialog m_ProgressDialog = null;
-	private Runnable runbleThread;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -64,24 +65,79 @@ public class WorkActivity extends ListActivity {
 				Bundle bunData = prepareEditStickyData(stickyDataList
 						.get(position));
 
-				Intent editStickyIntent = new Intent(WorkActivity.this,
-						EditSticky.class);
-				editStickyIntent.putExtras(bunData);
-				startActivityForResult(editStickyIntent, 1);
-				overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);				
+				Intent viewStickyIntent = new Intent(WorkActivity.this,
+						ViewSticky.class);
+				viewStickyIntent.putExtras(bunData);
+				startActivityForResult(viewStickyIntent, 1);
+				overridePendingTransition(R.anim.slide_in_right,
+						R.anim.slide_out_left);
 			}
 		});
 		list.setClickable(true);
 
-		Thread thread = new Thread(null, runbleThread, "MagentoBackground");
-		thread.start();
-		m_ProgressDialog = ProgressDialog.show(WorkActivity.this,
-				"Please wait...", "Retrieving data ...", true);
+		setSearchClickListener();
+		setRefreshClickListener();
+		setAddClickListener();
 
 		// loading Async Sticky
 		new LoadWorkSticky().execute("");
 	}
 
+	private void setSearchClickListener() {
+		ImageView searchView = (ImageView) findViewById(R.id.PublicSearch);
+		searchView.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				Log.d(LIST_EXAMPLE, "OnClick is called");
+				Toast.makeText(v.getContext(), // <- Line changed
+						"You Can Search Your Tasks Here", Toast.LENGTH_LONG)
+						.show();
+
+			}
+
+		});
+	}
+
+	private void setRefreshClickListener() {
+		ImageView refreshView = (ImageView) findViewById(R.id.PublicRefresh);
+		refreshView.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				Log.d(LIST_EXAMPLE, "OnClick is called");
+				// Toast.makeText(v.getContext(), // <- Line changed
+				// "Sync Your Task With Server.", Toast.LENGTH_LONG)
+				// .show();
+
+				new LoadWorkSticky().execute("");
+
+			}
+
+		});
+	}
+
+	private void setAddClickListener() {
+		ImageView addView = (ImageView) findViewById(R.id.PublicAdd);
+		addView.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				Log.d(LIST_EXAMPLE, "Add Task is called");
+				Intent newStickyIntent = new Intent(WorkActivity.this,
+						NewSticky.class);
+
+				startActivityForResult(newStickyIntent, 1);
+				overridePendingTransition(R.anim.slide_in_right,
+						R.anim.slide_out_left);
+			}
+
+		});
+	}
+	
 	private class StickyListAdapter extends BaseAdapter {
 		private LayoutInflater mInflater;
 
@@ -105,79 +161,93 @@ public class WorkActivity extends ListActivity {
 		public View getView(int position, View convertView, ViewGroup parent) {
 			ViewHolder holder;
 			if (convertView == null) {
-				convertView = mInflater.inflate(R.layout.listview, null);
+				convertView = mInflater.inflate(R.layout.listview, parent,
+						false);
+
 				holder = new ViewHolder();
-				holder.text = (TextView) convertView
-						.findViewById(R.id.TextView01);
-				holder.text2 = (TextView) convertView
-						.findViewById(R.id.TextView02);
-				holder.text3 = (TextView) convertView
-						.findViewById(R.id.TextView03);
-				holder.text4 = (TextView) convertView
-						.findViewById(R.id.TextView04);
+				holder.stickyId = (TextView) convertView
+						.findViewById(R.id.StickyId);
+				holder.stickyTitle = (TextView) convertView
+						.findViewById(R.id.StickyTitle);
+				holder.stickyDueDate = (TextView) convertView
+						.findViewById(R.id.StickyDueDate);
+
+				holder.stickyPriority = (ImageView) convertView
+						.findViewById(R.id.stickyPriority);
+
 				convertView.setTag(holder);
 			} else {
 				holder = (ViewHolder) convertView.getTag();
 			}
-			StickyData dataObj = stickyDataList.get(position);
 			int selecterId = R.drawable.list_item_selector_normal;
 			convertView.setBackgroundResource(selecterId);
+			StickyData dataObj = stickyDataList.get(position);
 
-			// convertView.setBackgroundDrawable
-			holder.text.setText(String.valueOf(dataObj.getId()));
-			holder.text2.setText(dataObj.getText());
+			Log.i(LIST_EXAMPLE, "Data_ID" + dataObj.getId());
+			Log.i(LIST_EXAMPLE, "Data_Text" + dataObj.getText());
+			Log.i(LIST_EXAMPLE, "DueDate" + dataObj.getDueDate());
+			Log.i(LIST_EXAMPLE, "Priority" + dataObj.getPriority());
 
-			holder.text3.setText(dataObj.getPriority());
-			holder.text4.setText(dataObj.getDueDate());
+			holder.stickyId.setText(String.valueOf(dataObj.getId()));
+			holder.stickyTitle.setText(dataObj.getName());
+			// holder.stickyText.setText(dataObj.getText());
+			holder.stickyDueDate.setText(dataObj.getDueDate());
+			if (dataObj.getPriority().contains("high")
+					|| dataObj.getPriority().contains("High")) {
+				holder.stickyPriority.setImageResource(R.drawable.pri_high1);
+			} else if (dataObj.getPriority().contains("medium")
+					|| dataObj.getPriority().contains("Medium")) {
+				holder.stickyPriority.setImageResource(R.drawable.pri_medium);
+			} else if (dataObj.getPriority().contains("low")
+					|| dataObj.getPriority().contains("Low")) {
+				holder.stickyPriority.setImageResource(R.drawable.pri_low);
+			} else if (dataObj.getPriority().contains("Urgent")
+					|| dataObj.getPriority().contains("urgent")) {
+				holder.stickyPriority.setImageResource(R.drawable.pri_urg);
+			}
 
 			return convertView;
 		}
 
 		class ViewHolder {
-			TextView text;
-			TextView text2;
-			TextView text3;
-			TextView text4;
+			TextView stickyId;
+			TextView stickyTitle;
+			TextView stickyText;
+			TextView stickyDueDate;
+			ImageView stickyPriority;
 		}
 	}// close StickyListAdapter Class
 
 	private class LoadWorkSticky extends AsyncTask<String, Void, String> {
 
+		public LoadWorkSticky() {
+			m_ProgressDialog = new ProgressDialog(getApplicationContext());
+		}
+
 		@Override
 		protected String doInBackground(String... params) {
 			// perform long running operation operation
 			getStickyData();
+
 			return null;
 		}
 
-		/*
-		 * (non-Javadoc)
-		 * 
-		 * @see android.os.AsyncTask#onPostExecute(java.lang.Object)
-		 */
+		@Override
+		protected void onPreExecute() {
+			// Things to be done before execution of long running operation. For
+			m_ProgressDialog = ProgressDialog.show(WorkActivity.this,
+					"Please wait...", "Connecting To Server...", true);
+		}
+
 		@Override
 		protected void onPostExecute(String result) {
 			// execution of result of Long time consuming operation
+			m_ProgressDialog.setMessage("Records Loaded Successfully...");
+
 			m_ProgressDialog.dismiss();
 			stickyAdapter.notifyDataSetChanged();
 		}
 
-		/*
-		 * (non-Javadoc)
-		 * 
-		 * @see android.os.AsyncTask#onPreExecute()
-		 */
-		@Override
-		protected void onPreExecute() {
-			// Things to be done before execution of long running operation. For
-			// example showing ProgessDialog
-		}
-
-		/*
-		 * (non-Javadoc)
-		 * 
-		 * @see android.os.AsyncTask#onProgressUpdate(Progress[])
-		 */
 		@Override
 		protected void onProgressUpdate(Void... values) {
 			// Things to be done while execution of long running operation is in
@@ -203,7 +273,7 @@ public class WorkActivity extends ListActivity {
 
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
+		overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
 
 		// TODO Auto-generated method stub
 		super.onActivityResult(requestCode, resultCode, data);

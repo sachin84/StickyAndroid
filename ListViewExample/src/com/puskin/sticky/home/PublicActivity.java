@@ -23,7 +23,7 @@ import android.app.ListActivity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
+import android.content.res.Configuration;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
@@ -33,46 +33,29 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
-import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
-import com.puskin.sticky.home.R;
 
 public class PublicActivity extends ListActivity {
 
 	public static final String LIST_EXAMPLE = "PublicActivity";
 	private List<StickyData> stickyDataList = new ArrayList<StickyData>();
+	private List<StickyData> storedDataList = new ArrayList<StickyData>();
+
 	private StickyListAdapter stickyAdapter;
 	protected ProgressDialog m_ProgressDialog = null;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
+		//Collections.synchronizedList(stickyDataList);
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.public_layout);
+		
 
-		// ListView l1 = (ListView) findViewById(R.id.PublicListing);
-		// ColorDrawable divcolor = new ColorDrawable(Color.DKGRAY);
-		// l1.setDivider(divcolor);
-		// l1.setDividerHeight(2);
-		//
-		// l1.setOnItemClickListener(new OnItemClickListener() {
-		// @Override
-		// public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
-		// long arg3) {
-		// // arg1.setBackgroundColor(Color.YELLOW);
-		//
-		// Toast.makeText(getBaseContext(),
-		// "You clciked " + stickyDataList.get(arg2).getId(),
-		// Toast.LENGTH_LONG).show();
-		// }
-		// });
-		//
-		// StickyListAdapter stickyAdapter = new StickyListAdapter(this);
-		// l1.setAdapter(stickyAdapter);
-
+	    
 		stickyAdapter = new StickyListAdapter(this);
 		setListAdapter(stickyAdapter);
 
@@ -103,60 +86,39 @@ public class PublicActivity extends ListActivity {
 
 		});
 
-		//
-		// list.setOnItemSelectedListener(new OnItemSelectedListener() {
-		//
-		// @Override
-		// public void onItemSelected(AdapterView<?> arg0, View arg1,
-		// int arg2, long arg3) {
-		// Toast.makeText(PublicActivity.this, ""+arg2,
-		// Toast.LENGTH_LONG).show();
-		// ImageView editView = (ImageView) findViewById(R.id.PublicShare);
-		// editView.setImageResource(R.drawable.share_on);
-		// ImageView delView = (ImageView) findViewById(R.id.PublicDelete);
-		// delView.setImageResource(R.drawable.delete_on);
-		// }
-		//
-		// @Override
-		// public void onNothingSelected(AdapterView<?> arg0) {
-		// // TODO Auto-generated method stub
-		// ImageView editView = (ImageView) findViewById(R.id.PublicShare);
-		// editView.setImageResource(R.drawable.share);
-		// ImageView delView = (ImageView) findViewById(R.id.PublicDelete);
-		// delView.setImageResource(R.drawable.delete);
-		// }
-		// });
-
-		// list.setOnItemLongClickListener(new OnItemLongClickListener() {
-		// @Override
-		// public boolean onItemLongClick(AdapterView<?> arg0, View arg1,
-		// final int position, long arg3) {
-		// list.setSelection(position);
-		// stickyAdapter.setSelected(position);
-		// stickyAdapter.notifyDataSetChanged();
-		// // Bundle bunData = prepareEditStickyData(stickyDataList
-		// // .get(position));
-		// //
-		// // Intent editStickyIntent = new Intent(PublicActivity.this,
-		// // EditSticky.class);
-		// // editStickyIntent.putExtras(bunData);
-		// // startActivityForResult(editStickyIntent, 1);
-		// // overridePendingTransition(R.anim.slide_in_right,
-		// // R.anim.slide_out_left);
-		// return false;
-		// }
-		// });
-
 		list.setClickable(true);
 
+		LoadedStickyData loadedDataList  =  (LoadedStickyData) getLastNonConfigurationInstance();
+	    if (loadedDataList == null) {
+	    	Log.i(LIST_EXAMPLE,"LOADING DATA....");
+	    	new LoadPublicSticky().execute("");
+	    }
+	    else
+	    {
+	    	//do something
+	    	stickyDataList = loadedDataList.getStickyDataList();
+			//stickyAdapter.notifyDataSetChanged();
+	    }
+	    
 		setSearchClickListener();
 		setRefreshClickListener();
 		setAddClickListener();
 
-		new LoadPublicSticky().execute("");
-
 	}
-
+	
+	@Override
+	public Object onRetainNonConfigurationInstance() {
+		LoadedStickyData loadedDataList = new LoadedStickyData();
+		loadedDataList.setStickyDataList(stickyDataList);
+	    return loadedDataList;
+	}
+	
+	@Override
+	public void onConfigurationChanged(Configuration conf) {
+	    super.onConfigurationChanged(conf);
+	    
+	}
+	
 	private void setSearchClickListener() {
 		ImageView searchView = (ImageView) findViewById(R.id.PublicSearch);
 		searchView.setOnClickListener(new OnClickListener() {
@@ -319,11 +281,17 @@ public class PublicActivity extends ListActivity {
 			holder.stickyDueDate.setText(dataObj.getDueDate());
 			if (dataObj.getPriority().contains("high")
 					|| dataObj.getPriority().contains("High")) {
-				holder.stickyPriority.setImageResource(R.drawable.edit_on);
-			}
-			else if (dataObj.getPriority().contains("low")
+				holder.stickyPriority.setImageResource(R.drawable.pri_high1);
+			} else if (dataObj.getPriority().contains("medium")
+					|| dataObj.getPriority().contains("Medium")) {
+				holder.stickyPriority.setImageResource(R.drawable.pri_medium);
+			} else if (dataObj.getPriority().contains("low")
 					|| dataObj.getPriority().contains("Low")) {
 				holder.stickyPriority.setImageResource(R.drawable.pri_low);
+			}
+			else if (dataObj.getPriority().contains("Urgent")
+					|| dataObj.getPriority().contains("urgent")) {
+				holder.stickyPriority.setImageResource(R.drawable.pri_urg);
 			}
 			// holder.stickyPriority.setText(dataObj.getPriority());
 			// editView.setImageResource(R.drawable.edit_on);
@@ -453,6 +421,7 @@ public class PublicActivity extends ListActivity {
 						"priority"));
 
 				stickyDataList.add(stkData);
+				storedDataList.add(stkData);
 
 			}
 

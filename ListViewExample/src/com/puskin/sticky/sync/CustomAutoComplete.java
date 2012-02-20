@@ -1,4 +1,4 @@
-package com.crri.listview.example.sync;
+package com.puskin.sticky.sync;
 
 import android.content.Context;
 

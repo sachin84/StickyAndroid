@@ -4,7 +4,11 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import org.apache.http.HttpResponse;
@@ -26,6 +30,8 @@ import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.text.format.DateFormat;
+import android.text.format.DateUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -50,12 +56,15 @@ public class PublicActivity extends ListActivity {
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
-		//Collections.synchronizedList(stickyDataList);
+		// Collections.synchronizedList(stickyDataList);
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.public_layout);
-		
 
-	    
+		// Date dt = new Date(0);
+		// dt.getDate();
+		Date currentDate = new Date(System.currentTimeMillis());
+		Log.i(LIST_EXAMPLE, currentDate.toString());
+
 		stickyAdapter = new StickyListAdapter(this);
 		setListAdapter(stickyAdapter);
 
@@ -88,37 +97,35 @@ public class PublicActivity extends ListActivity {
 
 		list.setClickable(true);
 
-		LoadedStickyData loadedDataList  =  (LoadedStickyData) getLastNonConfigurationInstance();
-	    if (loadedDataList == null) {
-	    	Log.i(LIST_EXAMPLE,"LOADING DATA....");
-	    	new LoadPublicSticky().execute("");
-	    }
-	    else
-	    {
-	    	//do something
-	    	stickyDataList = loadedDataList.getStickyDataList();
-			//stickyAdapter.notifyDataSetChanged();
-	    }
-	    
+		LoadedStickyData loadedDataList = (LoadedStickyData) getLastNonConfigurationInstance();
+		if (loadedDataList == null) {
+			Log.i(LIST_EXAMPLE, "LOADING DATA....");
+			new LoadPublicSticky().execute("");
+		} else {
+			// do something
+			stickyDataList = loadedDataList.getStickyDataList();
+			// stickyAdapter.notifyDataSetChanged();
+		}
+
 		setSearchClickListener();
 		setRefreshClickListener();
 		setAddClickListener();
 
 	}
-	
+
 	@Override
 	public Object onRetainNonConfigurationInstance() {
 		LoadedStickyData loadedDataList = new LoadedStickyData();
 		loadedDataList.setStickyDataList(stickyDataList);
-	    return loadedDataList;
+		return loadedDataList;
 	}
-	
+
 	@Override
 	public void onConfigurationChanged(Configuration conf) {
-	    super.onConfigurationChanged(conf);
-	    
+		super.onConfigurationChanged(conf);
+
 	}
-	
+
 	private void setSearchClickListener() {
 		ImageView searchView = (ImageView) findViewById(R.id.PublicSearch);
 		searchView.setOnClickListener(new OnClickListener() {
@@ -278,7 +285,7 @@ public class PublicActivity extends ListActivity {
 			holder.stickyId.setText(String.valueOf(dataObj.getId()));
 			holder.stickyTitle.setText(dataObj.getName());
 			// holder.stickyText.setText(dataObj.getText());
-			holder.stickyDueDate.setText(dataObj.getDueDate());
+			holder.stickyDueDate.setText(dataObj.getRemainingDays());
 			if (dataObj.getPriority().contains("high")
 					|| dataObj.getPriority().contains("High")) {
 				holder.stickyPriority.setImageResource(R.drawable.pri_high1);
@@ -288,8 +295,7 @@ public class PublicActivity extends ListActivity {
 			} else if (dataObj.getPriority().contains("low")
 					|| dataObj.getPriority().contains("Low")) {
 				holder.stickyPriority.setImageResource(R.drawable.pri_low);
-			}
-			else if (dataObj.getPriority().contains("Urgent")
+			} else if (dataObj.getPriority().contains("Urgent")
 					|| dataObj.getPriority().contains("urgent")) {
 				holder.stickyPriority.setImageResource(R.drawable.pri_urg);
 			}
@@ -409,17 +415,34 @@ public class PublicActivity extends ListActivity {
 			for (int i = 0; i < stickyJsonArray.length(); i++) {
 				StickyData stkData = new StickyData();
 
+				String dueDate = stickyJsonArray.getJSONObject(i).getString(
+						"due_date");
 				stkData.setId(Integer.parseInt(stickyJsonArray.getJSONObject(i)
 						.getString("id")));
 				stkData.setText(stickyJsonArray.getJSONObject(i).getString(
 						"text"));
-				stkData.setDueDate(stickyJsonArray.getJSONObject(i).getString(
-						"due_date"));
+				stkData.setDueDate(dueDate);
 				stkData.setName(stickyJsonArray.getJSONObject(i).getString(
 						"name"));
 				stkData.setPriority(stickyJsonArray.getJSONObject(i).getString(
 						"priority"));
 
+				if (!isNullOrBlank(dueDate)) {
+					Log.w(LIST_EXAMPLE, "dueDate==>"+dueDate);
+
+					SimpleDateFormat curFormater = new SimpleDateFormat(
+							"yyyy-mm-dd");
+					java.util.Date dateObj = null;
+					try {
+						dateObj =  curFormater.parse(dueDate);
+					} catch (ParseException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					String days = daysRemaining(dateObj)+" Days Remaining";
+
+					stkData.setRemainingDays(days);
+				}
 				stickyDataList.add(stkData);
 				storedDataList.add(stkData);
 
@@ -432,5 +455,25 @@ public class PublicActivity extends ListActivity {
 
 		// Return full string
 		return jsonResp;
+	}
+
+	private boolean isNullOrBlank(String s) {
+		return (s == null || s.trim().equals("") || s.trim().equals("null"));
+	}
+
+	public int daysRemaining(Date endDate) {
+		Date currentDate = new Date(System.currentTimeMillis());
+
+		 Calendar cal1 = Calendar.getInstance();cal1.setTime(currentDate);
+		 Calendar cal2 = Calendar.getInstance();cal2.setTime(endDate);
+
+		//Calendar date = (Calendar) startDate.clone();
+		
+		int daysBetween = 0;
+		while (cal1.before(cal2)) {
+			cal1.add(Calendar.DAY_OF_MONTH, 1);
+			daysBetween++;
+		}
+		return daysBetween;
 	}
 }

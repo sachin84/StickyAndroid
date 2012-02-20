@@ -1,13 +1,45 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/relativeLayout"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="match_parent"
     android:background="@color/WhiteSmoke" >
+
+    <LinearLayout
+        android:id="@+id/shareheaderLayout"
+        android:layout_width="fill_parent"
+        android:layout_height="50dp"
+        android:layout_gravity="center"
+        android:background="@drawable/stickyheader1"
+        android:gravity="center"
+        android:paddingBottom="1dip"
+        android:paddingTop="1dip" >
+
+        <ImageView
+            android:id="@+id/ShareImg"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingLeft="5dip"
+            android:src="@drawable/share" />
+
+        <TextView
+            android:id="@+id/newStickyHeader"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:paddingRight="32dip"
+            android:text="@string/ShareSticky_Title"
+            android:textColor="@color/White"
+            android:textSize="26dip"
+            android:textStyle="bold" />
+    </LinearLayout>
 
     <LinearLayout
         android:id="@+id/contentLayout"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
+        android:layout_below="@+id/shareheaderLayout"
+        android:background="#e1e2e4"
         android:fadingEdge="vertical"
         android:orientation="vertical"
         android:padding="5dip" >
@@ -48,7 +80,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="5dp"
-            android:textColor="@color/Black" />
+            android:textColor="@color/Black"
+            android:textSize="16dip"
+            android:textStyle="bold" />
 
         <TextView
             android:id="@+id/shareTaskMsg"
@@ -66,14 +100,16 @@
             android:layout_marginLeft="5dp"
             android:inputType="textMultiLine"
             android:lines="5"
+            android:textSize="14dip"
+            android:textStyle="bold"
             android:textColor="@color/Black" />
 
         <Button
             android:id="@+id/shareButton"
             android:layout_width="match_parent"
             android:layout_height="40dp"
-            android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp"
+            android:layout_marginLeft="30dp"
+            android:layout_marginRight="30dp"
             android:text="@string/ShareSticky_Button" />
     </LinearLayout>
 

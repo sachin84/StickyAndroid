@@ -10,6 +10,8 @@ public class StickyData implements Serializable {
 	private String DueDate;
 	private String Name;
 	private boolean isSelected;
+	private String remainingDays;
+	private String Priority;
 
 	public int getId() {
 		return Id;
@@ -59,6 +61,13 @@ public class StickyData implements Serializable {
 		Priority = priority;
 	}
 
-	private String Priority;
+	public String getRemainingDays() {
+		return remainingDays;
+	}
+
+	public void setRemainingDays(String remainingDays) {
+		this.remainingDays = remainingDays;
+	}
+
 
 }

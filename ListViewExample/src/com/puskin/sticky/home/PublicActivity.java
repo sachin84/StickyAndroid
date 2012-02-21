@@ -120,12 +120,6 @@ public class PublicActivity extends ListActivity {
 		return loadedDataList;
 	}
 
-	@Override
-	public void onConfigurationChanged(Configuration conf) {
-		super.onConfigurationChanged(conf);
-
-	}
-
 	private void setSearchClickListener() {
 		ImageView searchView = (ImageView) findViewById(R.id.PublicSearch);
 		searchView.setOnClickListener(new OnClickListener() {
@@ -428,18 +422,27 @@ public class PublicActivity extends ListActivity {
 						"priority"));
 
 				if (!isNullOrBlank(dueDate)) {
-					Log.w(LIST_EXAMPLE, "dueDate==>"+dueDate);
+					Log.i(LIST_EXAMPLE, "dueDate==>" + dueDate);
 
 					SimpleDateFormat curFormater = new SimpleDateFormat(
-							"yyyy-mm-dd");
+							"yyyy-MM-dd");
 					java.util.Date dateObj = null;
+					String days = "Not Set";
+
+					
 					try {
-						dateObj =  curFormater.parse(dueDate);
+						dateObj = curFormater.parse(dueDate);
+						int pendingdays = daysRemaining(dateObj);
+						if(pendingdays<0)
+							days = Math.abs(pendingdays)+ " Days Ago";
+						else if(pendingdays==0)
+							days = "Today";
+						else
+							days = pendingdays + " Days Remaining";
 					} catch (ParseException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
-					String days = daysRemaining(dateObj)+" Days Remaining";
 
 					stkData.setRemainingDays(days);
 				}
@@ -463,17 +466,22 @@ public class PublicActivity extends ListActivity {
 
 	public int daysRemaining(Date endDate) {
 		Date currentDate = new Date(System.currentTimeMillis());
+		Calendar cal1 = Calendar.getInstance();
+		cal1.setTime(currentDate);
 
-		 Calendar cal1 = Calendar.getInstance();cal1.setTime(currentDate);
-		 Calendar cal2 = Calendar.getInstance();cal2.setTime(endDate);
+		Calendar cal2 = Calendar.getInstance();
+		cal2.setTime(endDate);
+		Log.w(LIST_EXAMPLE, "currentDate==>" + currentDate + "  dueDate==>"
+				+ endDate);
 
-		//Calendar date = (Calendar) startDate.clone();
-		
-		int daysBetween = 0;
-		while (cal1.before(cal2)) {
-			cal1.add(Calendar.DAY_OF_MONTH, 1);
-			daysBetween++;
-		}
-		return daysBetween;
+		long curTimeMilSec = cal1.getTimeInMillis();
+		long stickyTimeMilSec = cal2.getTimeInMillis();
+		long diff =  stickyTimeMilSec - curTimeMilSec;
+
+		// long diffSeconds = diff / 1000;
+		// long diffMinutes = diff / (60 * 1000);
+		// long diffHours = diff / (60 * 60 * 1000);
+		int diffDays = (int) (diff / (24 * 60 * 60 * 1000));
+		return diffDays;
 	}
 }

@@ -4,7 +4,11 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import org.apache.http.HttpResponse;
@@ -219,7 +223,9 @@ public class PrivateActivity extends ListActivity {
 			holder.stickyId.setText(String.valueOf(dataObj.getId()));
 			holder.stickyTitle.setText(dataObj.getName());
 			// holder.stickyText.setText(dataObj.getText());
-			holder.stickyDueDate.setText(dataObj.getDueDate());
+			//holder.stickyDueDate.setText(dataObj.getDueDate());
+			holder.stickyDueDate.setText(dataObj.getRemainingDays());
+
 			if (dataObj.getPriority().contains("high")
 					|| dataObj.getPriority().contains("High")) {
 				holder.stickyPriority.setImageResource(R.drawable.pri_high1);
@@ -342,18 +348,42 @@ public class PrivateActivity extends ListActivity {
 
 			for (int i = 0; i < stickyJsonArray.length(); i++) {
 				StickyData stkData = new StickyData();
-
+				String dueDate = stickyJsonArray.getJSONObject(i).getString(
+						"due_date");
 				stkData.setId(Integer.parseInt(stickyJsonArray.getJSONObject(i)
 						.getString("id")));
 				stkData.setText(stickyJsonArray.getJSONObject(i).getString(
 						"text"));
-				stkData.setDueDate(stickyJsonArray.getJSONObject(i).getString(
-						"due_date"));
+
 				stkData.setName(stickyJsonArray.getJSONObject(i).getString(
 						"name"));
 				stkData.setPriority(stickyJsonArray.getJSONObject(i).getString(
 						"priority"));
 
+				String days = "Dt: NA";
+				if (!isNullOrBlank(dueDate)) {
+					Log.i(LIST_EXAMPLE, "dueDate==>" + dueDate);
+
+					SimpleDateFormat curFormater = new SimpleDateFormat(
+							"yyyy-MM-dd");
+					java.util.Date dateObj = null;
+
+					try {
+						dateObj = curFormater.parse(dueDate);
+						int pendingdays = daysRemaining(dateObj);
+						if (pendingdays < 0)
+							days = Math.abs(pendingdays) + " Days Ago";
+						else if (pendingdays == 0)
+							days = "Today";
+						else
+							days = pendingdays + " Days Remaining";
+					} catch (ParseException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+
+				}
+				stkData.setRemainingDays(days);
 				stickyDataList.add(stkData);
 
 			}
@@ -365,5 +395,24 @@ public class PrivateActivity extends ListActivity {
 
 		// Return full string
 		return jsonResp;
+	}
+	
+	private boolean isNullOrBlank(String s) {
+		return (s == null || s.trim().equals("") || s.trim().equals("null"));
+	}
+	public int daysRemaining(Date endDate) {
+		Date currentDate = new Date(System.currentTimeMillis());
+		Calendar cal1 = Calendar.getInstance();
+		cal1.setTime(currentDate);
+
+		Calendar cal2 = Calendar.getInstance();
+		cal2.setTime(endDate);
+
+		long curTimeMilSec = cal1.getTimeInMillis();
+		long stickyTimeMilSec = cal2.getTimeInMillis();
+		long diff = stickyTimeMilSec - curTimeMilSec;
+
+		int diffDays = (int) (diff / (24 * 60 * 60 * 1000));
+		return diffDays;
 	}
 }

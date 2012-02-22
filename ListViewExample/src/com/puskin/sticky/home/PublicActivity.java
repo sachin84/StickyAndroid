@@ -27,11 +27,8 @@ import android.app.ListActivity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
-import android.content.res.Configuration;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.text.format.DateFormat;
-import android.text.format.DateUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -44,6 +41,9 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.puskin.sticky.dbhelper.DatabaseHelper;
+import com.puskin.sticky.model.UserModel;
 
 public class PublicActivity extends ListActivity {
 
@@ -111,6 +111,21 @@ public class PublicActivity extends ListActivity {
 		setRefreshClickListener();
 		setAddClickListener();
 
+	}
+
+	@Override
+	public void onStart() {
+		try {
+			super.onStart();
+			Log.i(LIST_EXAMPLE, "OnStart Called...");
+
+			UserModel uerModel = new UserModel(this);
+			uerModel.open();
+			Log.i(LIST_EXAMPLE,"User Count=="+uerModel.getUserCount());
+			uerModel.close();
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
 	}
 
 	@Override
@@ -429,13 +444,12 @@ public class PublicActivity extends ListActivity {
 					java.util.Date dateObj = null;
 					String days = "Not Set";
 
-					
 					try {
 						dateObj = curFormater.parse(dueDate);
 						int pendingdays = daysRemaining(dateObj);
-						if(pendingdays<0)
-							days = Math.abs(pendingdays)+ " Days Ago";
-						else if(pendingdays==0)
+						if (pendingdays < 0)
+							days = Math.abs(pendingdays) + " Days Ago";
+						else if (pendingdays == 0)
 							days = "Today";
 						else
 							days = pendingdays + " Days Remaining";
@@ -476,7 +490,7 @@ public class PublicActivity extends ListActivity {
 
 		long curTimeMilSec = cal1.getTimeInMillis();
 		long stickyTimeMilSec = cal2.getTimeInMillis();
-		long diff =  stickyTimeMilSec - curTimeMilSec;
+		long diff = stickyTimeMilSec - curTimeMilSec;
 
 		// long diffSeconds = diff / 1000;
 		// long diffMinutes = diff / (60 * 1000);

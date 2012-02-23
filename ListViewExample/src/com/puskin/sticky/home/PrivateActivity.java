@@ -381,6 +381,7 @@ public class PrivateActivity extends ListActivity {
 					}
 
 				}
+				stkData.setDueDate(dueDate);//used for bundle
 				stkData.setRemainingDays(days);
 				stickyDataList.add(stkData);
 

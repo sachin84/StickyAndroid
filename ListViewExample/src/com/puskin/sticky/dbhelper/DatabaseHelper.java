@@ -19,7 +19,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 	public static final String USER_UPDATED_AT = "updated_at";
 
 	private static final int DATABASE_VERSION = 35;
-	public static final String DB_HELPER = "PublicActivity";
+	public static final String DB_HELPER = "DataBase Helper";
 
 	public DatabaseHelper(Context context) {
 		super(context, dbName, null, DATABASE_VERSION);
@@ -37,6 +37,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
 		db.execSQL(userTbl);
 
+		StickyTblReminderPeriod.onCreate(db);
 		// Inserts pre-defined departments
 		// InsertSampleUser(db);
 

@@ -23,6 +23,7 @@ import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.content.SharedPreferences;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -34,9 +35,11 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.SimpleCursorAdapter;
 import android.widget.Spinner;
 import android.widget.TextView;
 import com.puskin.sticky.home.R;
+import com.puskin.sticky.model.ReminderPeriodModel;
 
 public class NewSticky extends Activity {
 	public static final String NEW_STICKY = "New Sticky";
@@ -56,7 +59,7 @@ public class NewSticky extends Activity {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
-		
+
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.newsticky);
 
@@ -73,7 +76,7 @@ public class NewSticky extends Activity {
 			@Override
 			public void onItemSelected(AdapterView<?> parent, View view,
 					int pos, long id) {
-				 //parent.getItemAtPosition(pos).toString()
+				// parent.getItemAtPosition(pos).toString()
 			}
 
 			@Override
@@ -97,7 +100,7 @@ public class NewSticky extends Activity {
 			@Override
 			public void onItemSelected(AdapterView<?> parent, View view,
 					int pos, long id) {
-				 parent.getItemAtPosition(pos).toString();
+				parent.getItemAtPosition(pos).toString();
 			}
 
 			@Override
@@ -124,7 +127,7 @@ public class NewSticky extends Activity {
 		day = cal.get(Calendar.DAY_OF_MONTH);
 
 		updateDate();
-		
+
 		Button saveButton = (Button) findViewById(R.id.saveButton);
 		saveButton.setOnClickListener(new OnClickListener() {
 
@@ -136,16 +139,86 @@ public class NewSticky extends Activity {
 			}
 
 		});
-		
+
+		setReminderPeriodClickListener();
+		setstickyProgressClickListener();
 	}
+
+	private void setstickyProgressClickListener() {
+		Spinner spinnerProgress = (Spinner) findViewById(R.id.stickyProgress);
+		ArrayAdapter<CharSequence> adapterPriority = ArrayAdapter
+				.createFromResource(this, R.array.StickyProgressArray,
+						android.R.layout.simple_spinner_item);
+
+		adapterPriority
+				.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+		spinnerProgress.setAdapter(adapterPriority);
+
+		spinnerProgress.setOnItemSelectedListener(new OnItemSelectedListener() {
+			@Override
+			public void onItemSelected(AdapterView<?> parent, View view,
+					int pos, long id) {
+				parent.getItemAtPosition(pos).toString();
+			}
+
+			@Override
+			public void onNothingSelected(AdapterView<?> arg0) {
+				// TODO Auto-generated method stub
+
+			}
+
+		});
+
+	}
+
+	private void setReminderPeriodClickListener() {
+		ReminderPeriodModel period = new ReminderPeriodModel(this);
+		Cursor periodCur = period.getAllReminderPeriods();
+		
+		Spinner spinnerPriority = (Spinner) findViewById(R.id.reminderPeriod);
+		//startManagingCursor(periodCur);
+
+		// create an array to specify which fields we want to display
+		String[] from = new String[] { "_period_name" };
+		// create an array of the display item we want to bind our data to
+		int[] to = new int[] { android.R.id.text1 };
+
+		SimpleCursorAdapter mAdapter = new SimpleCursorAdapter(this,
+				android.R.layout.simple_spinner_item, periodCur, from, to);
+		mAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
+		spinnerPriority.setAdapter(mAdapter);
+		period.close();
+
+	}
+	
+	private List<String> loadReminderPeriod() {
+		ReminderPeriodModel period = new ReminderPeriodModel(this);
+		Cursor periodCur = period.getAllReminderPeriods();
+
+		List<String> periodList = new ArrayList<String>();
+
+		if (periodCur.moveToFirst()) {
+			do {
+				String period_name = periodCur.getString(periodCur
+						.getColumnIndex("period_name"));
+				periodList.add(period_name);
+				// do what ever you want here
+			} while (periodCur.moveToNext());
+		}
+		periodCur.close();
+
+		return periodList;
+	}
+
 	private boolean isNullOrBlank(String s) {
 		return (s == null || s.trim().equals("") || s.trim().equals("null"));
 	}
-	
+
 	private void updateDate() {
 		TextView txt = (TextView) findViewById(R.id.dueDateText);
-		txt.setText(new StringBuilder().append(day).append('-')
-				.append(month).append('-').append(year));
+		txt.setText(new StringBuilder().append(day).append('-').append(month)
+				.append('-').append(year));
 
 	}
 
@@ -202,9 +275,9 @@ public class NewSticky extends Activity {
 			Log.i(NEW_STICKY, stickyType);
 			Log.i(NEW_STICKY, "loggedInUserId==" + loggedInUserId);
 
-			if(stickyDueDate == "0-0-0")
+			if (stickyDueDate == "0-0-0")
 				stickyDueDate = "null";
-			
+
 			// Create a new HttpClient and Post Header
 			HttpClient httpclient = new DefaultHttpClient();
 			String uristr = "http://www.puskin.in/sticky/ajax/addSticky.php";
@@ -217,7 +290,8 @@ public class NewSticky extends Activity {
 			nameValuePairs.add(new BasicNameValuePair("userId", Integer
 					.toString(loggedInUserId)));
 
-			nameValuePairs.add(new BasicNameValuePair("priority",stickyPriority));
+			nameValuePairs.add(new BasicNameValuePair("priority",
+					stickyPriority));
 			nameValuePairs.add(new BasicNameValuePair("text", stickyText));
 			nameValuePairs.add(new BasicNameValuePair("title", stickyTitle));
 			nameValuePairs
@@ -286,5 +360,5 @@ public class NewSticky extends Activity {
 		// Return full string
 		return status;
 	}
-	
+
 }

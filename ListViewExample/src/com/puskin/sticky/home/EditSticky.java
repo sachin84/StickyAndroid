@@ -4,6 +4,8 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -58,7 +60,7 @@ public class EditSticky extends Activity {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
-		
+
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.editsticky);
 
@@ -69,7 +71,7 @@ public class EditSticky extends Activity {
 
 		EditText stickyTitleObj = (EditText) findViewById(R.id.stickyTitle);
 		stickyTitleObj.setText(stickyDataBndl.getString("Title"));
-		
+
 		StickyId = stickyDataBndl.getInt("Id");
 		StickyType = stickyDataBndl.getString("Type");
 		Priority = stickyDataBndl.getString("Priority").toLowerCase();
@@ -84,7 +86,7 @@ public class EditSticky extends Activity {
 			}
 		}
 
-		// making string CamelCase   StickyPriority_Array
+		// making string CamelCase StickyPriority_Array
 		Priority = Priority.substring(0, 1).toUpperCase()
 				+ Priority.substring(1).toLowerCase();
 		Log.i(EDIT_STICKY, "Priority==>" + Priority);
@@ -129,11 +131,11 @@ public class EditSticky extends Activity {
 
 		adapterPriority
 				.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-		
+
 		spinnerPriority.setAdapter(adapterPriority);
 		int priorityPos = adapterPriority.getPosition(Priority);
 		spinnerPriority.setSelection(priorityPos);
-		
+
 		Log.i(EDIT_STICKY, "StickyPriorityPOS==>" + priorityPos);
 
 		spinnerPriority.setOnItemSelectedListener(new OnItemSelectedListener() {
@@ -183,6 +185,8 @@ public class EditSticky extends Activity {
 	}
 
 	private void updateDate() {
+		Log.i(EDIT_STICKY, "Current Month==>" + month);
+
 		TextView txt = (TextView) findViewById(R.id.dueDateText);
 		txt.setText(new StringBuilder().append(day).append('-').append(month)
 				.append('-').append(year));
@@ -194,9 +198,11 @@ public class EditSticky extends Activity {
 		public void onDateSet(DatePicker view, int yr, int monthOfYear,
 				int dayOfMonth) {
 			year = yr;
-			month = monthOfYear;
+			month = monthOfYear + 1;
 			day = dayOfMonth;
 			updateDate();
+			Log.i(EDIT_STICKY, "Selected Month==>" + monthOfYear);
+
 		}
 	};
 
@@ -240,6 +246,12 @@ public class EditSticky extends Activity {
 			TextView stickydueDateObj = (TextView) findViewById(R.id.dueDateText);
 			String stickyDueDate = stickydueDateObj.getText().toString();
 
+//			SimpleDateFormat curFormater = new SimpleDateFormat("dd-MM-yyyy");
+//			java.util.Date dateObj = null;
+//			dateObj = curFormater.parse(stickyDueDate);
+//			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+//			stickyDueDate = sdf.format(dateObj);
+			
 			Log.i(EDIT_STICKY, "stickyDueDate=" + stickyDueDate);
 			Log.i(EDIT_STICKY, stickyTitle);
 			Log.i(EDIT_STICKY, stickyPriority);
@@ -261,7 +273,8 @@ public class EditSticky extends Activity {
 			nameValuePairs.add(new BasicNameValuePair("userId", Integer
 					.toString(loggedInUserId)));
 
-			nameValuePairs.add(new BasicNameValuePair("priority",stickyPriority));
+			nameValuePairs.add(new BasicNameValuePair("priority",
+					stickyPriority));
 			nameValuePairs.add(new BasicNameValuePair("text", stickyText));
 			nameValuePairs.add(new BasicNameValuePair("title", stickyTitle));
 			nameValuePairs
@@ -292,7 +305,11 @@ public class EditSticky extends Activity {
 			e.printStackTrace();
 		} catch (IOException e) {
 			e.printStackTrace();
-		}
+		} 
+//		catch (ParseException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
 
 		return status;
 	}

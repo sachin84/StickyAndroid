@@ -297,7 +297,6 @@ public class WorkActivity extends ListActivity {
 		// String uristr = "http://10.0.2.2/sticky/ajax/getsticky.php";
 		String uristr = "http://puskin.in/sticky/ajax/getsticky.php";
 
-		/* login.php returns true if username and password is equal to saranga */
 		HttpPost httppost = new HttpPost(uristr);
 		boolean status = false;
 
@@ -314,9 +313,7 @@ public class WorkActivity extends ListActivity {
 
 			HttpResponse response = httpclient.execute(httppost);
 
-			String str = parseAndPrepareData(response.getEntity().getContent())
-					.toString();
-			Log.w(LIST_EXAMPLE, str);
+			status = parseAndPrepareData(response.getEntity().getContent());
 
 		} catch (ClientProtocolException e) {
 			e.printStackTrace();
@@ -327,7 +324,7 @@ public class WorkActivity extends ListActivity {
 		return status;
 	}
 
-	private StringBuilder parseAndPrepareData(InputStream is) {
+	private boolean parseAndPrepareData(InputStream is) {
 		String line = "";
 		StringBuilder jsonResp = new StringBuilder();
 		// Wrap a BufferedReader around the InputStream
@@ -346,6 +343,7 @@ public class WorkActivity extends ListActivity {
 			stickyrespjson = new JSONObject(jsonResp.toString());
 			JSONArray stickyJsonArray = stickyrespjson.getJSONArray("result");
 
+			stickyDataList = new ArrayList<StickyData>();
 			String returnString = "";
 
 			for (int i = 0; i < stickyJsonArray.length(); i++) {
@@ -393,10 +391,11 @@ public class WorkActivity extends ListActivity {
 		} catch (JSONException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+			return false;
 		}
 
 		// Return full string
-		return jsonResp;
+		return true;
 	}
 
 	private boolean isNullOrBlank(String s) {

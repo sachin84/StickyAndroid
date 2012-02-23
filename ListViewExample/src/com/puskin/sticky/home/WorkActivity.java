@@ -268,10 +268,11 @@ public class WorkActivity extends ListActivity {
 		bl.putString("Priority", stickyObj.getPriority());
 		bl.putString("Text", stickyObj.getText());
 		bl.putString("DueDate", stickyObj.getDueDate());
-		bl.putString("Type", "Public");
+		bl.putString("Type", "Work");
 
 		Log.i(LIST_EXAMPLE, "Data_ID" + stickyObj.getId());
 		Log.i(LIST_EXAMPLE, "Text" + stickyObj.getText());
+		Log.i(LIST_EXAMPLE, "Date=" + stickyObj.getDueDate());
 
 		return bl;
 
@@ -383,6 +384,7 @@ public class WorkActivity extends ListActivity {
 					}
 
 				}
+				stkData.setDueDate(dueDate);//used for bundle
 				stkData.setRemainingDays(days);
 				stickyDataList.add(stkData);
 

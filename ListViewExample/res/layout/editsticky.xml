@@ -1,69 +1,53 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
-    android:layout_height="fill_parent" >
+    android:layout_height="match_parent" >
 
     <LinearLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_width="fill_parent"
+        android:layout_height="match_parent"
         android:background="#e1e2e4"
         android:orientation="vertical"
         android:weightSum="1" >
 
-            <LinearLayout
-                android:id="@+id/editheaderLayout"
-                android:layout_width="fill_parent"
-                android:layout_height="50dp"
+        <LinearLayout
+            android:id="@+id/editheaderLayout"
+            android:layout_width="fill_parent"
+            android:layout_height="50dp"
+            android:layout_gravity="center"
+            android:background="@drawable/stickyheader1"
+            android:gravity="center"
+            android:paddingBottom="1dip"
+            android:paddingTop="1dip" >
+
+            <ImageView
+                android:id="@+id/EditImg"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingLeft="5dip"
+                android:src="@drawable/edit" />
+
+            <TextView
+                android:id="@+id/newStickyHeader"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:background="@drawable/stickyheader1"
                 android:gravity="center"
-                android:paddingBottom="1dip"
-                android:paddingTop="1dip" >
-
-                <ImageView
-                    android:id="@+id/EditImg"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:src="@drawable/edit" 
-                    android:paddingLeft="5dip"/>
-
-                <TextView
-                    android:id="@+id/newStickyHeader"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:gravity="center"
-                    android:paddingRight="32dip"
-                    android:text="@string/EditSticky_Header"
-                    android:textColor="@color/White"
-                    android:textSize="26dip"
-                    android:textStyle="bold" />
-            </LinearLayout>
-
-        <TextView
-            android:id="@+id/textView1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp"
-            android:layout_marginTop="5dp"
-            android:textColor="@color/Black"
-            android:text="@string/NewSticky_Text" />
-
-        <EditText
-            android:id="@+id/stickyText"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:inputType="textMultiLine"
-            android:lines="5" />
+                android:paddingRight="32dip"
+                android:text="@string/EditSticky_Header"
+                android:textColor="@color/White"
+                android:textSize="26dip"
+                android:textStyle="bold" />
+        </LinearLayout>
 
         <TextView
             android:id="@+id/textView2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="10dp"
-            android:textColor="@color/Black"
-            android:text="@string/NewSticky_Title" />
+            android:text="@string/NewSticky_Title"
+            android:textColor="@color/Black" />
 
         <EditText
             android:id="@+id/stickyTitle"
@@ -72,51 +56,75 @@
             android:inputType="textPersonName" />
 
         <TextView
-            android:id="@+id/textView3"
+            android:id="@+id/textView1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="10dp"
-            android:textColor="@color/Black"
-            android:text="@string/NewSticky_Type" />
+            android:layout_marginTop="5dp"
+            android:text="@string/NewSticky_Text"
+            android:textColor="@color/Black" />
 
-        <Spinner
-            android:id="@+id/stickyType"
-            android:layout_width="fill_parent"
+        <EditText
+            android:id="@+id/stickyText"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:prompt="@string/NewSticky_Type" />
-
-        <TextView
-            android:id="@+id/textView4"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp"
-            android:textColor="@color/Black"
-            android:text="@string/NewSticky_Priority" />
-
-        <Spinner
-            android:id="@+id/stickyPriority"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:prompt="@string/NewSticky_Type" />
-
-<!--         <TextView
-            android:id="@+id/textView5"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp"
-            android:textColor="@color/Black"
-            android:text="@string/NewSticky_DueDate" /> -->
-
-        <!--
-         <DatePicker
-        android:id="@+id/dueDate"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content" />
-        -->
+            android:inputType="textMultiLine"
+            android:lines="5" />
 
         <LinearLayout
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
+            android:baselineAligned="false"
+            android:orientation="horizontal" >
+
+            <LinearLayout
+                android:id="@+id/editheaderTypeLayout"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical" >
+
+                <TextView
+                    android:id="@+id/textView3"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="5dp"
+                    android:text="@string/NewSticky_Type"
+                    android:textColor="@color/Black" />
+
+                <Spinner
+                    android:id="@+id/stickyType"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:prompt="@string/NewSticky_Type" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/editheaderPriorityLayout"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical" >
+
+                <TextView
+                    android:id="@+id/textView4"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="5dp"
+                    android:text="@string/NewSticky_Priority"
+                    android:textColor="@color/Black" />
+
+                <Spinner
+                    android:id="@+id/stickyPriority"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:prompt="@string/NewSticky_Type" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="0dp"
             android:layout_weight="1"
             android:orientation="horizontal" >
 
@@ -131,8 +139,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="10dp"
-                android:textColor="@color/Black"
-                />
+                android:textColor="@color/Black" />
         </LinearLayout>
 
         <Button

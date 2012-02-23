@@ -78,14 +78,15 @@ public class EditSticky extends Activity {
 		DueDate = stickyDataBndl.getString("DueDate");
 
 		if (!isNullOrBlank(DueDate)) {
-			if (DueDate != null) {
-				String duedateArr[] = DueDate.split("-");
-				year = Integer.parseInt(duedateArr[0]);
-				month = Integer.parseInt(duedateArr[1]);
-				day = Integer.parseInt(duedateArr[2]);
-			}
+			String duedateArr[] = DueDate.split("-");
+			year = Integer.parseInt(duedateArr[0]);
+			month = Integer.parseInt(duedateArr[1])-1;
+			day = Integer.parseInt(duedateArr[2]);
+			
 		}
-
+		//show in main screen
+		updateDate(year,month+1,day);
+		
 		// making string CamelCase StickyPriority_Array
 		Priority = Priority.substring(0, 1).toUpperCase()
 				+ Priority.substring(1).toLowerCase();
@@ -163,8 +164,6 @@ public class EditSticky extends Activity {
 
 		});
 
-		updateDate();
-
 		Button saveButton = (Button) findViewById(R.id.editButton);
 		saveButton.setOnClickListener(new OnClickListener() {
 
@@ -184,7 +183,7 @@ public class EditSticky extends Activity {
 		return (s == null || s.trim().equals("") || s.trim().equals("null"));
 	}
 
-	private void updateDate() {
+	private void updateDate(int year,int month,int day) {
 		Log.i(EDIT_STICKY, "Current Month==>" + month);
 
 		TextView txt = (TextView) findViewById(R.id.dueDateText);
@@ -200,7 +199,7 @@ public class EditSticky extends Activity {
 			year = yr;
 			month = monthOfYear + 1;
 			day = dayOfMonth;
-			updateDate();
+			updateDate(year,month,day);
 			Log.i(EDIT_STICKY, "Selected Month==>" + monthOfYear);
 
 		}
@@ -246,12 +245,13 @@ public class EditSticky extends Activity {
 			TextView stickydueDateObj = (TextView) findViewById(R.id.dueDateText);
 			String stickyDueDate = stickydueDateObj.getText().toString();
 
-//			SimpleDateFormat curFormater = new SimpleDateFormat("dd-MM-yyyy");
-//			java.util.Date dateObj = null;
-//			dateObj = curFormater.parse(stickyDueDate);
-//			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-//			stickyDueDate = sdf.format(dateObj);
-			
+			// SimpleDateFormat curFormater = new
+			// SimpleDateFormat("dd-MM-yyyy");
+			// java.util.Date dateObj = null;
+			// dateObj = curFormater.parse(stickyDueDate);
+			// SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+			// stickyDueDate = sdf.format(dateObj);
+
 			Log.i(EDIT_STICKY, "stickyDueDate=" + stickyDueDate);
 			Log.i(EDIT_STICKY, stickyTitle);
 			Log.i(EDIT_STICKY, stickyPriority);
@@ -305,11 +305,11 @@ public class EditSticky extends Activity {
 			e.printStackTrace();
 		} catch (IOException e) {
 			e.printStackTrace();
-		} 
-//		catch (ParseException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
+		}
+		// catch (ParseException e) {
+		// // TODO Auto-generated catch block
+		// e.printStackTrace();
+		// }
 
 		return status;
 	}

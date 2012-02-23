@@ -161,7 +161,7 @@ public class PrivateActivity extends ListActivity {
 		bl.putString("Priority", stickyObj.getPriority());
 		bl.putString("Text", stickyObj.getText());
 		bl.putString("DueDate", stickyObj.getDueDate());
-		bl.putString("Type", "Public");
+		bl.putString("Type", "Private");
 
 		Log.i(LIST_EXAMPLE, "Data_ID" + stickyObj.getId());
 		Log.i(LIST_EXAMPLE, "Text" + stickyObj.getText());

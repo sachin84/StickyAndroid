@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<project name="PTM" version="42" database="Sqlite" >
+	<schema name="Default" schemaname="Default" >
+		<table name="sticky_reminder" >
+			<column name="_id" type="INT" jt="4" mandatory="y" />
+			<column name="_stickyId" type="INT" jt="4" />
+			<column name="_periodId" type="INT" jt="4" />
+			<column name="_added_date" type="DATETIME" jt="93" />
+			<column name="_due_date" type="DATETIME" jt="93" />
+			<column name="_is_enabled" type="BOOL" jt="-7" />
+			<index name="Pk_sticky_reminder" unique="PRIMARY_KEY" >
+				<column name="_id" />
+			</index>
+		</table>
+		<table name="sticky_sharing" >
+			<column name="_id" type="INT" jt="4" mandatory="y" />
+			<column name="_ownerId" type="INT" jt="4" mandatory="y" />
+			<column name="_memberId" type="INT" jt="4" mandatory="y" />
+			<column name="_shared_at" type="DATETIME" jt="93" />
+			<index name="Pk_sticky_sharing" unique="PRIMARY_KEY" >
+				<column name="_id" />
+			</index>
+		</table>
+		<table name="reminder_period" >
+			<column name="_id" type="INT" jt="4" mandatory="y" />
+			<column name="_period_name" type="VARCHAR" length="100" jt="12" />
+			<column name="_is_enabled" type="BOOL" jt="-7" />
+			<index name="Pk_reminder_period" unique="PRIMARY_KEY" >
+				<column name="_id" />
+			</index>
+		</table>
+		<table name="sticky" >
+			<column name="_id" type="INT" jt="4" mandatory="y" />
+			<column name="_title" type="VARCHAR" length="100" jt="12" />
+			<column name="_text" type="VARCHAR" length="500" jt="12" />
+			<column name="_priority" type="VARCHAR" length="20" jt="12" />
+			<column name="_duedate" type="DATETIME" jt="93" />
+			<column name="_created_at" type="DATETIME" jt="93" />
+			<column name="_updated_at" type="DATETIME" jt="93" />
+			<index name="Pk_sticky" unique="PRIMARY_KEY" >
+				<column name="_id" />
+			</index>
+		</table>
+		<table name="user" >
+			<column name="_id" type="INT" jt="4" mandatory="y" />
+			<column name="_username" type="VARCHAR" length="100" jt="12" />
+			<column name="_firstname" type="VARCHAR" length="100" jt="12" />
+			<column name="_lastname" type="VARCHAR" length="100" jt="12" />
+			<column name="_email" type="VARCHAR" length="60" jt="12" />
+			<column name="_created_at" type="DATETIME" jt="93" >
+				<defo>CURRENT_TIMESTAMP</defo>
+			</column>
+			<index name="Pk_user" unique="PRIMARY_KEY" >
+				<column name="_id" />
+			</index>
+		</table>
+	</schema>
+	<layout name="Default" >
+		<entity schema="Default" name="reminder_period" x="39" y="338" />
+		<entity schema="Default" name="sticky" x="39" y="182" />
+		<entity schema="Default" name="sticky_reminder" x="221" y="182" />
+		<entity schema="Default" name="sticky_sharing" x="221" y="39" />
+		<entity schema="Default" name="user" x="39" y="39" />
+		<query name="reminder_period" >
+			<string> <![CDATA[
+
+UPDATE reminder_period SET ... = ... ;]]> </string>
+		</query>
+	</layout>
+</project>

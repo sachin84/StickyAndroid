@@ -10,9 +10,9 @@ public class User {
 	private String email;
 	private String firstname;
 	private String lastname;
-	private Date register_at;
+	private Date registerAt;
 	private String gender;
-	private Date updated_at;
+	private Date updatedAt;
 
 	public int getId() {
 		return id;
@@ -62,14 +62,7 @@ public class User {
 		this.lastname = lastname;
 	}
 
-	public Date getRegister_at() {
-		return register_at;
-	}
-
-	public void setRegister_at(Date register_at) {
-		this.register_at = register_at;
-	}
-
+	
 	public String getGender() {
 		return gender;
 	}
@@ -78,12 +71,20 @@ public class User {
 		this.gender = gender;
 	}
 
-	public Date getUpdated_at() {
-		return updated_at;
+	public Date getRegisterAt() {
+		return registerAt;
 	}
 
-	public void setUpdated_at(Date updated_at) {
-		this.updated_at = updated_at;
+	public void setRegisterAt(Date registerAt) {
+		this.registerAt = registerAt;
+	}
+
+	public Date getUpdatedAt() {
+		return updatedAt;
+	}
+
+	public void setUpdatedAt(Date updatedAt) {
+		this.updatedAt = updatedAt;
 	}
 
 }

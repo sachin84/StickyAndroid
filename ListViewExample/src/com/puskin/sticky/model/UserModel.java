@@ -8,10 +8,12 @@ import android.database.sqlite.SQLiteDatabase;
 
 import com.puskin.sticky.dao.User;
 import com.puskin.sticky.dbhelper.DatabaseHelper;
+import com.puskin.sticky.dbhelper.StickyUserTblSchema;
 
 public class UserModel {
 	private SQLiteDatabase database;
 	private DatabaseHelper dbHelper;
+	private StickyUserTblSchema userSchema;
 	public UserModel(Context context)
 	{
 		dbHelper = new DatabaseHelper(context);
@@ -27,14 +29,14 @@ public class UserModel {
 	void AddUser(User usr) {
 
 		ContentValues cv = new ContentValues();
-		cv.put(dbHelper.USER_NAME, usr.getUsername());
-		cv.put(dbHelper.USER_EMAIL, usr.getEmail());
-		cv.put(dbHelper.USER_FIRSTNAME, usr.getFirstname());
-		cv.put(dbHelper.USER_LASTNAME, usr.getLastname());
-		cv.put(dbHelper.USER_GENDER, usr.getGender());
-		cv.put(dbHelper.USER_REGISTER_AT, usr.getRegister_at().toString());
+		cv.put(userSchema.USER_NAME, usr.getUsername());
+		cv.put(userSchema.USER_EMAIL, usr.getEmail());
+		cv.put(userSchema.USER_FIRSTNAME, usr.getFirstname());
+		cv.put(userSchema.USER_LASTNAME, usr.getLastname());
+		cv.put(userSchema.USER_GENDER, usr.getGender());
+		cv.put(userSchema.USER_REGISTER_AT, usr.getRegisterAt().toString());
 
-		database.insert(dbHelper.UserTable, dbHelper.USER_UPDATED_AT, cv);
+		database.insert(userSchema.UserTable, userSchema.USER_UPDATED_AT, cv);
 		
 		this.close();
 
@@ -42,7 +44,7 @@ public class UserModel {
 
 	public int getUserCount() {
 		SQLiteDatabase db = dbHelper.getWritableDatabase();
-		Cursor cur = db.rawQuery("Select * from " + dbHelper.UserTable, null);
+		Cursor cur = db.rawQuery("Select * from " + userSchema.UserTable, null);
 		int x = cur.getCount();
 		cur.close();
 		return x;
@@ -51,7 +53,7 @@ public class UserModel {
 	public Cursor getAllUsers() {
 		SQLiteDatabase db = dbHelper.getWritableDatabase();
 
-		Cursor cur = db.rawQuery("SELECT * FROM " + dbHelper.UserTable, null);
+		Cursor cur = database.rawQuery("SELECT * FROM " + userSchema.UserTable, null);
 		return cur;
 
 	}
@@ -69,9 +71,9 @@ public class UserModel {
 
 	public void DeleteEmp(User usr) {
 		SQLiteDatabase db = dbHelper.getWritableDatabase();
-		db.delete(dbHelper.UserTable, dbHelper.USER_ID + "=?",
+		database.delete(userSchema.UserTable, userSchema.USER_ID + "=?",
 				new String[] { String.valueOf(usr.getId()) });
-		db.close();
+		database.close();
 
 	}
 }

@@ -23,7 +23,6 @@ import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.content.SharedPreferences;
-import android.database.Cursor;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -35,11 +34,8 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
-import android.widget.SimpleCursorAdapter;
 import android.widget.Spinner;
 import android.widget.TextView;
-import com.puskin.sticky.home.R;
-import com.puskin.sticky.model.ReminderPeriodModel;
 
 public class NewSticky extends Activity {
 	public static final String NEW_STICKY = "New Sticky";
@@ -140,7 +136,7 @@ public class NewSticky extends Activity {
 
 		});
 
-		setReminderPeriodClickListener();
+		//setReminderPeriodClickListener();
 		setstickyProgressClickListener();
 	}
 
@@ -172,44 +168,26 @@ public class NewSticky extends Activity {
 	}
 
 	private void setReminderPeriodClickListener() {
-		ReminderPeriodModel period = new ReminderPeriodModel(this);
-		Cursor periodCur = period.getAllReminderPeriods();
-		
-		Spinner spinnerPriority = (Spinner) findViewById(R.id.reminderPeriod);
-		//startManagingCursor(periodCur);
-
-		// create an array to specify which fields we want to display
-		String[] from = new String[] { "_period_name" };
-		// create an array of the display item we want to bind our data to
-		int[] to = new int[] { android.R.id.text1 };
-
-		SimpleCursorAdapter mAdapter = new SimpleCursorAdapter(this,
-				android.R.layout.simple_spinner_item, periodCur, from, to);
-		mAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-
-		spinnerPriority.setAdapter(mAdapter);
-		period.close();
+//		ReminderPeriodModel period = new ReminderPeriodModel(this);
+//		Cursor periodCur = period.getAllReminderPeriods();
+//		
+//		Spinner spinnerPriority = (Spinner) findViewById(R.id.reminderPeriod);
+//		//startManagingCursor(periodCur);
+//
+//		// create an array to specify which fields we want to display
+//		String[] from = new String[] { "_period_name" };
+//		// create an array of the display item we want to bind our data to
+//		int[] to = new int[] { android.R.id.text1 };
+//
+//		SimpleCursorAdapter mAdapter = new SimpleCursorAdapter(this,
+//				android.R.layout.simple_spinner_item, periodCur, from, to);
+//		mAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+//
+//		spinnerPriority.setAdapter(mAdapter);
+//		period.close();
 
 	}
-	
-	private List<String> loadReminderPeriod() {
-		ReminderPeriodModel period = new ReminderPeriodModel(this);
-		Cursor periodCur = period.getAllReminderPeriods();
 
-		List<String> periodList = new ArrayList<String>();
-
-		if (periodCur.moveToFirst()) {
-			do {
-				String period_name = periodCur.getString(periodCur
-						.getColumnIndex("period_name"));
-				periodList.add(period_name);
-				// do what ever you want here
-			} while (periodCur.moveToNext());
-		}
-		periodCur.close();
-
-		return periodList;
-	}
 
 	private boolean isNullOrBlank(String s) {
 		return (s == null || s.trim().equals("") || s.trim().equals("null"));

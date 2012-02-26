@@ -116,7 +116,7 @@ public class Login extends Activity {
 		@Override
 		protected String doInBackground(String... params) {
 			// perform long running operation operation
-			postLoginData();
+			loginStatus = postLoginData();
 			return null;
 		}
 

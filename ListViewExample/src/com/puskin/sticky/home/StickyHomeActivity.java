@@ -15,55 +15,68 @@ import android.view.MenuItem;
 import android.view.Window;
 import android.widget.TabHost;
 import android.widget.TabHost.TabSpec;
-import com.puskin.sticky.home.R;
 
-public class ListViewExampleActivity extends TabActivity {
+public class StickyHomeActivity extends TabActivity {
 
-	public static final String LIST_EXAMPLE = "ListExample";
+	public static final String STICKY_HOME = "ListExample";
+	final int LOGIN_SUCCESS = 5;
+	final int LOGIN_CANCELLED = -5;
 
 	private static List<StickyData> stickyDataList = new ArrayList<StickyData>();
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
-		
+
 		super.onCreate(savedInstanceState);
 
-		// Context mContext = getApplicationContext();
-		SystemVariable appState = ((SystemVariable) getApplicationContext());
-		// appState.setLoginStatus("System Variable");
-		Log.w(LIST_EXAMPLE, "STATE_VAR==>" + appState.getLoginStatus());
+		// SystemVariable appState = ((SystemVariable) getApplicationContext());
+		// Log.w(STICKY_HOME, "STATE_VAR==>" + appState.getLoginStatus());
 
 		setContentView(R.layout.main);
 
-		// LayoutInflater inflater = LayoutInflater.from(getBaseContext());
-		// View publicView = inflater.inflate(R.layout.public_layout,null);
+		SharedPreferences settings = getSharedPreferences("StickySettings", 0);
+		int loggedInUserId = settings.getInt("loggedInUserId", 0);
 
-		// ListView l1 = (ListView) publicView.findViewById(R.id.PublicListing);
-		// ColorDrawable divcolor = new ColorDrawable(Color.DKGRAY);
-		// l1.setDivider(divcolor);
-		// l1.setDividerHeight(2);
-		//
-		// l1.setOnItemClickListener(new OnItemClickListener() {
-		// @Override
-		// public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
-		// long arg3) {
-		// // arg1.setBackgroundColor(Color.YELLOW);
-		//
-		// Toast.makeText(getBaseContext(),
-		// "You clciked " + stickyDataList.get(arg2).getId(),
-		// Toast.LENGTH_LONG).show();
-		// }
-		// });
-		//
-		// StickyListAdapter stickyAdapter = new StickyListAdapter(this);
-		// l1.setAdapter(stickyAdapter);
+		if (loggedInUserId >= 0) {
+			Intent editStickyIntent = new Intent(StickyHomeActivity.this,
+					Login.class);
+
+			startActivityForResult(editStickyIntent, LOGIN_SUCCESS);
+			overridePendingTransition(R.anim.slide_in_right,
+					R.anim.slide_out_left);
+		} else {
+			Log.w(STICKY_HOME, "loggedInUserId==>" + loggedInUserId);
+
+			// creating main screen
+			createMainTab();
+		}
+
+	}
+
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
+
+		super.onActivityResult(requestCode, resultCode, data);
+		if (resultCode == LOGIN_SUCCESS) {
+			Log.i(STICKY_HOME, "NEW NOTE ACTIVITY CLOSED");
+			createMainTab();
+		} else if (resultCode == LOGIN_CANCELLED) {
+			Log.i(STICKY_HOME, "Login Cancelled Quiting App.");
+			this.finish();
+		} else {
+			Log.i(STICKY_HOME, "Starting Tab Atcivity...");
+		}
+	}
+
+	private void createMainTab() {
 
 		SharedPreferences settings = getSharedPreferences("StickySettings", 0);
 		SharedPreferences.Editor editor = settings.edit();
 		editor.putInt("loggedInUserId", 2);
 		editor.commit();
-		
+
 		Resources res = getResources(); // Resource object to get Drawables
 		// Setting Up Tabs
 		TabHost tabHost = getTabHost();
@@ -96,7 +109,6 @@ public class ListViewExampleActivity extends TabActivity {
 		tabHost.addTab(workspec); // Adding work tab
 		tabHost.addTab(privatespec); // Adding private tab
 		tabHost.setCurrentTab(0);
-
 	}
 
 	// To Create MENU
@@ -109,12 +121,13 @@ public class ListViewExampleActivity extends TabActivity {
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		if (item.getItemId() == R.id.newsticky) {
-			Intent newStickyIntent = new Intent(ListViewExampleActivity.this,
+			Intent newStickyIntent = new Intent(StickyHomeActivity.this,
 					NewSticky.class);
 			// startActivity(newStickyIntent);
 			startActivityForResult(newStickyIntent, 1);
 
-			SharedPreferences settings = getSharedPreferences("StickySettings", 0);
+			SharedPreferences settings = getSharedPreferences("StickySettings",
+					0);
 			SharedPreferences.Editor editor = settings.edit();
 			editor.remove("logged");
 			editor.commit();
@@ -123,12 +136,12 @@ public class ListViewExampleActivity extends TabActivity {
 		return super.onOptionsItemSelected(item);
 	}
 
-	@Override
-	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-		super.onActivityResult(requestCode, resultCode, data);
-		if (resultCode == RESULT_OK && requestCode == 1) {
-			Log.i(LIST_EXAMPLE, "NEW NOTE ACTIVITY CLOSED");
-		}
-	}
+	// @Override
+	// protected void onActivityResult(int requestCode, int resultCode, Intent
+	// data) {
+	// super.onActivityResult(requestCode, resultCode, data);
+	// if (resultCode == RESULT_OK && requestCode == 1) {
+	// }
+	// }
 
 }

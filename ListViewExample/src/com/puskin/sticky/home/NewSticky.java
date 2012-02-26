@@ -4,8 +4,11 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import org.apache.http.HttpResponse;
@@ -19,10 +22,16 @@ import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.puskin.sticky.dao.Sticky;
+import com.puskin.sticky.model.ReminderPeriodModel;
+import com.puskin.sticky.model.StickyModel;
+
 import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
+import android.content.Intent;
 import android.content.SharedPreferences;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -34,8 +43,10 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.SimpleCursorAdapter;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class NewSticky extends Activity {
 	public static final String NEW_STICKY = "New Sticky";
@@ -45,12 +56,14 @@ public class NewSticky extends Activity {
 	private int day = 0;
 	public int NewStickyId;
 	public String StickyType;
+	private int selectedPeriod = 0;
 
 	// public String Name;
 	// public String Text;
 	public String DueDate;
 	public String Priority;
 	public Bundle stickyDataBndl;
+	public int lastAddedStickyId = 0;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -122,21 +135,30 @@ public class NewSticky extends Activity {
 		month = cal.get(Calendar.MONTH);
 		day = cal.get(Calendar.DAY_OF_MONTH);
 
-		updateDate();
+		updateDate(year, month + 1, day);
 
 		Button saveButton = (Button) findViewById(R.id.saveButton);
 		saveButton.setOnClickListener(new OnClickListener() {
 
 			@Override
 			public void onClick(View v) {
-				createSticky();
-				setResult(RESULT_OK);
-				finish();
+				// createSticky();
+				boolean status = createStickyInLocal();
+				if (status) {
+
+					Intent intent = new Intent();
+					intent.putExtra("lastAddedStickyId", lastAddedStickyId);
+					setResult(10,intent);
+					finish();
+				} else {
+					setResult(RESULT_OK);
+					finish();
+				}
 			}
 
 		});
 
-		//setReminderPeriodClickListener();
+		setReminderPeriodClickListener();
 		setstickyProgressClickListener();
 	}
 
@@ -168,36 +190,54 @@ public class NewSticky extends Activity {
 	}
 
 	private void setReminderPeriodClickListener() {
-//		ReminderPeriodModel period = new ReminderPeriodModel(this);
-//		Cursor periodCur = period.getAllReminderPeriods();
-//		
-//		Spinner spinnerPriority = (Spinner) findViewById(R.id.reminderPeriod);
-//		//startManagingCursor(periodCur);
-//
-//		// create an array to specify which fields we want to display
-//		String[] from = new String[] { "_period_name" };
-//		// create an array of the display item we want to bind our data to
-//		int[] to = new int[] { android.R.id.text1 };
-//
-//		SimpleCursorAdapter mAdapter = new SimpleCursorAdapter(this,
-//				android.R.layout.simple_spinner_item, periodCur, from, to);
-//		mAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-//
-//		spinnerPriority.setAdapter(mAdapter);
-//		period.close();
+		ReminderPeriodModel period = new ReminderPeriodModel(this);
+		Cursor periodCur = period.getAllReminderPeriods();
+
+		Spinner reminderPeriod = (Spinner) findViewById(R.id.reminderPeriod);
+		// startManagingCursor(periodCur);
+
+		// create an array to specify which fields we want to display
+		String[] from = new String[] { "_period_name" };
+		// create an array of the display item we want to bind our data to
+		int[] to = new int[] { android.R.id.text1 };
+
+		SimpleCursorAdapter mAdapter = new SimpleCursorAdapter(this,
+				android.R.layout.simple_spinner_item, periodCur, from, to);
+		mAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
+		reminderPeriod.setAdapter(mAdapter);
+		period.close();
+
+		reminderPeriod.setOnItemSelectedListener(new OnItemSelectedListener() {
+			@Override
+			public void onItemSelected(AdapterView<?> parent, View view,
+					int pos, long id) {
+				Cursor mCursor = (Cursor) parent.getItemAtPosition(pos);
+				selectedPeriod = Integer.parseInt(mCursor.getString(0));
+
+//				Toast.makeText(view.getContext(), mCursor.getString(0),
+//						Toast.LENGTH_LONG).show();
+			}
+
+			@Override
+			public void onNothingSelected(AdapterView<?> arg0) {
+				// TODO Auto-generated method stub
+
+			}
+
+		});
 
 	}
-
 
 	private boolean isNullOrBlank(String s) {
 		return (s == null || s.trim().equals("") || s.trim().equals("null"));
 	}
 
-	private void updateDate() {
+	private void updateDate(int year, int month, int day) {
+
 		TextView txt = (TextView) findViewById(R.id.dueDateText);
 		txt.setText(new StringBuilder().append(day).append('-').append(month)
 				.append('-').append(year));
-
 	}
 
 	private DatePickerDialog.OnDateSetListener dateListener = new DatePickerDialog.OnDateSetListener() {
@@ -206,9 +246,9 @@ public class NewSticky extends Activity {
 		public void onDateSet(DatePicker view, int yr, int monthOfYear,
 				int dayOfMonth) {
 			year = yr;
-			month = monthOfYear;
+			month = monthOfYear + 1;
 			day = dayOfMonth;
-			updateDate();
+			updateDate(year, month, day);
 		}
 	};
 
@@ -218,8 +258,63 @@ public class NewSticky extends Activity {
 
 	@Override
 	public void onBackPressed() {
+		setResult(RESULT_CANCELED);
+
 		this.finish();
 		// super.onBackPressed();
+	}
+
+	public boolean createStickyInLocal() {
+		boolean status = true;
+		
+		SharedPreferences settings = getSharedPreferences("StickySettings", 0);
+		int loggedInUserId = settings.getInt("loggedInUserId", 0);
+
+		// Add user name and password
+		EditText stickyTextObj = (EditText) findViewById(R.id.stickyText);
+		String stickyText = stickyTextObj.getText().toString();
+
+		EditText stickyTitleObj = (EditText) findViewById(R.id.stickyTitle);
+		String stickyTitle = stickyTitleObj.getText().toString();
+
+		Spinner spnrStickyType = (Spinner) findViewById(R.id.stickyType);
+		String stickyType = spnrStickyType.getSelectedItem().toString();
+
+		Spinner spnrStickyPriority = (Spinner) findViewById(R.id.stickyPriority);
+		String stickyPriority = spnrStickyPriority.getSelectedItem().toString();
+
+		TextView stickydueDateObj = (TextView) findViewById(R.id.dueDateText);
+		String stickyDueDate = stickydueDateObj.getText().toString();
+
+		// SimpleDateFormat dtFormater = new SimpleDateFormat(
+		// "yyyy-MM-dd HH:mm:ss");
+		SimpleDateFormat dtFormater = new SimpleDateFormat("dd-MM-yyyy");
+		Date currdt = new java.util.Date();
+
+		Date duedt = null;
+
+		try {
+			duedt = dtFormater.parse(stickyDueDate);
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			status = false;
+		}
+
+		Sticky stickyObj = new Sticky();
+
+		stickyObj.setUserId(loggedInUserId);
+		stickyObj.setTitle(stickyTitle);
+		stickyObj.setText(stickyText);
+		stickyObj.setPriority(stickyPriority);
+		// stickyObj.setProgress(stickyProgress);
+		stickyObj.setDueDate(duedt);
+		stickyObj.setCreatedAt(currdt);
+		stickyObj.setStickyType(stickyType);
+
+		StickyModel stickyModel = new StickyModel(this);
+		lastAddedStickyId = stickyModel.AddSticky(stickyObj);
+		return status;
 	}
 
 	public boolean createSticky() {

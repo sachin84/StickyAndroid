@@ -1,6 +1,8 @@
 package com.puskin.sticky.dao;
 
-import java.sql.Date;
+import java.util.Date;
+
+
 
 public class User {
 
@@ -10,8 +12,10 @@ public class User {
 	private String email;
 	private String firstname;
 	private String lastname;
-	private Date registerAt;
 	private String gender;
+	private String isEnabled;
+	private String isSynched;
+	private Date registerAt;
 	private Date updatedAt;
 
 	public int getId() {
@@ -85,6 +89,22 @@ public class User {
 
 	public void setUpdatedAt(Date updatedAt) {
 		this.updatedAt = updatedAt;
+	}
+
+	public String getIsSynched() {
+		return isSynched;
+	}
+
+	public void setIsSynched(String isSynched) {
+		this.isSynched = isSynched;
+	}
+
+	public String getIsEnabled() {
+		return isEnabled;
+	}
+
+	public void setIsEnabled(String isEnabled) {
+		this.isEnabled = isEnabled;
 	}
 
 }

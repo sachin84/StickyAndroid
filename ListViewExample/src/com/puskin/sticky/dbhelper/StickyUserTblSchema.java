@@ -20,6 +20,8 @@ public class StickyUserTblSchema {
 	public static final String USER_GENDER = "_gender";
 	public static final String USER_REGISTER_AT = "_register_at";
 	public static final String USER_UPDATED_AT = "_updated_at";
+	public static final String USER_IS_ENABLED = "_is_enabled";
+	public static final String USER_IS_SYNCHED = "_is_synched";
 
 	
 	public StickyUserTblSchema(SQLiteDatabase db) {
@@ -30,13 +32,14 @@ public class StickyUserTblSchema {
 	public void onCreate() {
 
 		String userTbl = " CREATE TABLE user ( ";
-		userTbl += " _id INT NOT NULL PRIMARY KEY AUTOINCREMENT,,";
+		userTbl += " _id integer NOT NULL PRIMARY KEY AUTOINCREMENT,";
 		userTbl += " _username VARCHAR( 100 ) NULL,";
 		userTbl += " _firstname VARCHAR( 100 ) NULL,";
 		userTbl += " _lastname VARCHAR( 100 ) NULL,";
 		userTbl += " _email VARCHAR( 60 ) NULL,";
-		userTbl += " _created_at DATETIME NULL DEFAULT CURRENT_TIMESTAMP";
-		userTbl += " CONSTRAINT Pk_user PRIMARY KEY ( _id )";
+		userTbl += " _created_at DATETIME NULL DEFAULT CURRENT_TIMESTAMP,";
+		userTbl += " _updated_at DATETIME,";
+		userTbl += " _is_enabled BOOL, _is_synched BOOL, user_uuid INTEGER";
 		userTbl += " )";
 
 		database.execSQL(userTbl);

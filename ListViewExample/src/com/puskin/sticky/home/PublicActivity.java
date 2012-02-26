@@ -27,6 +27,8 @@ import android.app.ListActivity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.database.Cursor;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
@@ -42,10 +44,13 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.puskin.sticky.dbhelper.DatabaseHelper;
-import com.puskin.sticky.model.UserModel;
+import com.puskin.sticky.model.StickyModel;
 
 public class PublicActivity extends ListActivity {
+	final int LOGIN_SUCCESS = 5;
+	final int ADD_SUCCESS = 10;
+	final int DELETE_SUCCESS = 15;
+	final int EDIT_SUCCESS = 20;
 
 	public static final String LIST_EXAMPLE = "PublicActivity";
 	private List<StickyData> stickyDataList = new ArrayList<StickyData>();
@@ -60,8 +65,6 @@ public class PublicActivity extends ListActivity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.public_layout);
 
-		// Date dt = new Date(0);
-		// dt.getDate();
 		Date currentDate = new Date(System.currentTimeMillis());
 		Log.i(LIST_EXAMPLE, currentDate.toString());
 
@@ -113,20 +116,20 @@ public class PublicActivity extends ListActivity {
 
 	}
 
-	@Override
-	public void onStart() {
-		try {
-			super.onStart();
-			Log.i(LIST_EXAMPLE, "OnStart Called...");
-
-			UserModel uerModel = new UserModel(this);
-			uerModel.open();
-			Log.i(LIST_EXAMPLE,"User Count=="+uerModel.getUserCount());
-			uerModel.close();
-		} catch (Exception ex) {
-			ex.printStackTrace();
-		}
-	}
+	// @Override
+	// public void onStart() {
+	// try {
+	// super.onStart();
+	// Log.i(LIST_EXAMPLE, "OnStart Called...");
+	//
+	// UserModel uerModel = new UserModel(this);
+	// uerModel.open();
+	// Log.i(LIST_EXAMPLE, "User Count==" + uerModel.getUserCount());
+	// uerModel.close();
+	// } catch (Exception ex) {
+	// ex.printStackTrace();
+	// }
+	// }
 
 	@Override
 	public Object onRetainNonConfigurationInstance() {
@@ -160,12 +163,12 @@ public class PublicActivity extends ListActivity {
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
 				Log.d(LIST_EXAMPLE, "OnClick is called");
-				// Toast.makeText(v.getContext(), // <- Line changed
-				// "Sync Your Task With Server.", Toast.LENGTH_LONG)
-				// .show();
-
 				new LoadPublicSticky().execute("");
+				if (stickyDataList.size() > 0) {
+					ImageView notfound = (ImageView) findViewById(R.id.PublicNotFound);
+					notfound.setVisibility(View.GONE);
 
+				}
 			}
 
 		});
@@ -179,10 +182,12 @@ public class PublicActivity extends ListActivity {
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
 				Log.d(LIST_EXAMPLE, "Add Task is called");
+				ImageView addViewl = (ImageView) findViewById(R.id.PublicAdd);
+				addViewl.setImageResource(R.drawable.add_on);
 				Intent newStickyIntent = new Intent(PublicActivity.this,
 						NewSticky.class);
 
-				startActivityForResult(newStickyIntent, 1);
+				startActivityForResult(newStickyIntent, ADD_SUCCESS);
 				overridePendingTransition(R.anim.slide_in_right,
 						R.anim.slide_out_left);
 			}
@@ -193,14 +198,92 @@ public class PublicActivity extends ListActivity {
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
+		ImageView addView = (ImageView) findViewById(R.id.PublicAdd);
+		addView.setImageResource(R.drawable.add);
 
-		// TODO Auto-generated method stub
 		super.onActivityResult(requestCode, resultCode, data);
-		if (resultCode == RESULT_OK) {
-			Log.i(LIST_EXAMPLE, "Add/Edit Completed");
+		if (resultCode == LOGIN_SUCCESS) {
+			Log.i(LIST_EXAMPLE, "Login Success...");
+		} else if (resultCode == ADD_SUCCESS) {
+
+			Log.i(LIST_EXAMPLE, "Add Completed");
+			int lastAddedStickyId = data.getIntExtra("lastAddedStickyId", 0);
+			loadStickyDetail(lastAddedStickyId);
+			stickyAdapter.notifyDataSetChanged();
+		} else if (resultCode == EDIT_SUCCESS) {
+			Log.i(LIST_EXAMPLE, "Edit Completed...");
+			new LoadPublicSticky().execute("");
+		} else if (resultCode == DELETE_SUCCESS) {
+			Log.i(LIST_EXAMPLE, "Delete Completed...");
+			new LoadPublicSticky().execute("");
+		} else if (resultCode == RESULT_CANCELED) {
+			Log.i(LIST_EXAMPLE, "Add/Edit Cancelled...");
 		} else {
+			new LoadPublicSticky().execute("");
 			Log.i(LIST_EXAMPLE, "Edit Completed");
 		}
+	}
+
+	private boolean loadStickyDetail(int stickyId) {
+
+		StickyModel stkyModel = new StickyModel(this);
+		Cursor stickyCur = stkyModel.getStickyData(stickyId);
+
+		if (stickyCur.moveToFirst()) {
+			String data = stickyCur.getString(stickyCur
+					.getColumnIndex("_title"));
+
+			StickyData stkData = new StickyData();
+
+			String dueDate = stickyCur.getString(stickyCur
+					.getColumnIndex("_duedate"));
+
+			int stkId = Integer.parseInt(stickyCur.getString(stickyCur
+					.getColumnIndex("_id")));
+
+			stkData.setId(stkId);
+			stkData.setDueDate(dueDate);
+
+			stkData.setText(stickyCur.getString(stickyCur
+					.getColumnIndex("_text")));
+			stkData.setName(stickyCur.getString(stickyCur
+					.getColumnIndex("_title")));
+
+			stkData.setPriority(stickyCur.getString(stickyCur
+					.getColumnIndex("_priority")));
+
+			if (!isNullOrBlank(dueDate)) {
+				Log.i(LIST_EXAMPLE, "dueDate==>" + dueDate);
+
+				SimpleDateFormat curFormater = new SimpleDateFormat(
+						"yyyy-MM-dd");
+				java.util.Date dateObj = null;
+				String days = "Not Set";
+
+				try {
+					dateObj = curFormater.parse(dueDate);
+					int pendingdays = daysRemaining(dateObj);
+					if (pendingdays < 0)
+						days = Math.abs(pendingdays) + " Days Ago";
+					else if (pendingdays == 0)
+						days = "Today";
+					else
+						days = pendingdays + " Days Remaining";
+				} catch (ParseException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+
+				stkData.setRemainingDays(days);
+			}
+			stickyDataList.add(stkData);
+			storedDataList.add(stkData);
+			// do what ever you want here
+		}
+
+		stickyCur.close();
+		stkyModel.close();
+		return true;
 	}
 
 	private Bundle prepareEditStickyData(StickyData stickyObj) {
@@ -335,8 +418,8 @@ public class PublicActivity extends ListActivity {
 		@Override
 		protected String doInBackground(String... params) {
 			// perform long running operation operation
-			getStickyData();
-
+			// getStickyData();
+			loadStickyFromDB();
 			return null;
 		}
 
@@ -354,6 +437,11 @@ public class PublicActivity extends ListActivity {
 
 			m_ProgressDialog.dismiss();
 			stickyAdapter.notifyDataSetChanged();
+			if (stickyDataList.size() <= 0) {
+				ImageView notfound = (ImageView) findViewById(R.id.PublicNotFound);
+				notfound.setVisibility(View.VISIBLE);
+
+			}
 		}
 
 		@Override
@@ -364,7 +452,75 @@ public class PublicActivity extends ListActivity {
 
 	}
 
-	public boolean getStickyData() {
+	public boolean loadStickyFromDB() {
+		SharedPreferences settings = getSharedPreferences("StickySettings", 0);
+		int loggedInUserId = settings.getInt("loggedInUserId", 0);
+
+		StickyModel stkyModel = new StickyModel(this);
+		Cursor stickyCur = stkyModel.getAllStickys(loggedInUserId, "Public");
+
+		stickyDataList = new ArrayList<StickyData>();
+
+		if (stickyCur.moveToFirst()) {
+			do {
+				String data = stickyCur.getString(stickyCur
+						.getColumnIndex("_title"));
+				Log.i(LIST_EXAMPLE, "DB-data==>" + data);
+				StickyData stkData = new StickyData();
+
+				String dueDate = stickyCur.getString(stickyCur
+						.getColumnIndex("_duedate"));
+
+				int stkId = Integer.parseInt(stickyCur.getString(stickyCur
+						.getColumnIndex("_id")));
+
+				stkData.setId(stkId);
+				stkData.setDueDate(dueDate);
+
+				stkData.setText(stickyCur.getString(stickyCur
+						.getColumnIndex("_text")));
+				stkData.setName(stickyCur.getString(stickyCur
+						.getColumnIndex("_title")));
+
+				stkData.setPriority(stickyCur.getString(stickyCur
+						.getColumnIndex("_priority")));
+
+				if (!isNullOrBlank(dueDate)) {
+					Log.i(LIST_EXAMPLE, "dueDate==>" + dueDate);
+
+					SimpleDateFormat curFormater = new SimpleDateFormat(
+							"yyyy-MM-dd");
+					java.util.Date dateObj = null;
+					String days = "Not Set";
+
+					try {
+						dateObj = curFormater.parse(dueDate);
+						int pendingdays = daysRemaining(dateObj);
+						if (pendingdays < 0)
+							days = Math.abs(pendingdays) + " Days Ago";
+						else if (pendingdays == 0)
+							days = "Today";
+						else
+							days = pendingdays + " Days Remaining";
+					} catch (ParseException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+
+					stkData.setRemainingDays(days);
+				}
+				stickyDataList.add(stkData);
+				storedDataList.add(stkData);
+				// do what ever you want here
+			} while (stickyCur.moveToNext());
+		}
+		stickyCur.close();
+		stkyModel.close();
+
+		return false;
+	}
+
+	public boolean getStickyData11() {
 
 		// Create a new HttpClient and Post Header
 		HttpClient httpclient = new DefaultHttpClient();

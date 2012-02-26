@@ -83,7 +83,6 @@
                 android:orientation="horizontal" >
 
                 <LinearLayout
-                    android:id="@+id/editheaderTypeLayout"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -105,7 +104,6 @@
                 </LinearLayout>
 
                 <LinearLayout
-                    android:id="@+id/editheaderPriorityLayout"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -123,7 +121,7 @@
                         android:id="@+id/stickyPriority"
                         android:layout_width="fill_parent"
                         android:layout_height="wrap_content"
-                        android:prompt="@string/NewSticky_Type" />
+                        android:prompt="@string/NewSticky_Priority" />
                 </LinearLayout>
             </LinearLayout>
 
@@ -134,18 +132,17 @@
                 android:orientation="horizontal" >
 
                 <LinearLayout
-                    android:id="@+id/editheaderTypeLayout"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:orientation="vertical" >
 
                     <TextView
-                        android:id="@+id/textView3"
+                        android:id="@+id/textViewReminderPeriod"
                         android:layout_width="fill_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="5dp"
-                        android:text="@string/NewSticky_Type"
+                        android:text="@string/NewSticky_Reminder_Period"
                         android:textColor="@color/Black" />
 
                     <Spinner
@@ -156,7 +153,6 @@
                 </LinearLayout>
 
                 <LinearLayout
-                    android:id="@+id/editheaderPriorityLayout"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -167,14 +163,14 @@
                         android:layout_width="fill_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="5dp"
-                        android:text="@string/NewSticky_Priority"
+                        android:text="@string/NewSticky_Progress"
                         android:textColor="@color/Black" />
 
                     <Spinner
-                        android:id="@+id/stickyPriority"
+                        android:id="@+id/stickyProgress"
                         android:layout_width="fill_parent"
                         android:layout_height="wrap_content"
-                        android:prompt="@string/NewSticky_Type" />
+                        android:prompt="@string/NewSticky_Progress" />
                 </LinearLayout>
             </LinearLayout>
 

@@ -4,7 +4,11 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import org.apache.http.HttpResponse;
@@ -18,12 +22,15 @@ import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.puskin.sticky.model.StickyModel;
+
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.database.Cursor;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
@@ -34,6 +41,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 public class ViewSticky extends Activity {
+	final int EDIT_SUCCESS = 20;
+
 	public static final String VIEW_STICKY = "View Sticky";
 	static final int DATE_DIALOG_ID = 999;
 	private int year = 0;
@@ -70,13 +79,26 @@ public class ViewSticky extends Activity {
 		DueDate = stickyDataBndl.getString("DueDate");
 
 		if (!isNullOrBlank(DueDate)) {
-			if (DueDate != null) {
-				String duedateArr[] = DueDate.split("-");
-				year = Integer.parseInt(duedateArr[0]);
-				month = Integer.parseInt(duedateArr[1]);
-				day = Integer.parseInt(duedateArr[2]);
+			try {
+				Date duDate = new SimpleDateFormat("yyyy-MM-dd HH:mm")
+						.parse(DueDate);
+				Calendar cal1 = Calendar.getInstance();
+				cal1.setTime(duDate);
+				year = cal1.get(Calendar.YEAR);
+				month = cal1.get(Calendar.MONTH) + 1;// added 1 because strt
+														// with 0
+				day = cal1.get(Calendar.DAY_OF_MONTH);
+
+			} catch (ParseException e) {
+				e.printStackTrace();
 			}
 		}
+		// if (!isNullOrBlank(DueDate)) {
+		// String duedateArr[] = DueDate.split("-");
+		// year = Integer.parseInt(duedateArr[0]);
+		// month = Integer.parseInt(duedateArr[1]);
+		// day = Integer.parseInt(duedateArr[2]);
+		// }
 
 		// making string CamelCase StickyPriority_Array
 		Priority = Priority.substring(0, 1).toUpperCase()
@@ -106,16 +128,15 @@ public class ViewSticky extends Activity {
 	private void setEditClickListener() {
 		ImageView editView = (ImageView) findViewById(R.id.PublicEdit);
 
-
 		editView.setOnClickListener(new OnClickListener() {
 
 			@Override
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
 				Log.d(VIEW_STICKY, "OnClick is called");
-				ImageView editView = (ImageView) findViewById(R.id.PublicEdit);				
+				ImageView editView = (ImageView) findViewById(R.id.PublicEdit);
 				editView.setImageResource(R.drawable.edit_on);
-				
+
 				Intent editStickyIntent = new Intent(ViewSticky.this,
 						EditSticky.class);
 				editStickyIntent.putExtras(stickyDataBndl);
@@ -183,8 +204,13 @@ public class ViewSticky extends Activity {
 				new DialogInterface.OnClickListener() {
 					public void onClick(DialogInterface dialog, int id) {
 
-						 dialog.dismiss();
-							new DeleteSticky().execute("");
+						dialog.dismiss();
+						boolean status = deleteStickyfromDB(StickyId);
+						// new DeleteSticky().execute("");
+						if (status) {
+							setResult(15);
+							finish();
+						}
 
 					}
 				});
@@ -205,21 +231,39 @@ public class ViewSticky extends Activity {
 		finish();
 	}
 
+	private boolean deleteStickyfromDB(int stickyId) {
+
+		StickyModel stkyModel = new StickyModel(this);
+		int status = stkyModel.deleteSticky(stickyId);
+		stkyModel.close();
+		Log.i(VIEW_STICKY, "Sending Delete Request...");
+
+		if (status > 0)
+			return true;
+		else
+			return false;
+	}
+
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
 
 		// TODO Auto-generated method stub
 		super.onActivityResult(requestCode, resultCode, data);
-		if (resultCode == RESULT_OK) {
-			Log.i(VIEW_STICKY, "Edit Completed");
+		if (resultCode == EDIT_SUCCESS) {
+			setResult(EDIT_SUCCESS);
+			Log.i(VIEW_STICKY, "Edit Completed...");
 			this.finish();
+		} else if (resultCode == RESULT_CANCELED) {
+			setResult(RESULT_CANCELED);
+			Log.i(VIEW_STICKY, "Edit Cancelled....");
 		} else {
+			setResult(RESULT_CANCELED);
 			Log.i(VIEW_STICKY, "Edit Completed");
 		}
 		ImageView sharebtn = (ImageView) findViewById(R.id.PublicShare);
 		sharebtn.setImageResource(R.drawable.share);
-		
+
 		ImageView editView = (ImageView) findViewById(R.id.PublicEdit);
 		editView.setImageResource(R.drawable.edit);
 
@@ -227,6 +271,7 @@ public class ViewSticky extends Activity {
 
 	@Override
 	public void onBackPressed() {
+		setResult(RESULT_CANCELED);
 		this.finish();
 		// super.onBackPressed();
 	}
@@ -284,7 +329,7 @@ public class ViewSticky extends Activity {
 			// Things to be done while execution of long running operation is in
 			// progress. For example updating ProgessDialog
 		}
-		
+
 	}
 
 	public boolean deleteSticky() {

@@ -8,6 +8,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import org.apache.http.HttpResponse;
@@ -40,11 +41,16 @@ import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
+
+import com.puskin.sticky.dao.Sticky;
 import com.puskin.sticky.home.R;
+import com.puskin.sticky.model.StickyModel;
 
 public class EditSticky extends Activity {
-	public static final String EDIT_STICKY = "Edit Sticky";
+	final int EDIT_SUCCESS = 20;
 	static final int DATE_DIALOG_ID = 999;
+
+	public static final String EDIT_STICKY = "Edit Sticky";
 	private int year = 0;
 	private int month = 0;
 	private int day = 0;
@@ -77,16 +83,31 @@ public class EditSticky extends Activity {
 		Priority = stickyDataBndl.getString("Priority").toLowerCase();
 		DueDate = stickyDataBndl.getString("DueDate");
 
+		// if (!isNullOrBlank(DueDate)) {
+		// String duedateArr[] = DueDate.split("-");
+		// year = Integer.parseInt(duedateArr[0]);
+		// month = Integer.parseInt(duedateArr[1])-1;
+		// day = Integer.parseInt(duedateArr[2]);
+		//
+		// }
 		if (!isNullOrBlank(DueDate)) {
-			String duedateArr[] = DueDate.split("-");
-			year = Integer.parseInt(duedateArr[0]);
-			month = Integer.parseInt(duedateArr[1])-1;
-			day = Integer.parseInt(duedateArr[2]);
-			
+			try {
+				Date duDate = new SimpleDateFormat("yyyy-MM-dd HH:mm")
+						.parse(DueDate);
+				Calendar cal1 = Calendar.getInstance();
+				cal1.setTime(duDate);
+				year = cal1.get(Calendar.YEAR);
+				month = cal1.get(Calendar.MONTH);// added 1 because strt
+				day = cal1.get(Calendar.DAY_OF_MONTH);
+
+			} catch (ParseException e) {
+				e.printStackTrace();
+			}
 		}
-		//show in main screen
-		updateDate(year,month+1,day);
-		
+
+		// show in main screen
+		updateDate(year, month + 1, day);
+
 		// making string CamelCase StickyPriority_Array
 		Priority = Priority.substring(0, 1).toUpperCase()
 				+ Priority.substring(1).toLowerCase();
@@ -169,9 +190,11 @@ public class EditSticky extends Activity {
 
 			@Override
 			public void onClick(View v) {
-				boolean status = updateSticky();
+
+				// boolean status = updateSticky();
+				boolean status = EditStickyInLocalDB();
 				if (status) {
-					setResult(RESULT_OK);
+					setResult(EDIT_SUCCESS);
 					finish();
 				}
 			}
@@ -183,7 +206,7 @@ public class EditSticky extends Activity {
 		return (s == null || s.trim().equals("") || s.trim().equals("null"));
 	}
 
-	private void updateDate(int year,int month,int day) {
+	private void updateDate(int year, int month, int day) {
 		Log.i(EDIT_STICKY, "Current Month==>" + month);
 
 		TextView txt = (TextView) findViewById(R.id.dueDateText);
@@ -199,7 +222,7 @@ public class EditSticky extends Activity {
 			year = yr;
 			month = monthOfYear + 1;
 			day = dayOfMonth;
-			updateDate(year,month,day);
+			updateDate(year, month, day);
 			Log.i(EDIT_STICKY, "Selected Month==>" + monthOfYear);
 
 		}
@@ -209,7 +232,7 @@ public class EditSticky extends Activity {
 		final Calendar cal = Calendar.getInstance();
 		if (year == 0) {
 			year = cal.get(Calendar.YEAR);
-			month = cal.get(Calendar.MONTH);
+			month = cal.get(Calendar.MONTH) + 1;
 			day = cal.get(Calendar.DAY_OF_MONTH);
 		}
 		return new DatePickerDialog(this, dateListener, year, month, day);
@@ -217,8 +240,60 @@ public class EditSticky extends Activity {
 
 	@Override
 	public void onBackPressed() {
+		setResult(RESULT_CANCELED);		
 		this.finish();
 		// super.onBackPressed();
+	}
+
+	public boolean EditStickyInLocalDB() {
+		boolean status = false;
+		SharedPreferences settings = getSharedPreferences("StickySettings", 0);
+		int loggedInUserId = settings.getInt("loggedInUserId", 0);
+
+		EditText stickyTextObj = (EditText) findViewById(R.id.stickyText);
+		String stickyText = stickyTextObj.getText().toString();
+
+		EditText stickyTitleObj = (EditText) findViewById(R.id.stickyTitle);
+		String stickyTitle = stickyTitleObj.getText().toString();
+
+		Spinner spnrStickyType = (Spinner) findViewById(R.id.stickyType);
+		String stickyType = spnrStickyType.getSelectedItem().toString();
+
+		Spinner spnrStickyPriority = (Spinner) findViewById(R.id.stickyPriority);
+		String stickyPriority = spnrStickyPriority.getSelectedItem().toString();
+
+		TextView stickydueDateObj = (TextView) findViewById(R.id.dueDateText);
+		String stickyDueDate = stickydueDateObj.getText().toString();
+
+		// SimpleDateFormat dtFormater = new SimpleDateFormat(
+		// "yyyy-MM-dd HH:mm:ss");
+		SimpleDateFormat dtFormater = new SimpleDateFormat("dd-MM-yyyy");
+		Date currdt = new java.util.Date();
+
+		Date duedt = null;
+
+		try {
+			duedt = dtFormater.parse(stickyDueDate);
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		Sticky stickyObj = new Sticky();
+
+		stickyObj.setId(StickyId);
+		stickyObj.setUserId(loggedInUserId);
+		stickyObj.setTitle(stickyTitle);
+		stickyObj.setText(stickyText);
+		stickyObj.setPriority(stickyPriority);
+		// stickyObj.setProgress(stickyProgress);
+		stickyObj.setDueDate(duedt);
+		stickyObj.setCreatedAt(currdt);
+		stickyObj.setStickyType(stickyType);
+
+		StickyModel stickyModel = new StickyModel(this);
+		status = stickyModel.EditSticky(stickyObj);
+		return status;
 	}
 
 	public boolean updateSticky() {

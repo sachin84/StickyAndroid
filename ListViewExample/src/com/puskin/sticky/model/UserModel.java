@@ -1,5 +1,7 @@
 package com.puskin.sticky.model;
 
+import java.text.SimpleDateFormat;
+
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
@@ -26,20 +28,29 @@ public class UserModel {
 		dbHelper.close();
 	}
 	
-	void AddUser(User usr) {
+	@SuppressWarnings("static-access")
+	public int AddUser(User usr) {
+		SimpleDateFormat sdfDate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		String duedt = sdfDate.format(usr.getRegisterAt());
+		String currdt = sdfDate.format(usr.getIsSynched());
 
+		
 		ContentValues cv = new ContentValues();
 		cv.put(userSchema.USER_NAME, usr.getUsername());
 		cv.put(userSchema.USER_EMAIL, usr.getEmail());
 		cv.put(userSchema.USER_FIRSTNAME, usr.getFirstname());
 		cv.put(userSchema.USER_LASTNAME, usr.getLastname());
 		cv.put(userSchema.USER_GENDER, usr.getGender());
-		cv.put(userSchema.USER_REGISTER_AT, usr.getRegisterAt().toString());
+		cv.put(userSchema.USER_REGISTER_AT, currdt);
+		cv.put(userSchema.USER_IS_ENABLED,"true");
+		cv.put(userSchema.USER_IS_SYNCHED,"false");
 
-		database.insert(userSchema.UserTable, userSchema.USER_UPDATED_AT, cv);
+		SQLiteDatabase db = dbHelper.getWritableDatabase();
+
+		long userId = db.insert(userSchema.UserTable, userSchema.USER_UPDATED_AT, cv);
+		db.close();
 		
-		this.close();
-
+		return (int) userId;
 	}
 
 	public int getUserCount() {

@@ -2,7 +2,7 @@
 <resources>
 
     <string name="hello">Hello World, ListViewExampleActivity!</string>
-    <string name="app_name">ListViewExample</string>
+    <string name="app_name">StickyManager</string>
     <string name="Sticky_list_name">Your Sticky List</string>
     <string name="NewSticky_Header">Add Sticky</string>
     <string name="NewSticky_Text">Sticky Text</string>
@@ -36,6 +36,8 @@
     </string-array>
     <string-array name="StickyProgressArray">
         <item>Not Started</item>
+        <item>Started</item>
+        <item>Completed</item>
         <item>10%</item>
         <item>20%</item>
         <item>30%</item>
@@ -45,7 +47,6 @@
         <item>70%</item>
         <item>80%</item>
         <item>90%</item>
-        <item>Completed</item>
     </string-array>
 
 </resources>

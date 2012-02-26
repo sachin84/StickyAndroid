@@ -28,10 +28,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 //
 //		db.execSQL(userTbl);
 
-		//StickyTblReminderPeriod.onCreate(db);
+		StickyTblReminderPeriod.onCreate(db);
 		StickyUserTblSchema usersch = new StickyUserTblSchema(db);
 		usersch.onCreate();
-
+		StickyTblSchema stickySchema = new StickyTblSchema(db);
+		stickySchema.onCreate();
 	}
 
 	@Override

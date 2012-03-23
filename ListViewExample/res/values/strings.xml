@@ -14,13 +14,15 @@
     <string name="NewSticky_EditButton">Edit</string>
     <string name="NewSticky_Reminder_Period">Reminder Period</string>
     <string name="NewSticky_Progress">Sticky Progress</string>
-    
     <string name="ShareSticky_Title">Share Sticky</string>
     <string name="ShareSticky_Email">Email Address</string>
     <string name="ShareSticky_Button">Share</string>
     <string name="ShareSticky_Msg">Sticky Message</string>
     <string name="EditSticky_Header">Edit Sticky</string>
     <string name="ViewSticky_Header">Sticky Details</string>
+    <string name="LoginSticky_Header">Sticky Manager</string>
+    <string name="LoginSticky_UserName">UserName</string>
+    <string name="LoginSticky_Password">Password</string>
 
     <string-array name="StickyType_Array">
         <item>Public</item>
@@ -48,5 +50,17 @@
         <item>80%</item>
         <item>90%</item>
     </string-array>
+
+    <style name="ButtonText">
+        <item name="android:textColor">#ffffff</item>
+        <item name="android:gravity">center</item>
+
+        <item name="android:textSize">16dp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:shadowColor">#000000</item>
+        <item name="android:shadowDx">1</item>
+        <item name="android:shadowDy">1</item>
+        <item name="android:shadowRadius">2</item>
+    </style>
 
 </resources>

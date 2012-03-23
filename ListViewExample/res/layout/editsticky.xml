@@ -6,8 +6,8 @@
     <LinearLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="fill_parent"
-        android:layout_height="match_parent"
-        android:background="#e1e2e4"
+        android:layout_height="wrap_content"
+        android:background="@drawable/loginbg1"
         android:orientation="vertical"
         android:weightSum="1" >
 
@@ -194,13 +194,28 @@
                 android:textColor="@color/Black" />
         </LinearLayout>
 
-        <Button
+        <!--
+             <Button
             android:id="@+id/editButton"
             android:layout_width="match_parent"
             android:layout_height="40dp"
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"
-            android:text="@string/NewSticky_EditButton" />
+            android:text="@string/NewSticky_EditButton" />
+        -->
+
+        <Button
+            android:id="@+id/editButton"
+            style="@style/ButtonText"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginBottom="10dp"
+            android:layout_marginLeft="40dp"
+            android:layout_marginRight="40dp"
+            android:background="@drawable/yellow_button"
+            android:gravity="center"
+            android:text="@string/NewSticky_SaveButton" />
     </LinearLayout>
 
 </ScrollView>

@@ -6,6 +6,7 @@ import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 
 import com.puskin.sticky.dbhelper.DatabaseHelper;
+import com.puskin.sticky.dbhelper.StickyTblReminderPeriod;
 
 public class ReminderPeriodModel {
 	private SQLiteDatabase database;
@@ -32,4 +33,12 @@ public class ReminderPeriodModel {
 
 	}
 
+	public Cursor getReminderPeriod(String name) {
+		SQLiteDatabase db = dbHelper.getReadableDatabase();
+		String query = "SELECT * FROM " +TableName+" where "+StickyTblReminderPeriod.REMINDER_PERIOD_NAME +"= '"+name+"'";
+		Cursor cur = db.rawQuery(query, null);
+//		db.close();
+		return cur;
+
+	}
 }

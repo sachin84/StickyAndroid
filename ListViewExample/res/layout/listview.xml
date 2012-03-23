@@ -18,7 +18,14 @@
             android:layout_height="wrap_content"
             android:visibility="gone" >
         </TextView>
-
+        
+        <TextView
+            android:id="@+id/ReminderPeriodId"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="gone" >
+        </TextView>
+        
         <ImageView
             android:id="@+id/stickyPriority"
             android:layout_width="wrap_content"
@@ -33,15 +40,16 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_weight="8"
-        android:gravity="left|center"
-        android:orientation="vertical" >
+        android:gravity="left"
+        android:orientation="vertical" android:paddingLeft="2dip">
 
         <TextView
             xmlns:android="http://schemas.android.com/apk/res/android"
             android:id="@+id/StickyTitle"
-            android:layout_width="fill_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:gravity="center_vertical"
+            android:scrollHorizontally="false"
             android:textColor="@color/Black"
             android:textSize="16dip"
             android:textStyle="bold" />
@@ -56,6 +64,14 @@
 
         <TextView
             xmlns:android="http://schemas.android.com/apk/res/android"
+            android:id="@+id/StickyProgress"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:textColor="@color/Black" />
+
+        <TextView
+            xmlns:android="http://schemas.android.com/apk/res/android"
             android:id="@+id/StickyText"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
@@ -63,6 +79,7 @@
             android:textColor="@color/Black" />
     </LinearLayout>
     <!-- Rightend Arrow -->
+
     <ImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -94,7 +111,7 @@
         android:textColor="@color/Black" >
     </TextView>
 
-</LinearLayout>
+</LinearLayout>
     -->
 
 </LinearLayout>

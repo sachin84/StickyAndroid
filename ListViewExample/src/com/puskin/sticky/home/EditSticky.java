@@ -28,6 +28,7 @@ import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -39,11 +40,15 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.SimpleCursorAdapter;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import com.puskin.sticky.dao.Reminder;
 import com.puskin.sticky.dao.Sticky;
 import com.puskin.sticky.home.R;
+import com.puskin.sticky.model.ReminderModel;
+import com.puskin.sticky.model.ReminderPeriodModel;
 import com.puskin.sticky.model.StickyModel;
 
 public class EditSticky extends Activity {
@@ -56,11 +61,14 @@ public class EditSticky extends Activity {
 	private int day = 0;
 	public int StickyId;
 	public String StickyType;
+	private int selectedReminderPeriod = 0;
 
 	// public String Name;
 	// public String Text;
 	public String DueDate;
 	public String Priority;
+	public String Progress;
+
 	public Bundle stickyDataBndl;
 
 	@Override
@@ -82,6 +90,7 @@ public class EditSticky extends Activity {
 		StickyType = stickyDataBndl.getString("Type");
 		Priority = stickyDataBndl.getString("Priority").toLowerCase();
 		DueDate = stickyDataBndl.getString("DueDate");
+		Progress = stickyDataBndl.getString("Progress");
 
 		// if (!isNullOrBlank(DueDate)) {
 		// String duedateArr[] = DueDate.split("-");
@@ -175,6 +184,82 @@ public class EditSticky extends Activity {
 
 		});
 
+		setDueDateButtonListener();
+		setSaveButtonListener();
+		setReminderPeriodClickListener();
+		setstickyProgressClickListener();
+	}
+
+	private void setstickyProgressClickListener() {
+		Spinner spinnerProgress = (Spinner) findViewById(R.id.stickyProgress);
+		ArrayAdapter<CharSequence> adapterPriority = ArrayAdapter
+				.createFromResource(this, R.array.StickyProgressArray,
+						android.R.layout.simple_spinner_item);
+
+		adapterPriority
+				.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+		spinnerProgress.setAdapter(adapterPriority);
+		int progressPos = adapterPriority.getPosition(Progress);
+		spinnerProgress.setSelection(progressPos);
+		// Progress
+		spinnerProgress.setOnItemSelectedListener(new OnItemSelectedListener() {
+			@Override
+			public void onItemSelected(AdapterView<?> parent, View view,
+					int pos, long id) {
+				parent.getItemAtPosition(pos).toString();
+			}
+
+			@Override
+			public void onNothingSelected(AdapterView<?> arg0) {
+				// TODO Auto-generated method stub
+
+			}
+
+		});
+
+	}
+
+	private void setReminderPeriodClickListener() {
+		ReminderPeriodModel period = new ReminderPeriodModel(this);
+		Cursor periodCur = period.getAllReminderPeriods();
+
+		Spinner reminderPeriod = (Spinner) findViewById(R.id.reminderPeriod);
+		// startManagingCursor(periodCur);
+
+		// create an array to specify which fields we want to display
+		String[] from = new String[] { "_period_name" };
+		// create an array of the display item we want to bind our data to
+		int[] to = new int[] { android.R.id.text1 };
+
+		SimpleCursorAdapter mAdapter = new SimpleCursorAdapter(this,
+				android.R.layout.simple_spinner_item, periodCur, from, to);
+		mAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
+		reminderPeriod.setAdapter(mAdapter);
+		period.close();
+
+		reminderPeriod.setOnItemSelectedListener(new OnItemSelectedListener() {
+			@Override
+			public void onItemSelected(AdapterView<?> parent, View view,
+					int pos, long id) {
+				Cursor mCursor = (Cursor) parent.getItemAtPosition(pos);
+				selectedReminderPeriod = Integer.parseInt(mCursor.getString(0));
+
+				// Toast.makeText(view.getContext(), mCursor.getString(0),
+				// Toast.LENGTH_LONG).show();
+			}
+
+			@Override
+			public void onNothingSelected(AdapterView<?> arg0) {
+				// TODO Auto-generated method stub
+
+			}
+
+		});
+
+	}
+
+	private void setDueDateButtonListener() {
 		Button dueDatebtn = (Button) findViewById(R.id.dueDateButton);
 		dueDatebtn.setOnClickListener(new OnClickListener() {
 
@@ -184,7 +269,9 @@ public class EditSticky extends Activity {
 			}
 
 		});
+	}
 
+	private void setSaveButtonListener() {
 		Button saveButton = (Button) findViewById(R.id.editButton);
 		saveButton.setOnClickListener(new OnClickListener() {
 
@@ -199,7 +286,6 @@ public class EditSticky extends Activity {
 				}
 			}
 		});
-
 	}
 
 	private boolean isNullOrBlank(String s) {
@@ -240,7 +326,7 @@ public class EditSticky extends Activity {
 
 	@Override
 	public void onBackPressed() {
-		setResult(RESULT_CANCELED);		
+		setResult(RESULT_CANCELED);
 		this.finish();
 		// super.onBackPressed();
 	}
@@ -261,6 +347,9 @@ public class EditSticky extends Activity {
 
 		Spinner spnrStickyPriority = (Spinner) findViewById(R.id.stickyPriority);
 		String stickyPriority = spnrStickyPriority.getSelectedItem().toString();
+
+		Spinner spnrstickyProgress = (Spinner) findViewById(R.id.stickyProgress);
+		String stickyProgress = spnrstickyProgress.getSelectedItem().toString();
 
 		TextView stickydueDateObj = (TextView) findViewById(R.id.dueDateText);
 		String stickyDueDate = stickydueDateObj.getText().toString();
@@ -286,14 +375,55 @@ public class EditSticky extends Activity {
 		stickyObj.setTitle(stickyTitle);
 		stickyObj.setText(stickyText);
 		stickyObj.setPriority(stickyPriority);
-		// stickyObj.setProgress(stickyProgress);
+		stickyObj.setProgress(stickyProgress);
 		stickyObj.setDueDate(duedt);
 		stickyObj.setCreatedAt(currdt);
 		stickyObj.setStickyType(stickyType);
 
 		StickyModel stickyModel = new StickyModel(this);
 		status = stickyModel.EditSticky(stickyObj);
+		stickyModel.close();
+
+		updateReminderInLocal(currdt, duedt);
 		return status;
+	}
+
+	private boolean updateReminderInLocal(Date currdt, Date duedt) {
+		Log.i(EDIT_STICKY, "Reminder Update Called");
+		String reminderId = "";
+		Reminder reminder = new Reminder();
+		reminder.setAddedDate(currdt);
+		reminder.setStickyId(StickyId);
+		reminder.setPeriodId(selectedReminderPeriod);
+		reminder.setEnabled(true);
+		reminder.setDueDate(duedt);
+
+		ReminderModel reminderModel = new ReminderModel(this);
+
+
+
+		if (selectedReminderPeriod == 1) {
+			reminderModel.deleteStickyReminder(StickyId);
+		} else {
+			Cursor reminderCur = reminderModel.getReminderDatafrmStickyId(reminder
+					.getStickyId());
+			
+			if (reminderCur.moveToFirst()) {
+				do {
+					reminderId = reminderCur.getString(reminderCur
+							.getColumnIndex("_id"));
+				} while (reminderCur.moveToNext());
+				reminderCur.close();
+				
+				reminder.setId(Integer.parseInt(reminderId));
+				reminderModel.EditReminder(reminder);
+			} else {
+				reminderModel.AddReminder(reminder);
+			}
+
+		}
+		reminderModel.close();
+		return true;
 	}
 
 	public boolean updateSticky() {

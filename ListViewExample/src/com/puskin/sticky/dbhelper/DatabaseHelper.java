@@ -33,6 +33,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 		usersch.onCreate();
 		StickyTblSchema stickySchema = new StickyTblSchema(db);
 		stickySchema.onCreate();
+		StickyReminderTblSchema remindertblSch = new StickyReminderTblSchema(db);
+		remindertblSch.onCreate();
 	}
 
 	@Override
@@ -40,6 +42,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
 		StickyUserTblSchema usersch = new StickyUserTblSchema(db);
 		usersch.onUpgrade();
+		StickyTblSchema stickySchema = new StickyTblSchema(db);
+		stickySchema.onUpgrade();
+		StickyReminderTblSchema remindertblSch = new StickyReminderTblSchema(db);
+		remindertblSch.onUpgrade();
 		
 //		db.execSQL("DROP TABLE IF EXISTS " + UserTable);
 //		onCreate(db);

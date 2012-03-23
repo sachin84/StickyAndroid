@@ -2,8 +2,31 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/loginbg1"
     android:orientation="vertical"
     android:weightSum="1" >
+
+    <LinearLayout
+        android:id="@+id/loginheaderLayout"
+        android:layout_width="fill_parent"
+        android:layout_height="80dp"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:paddingBottom="1dip"
+        android:paddingTop="1dip" >
+
+        <TextView
+            android:id="@+id/newStickyHeader"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:paddingRight="32dip"
+            android:text="@string/LoginSticky_Header"
+            android:textColor="@color/White"
+            android:textSize="26dip"
+            android:textStyle="bold" />
+    </LinearLayout>
 
     <TextView
         android:id="@+id/textView2"
@@ -11,7 +34,9 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="10dp"
         android:layout_marginTop="5dp"
-        android:text="Login:" />
+        android:text="@string/LoginSticky_UserName"
+        android:textColor="@color/White"
+        android:textStyle="bold" />
 
     <EditText
         android:id="@+id/login"
@@ -30,7 +55,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="10dp"
-        android:text="Password:" />
+        android:text="@string/LoginSticky_Password"
+        android:textColor="@color/White"
+        android:textStyle="bold" />
 
     <EditText
         android:id="@+id/password"
@@ -43,12 +70,26 @@
         android:textStyle="normal"
         android:typeface="sans" />
 
-    <Button
+<!--     <Button
         android:id="@+id/loginbutton"
         android:layout_width="match_parent"
         android:layout_height="40dp"
         android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp"
-        android:text="Sign In" />
+        android:text="Sign In" /> -->
+
+    <Button
+        android:id="@+id/loginbutton"
+        style="@style/ButtonText"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginLeft="40dp"
+        android:layout_marginRight="40dp"
+        android:background="@drawable/yellow_button"
+        android:gravity="center"
+        android:text="Sign In" >
+
+    </Button>
 
 </LinearLayout>

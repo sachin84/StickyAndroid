@@ -22,7 +22,9 @@ import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.puskin.sticky.dao.Reminder;
 import com.puskin.sticky.dao.Sticky;
+import com.puskin.sticky.model.ReminderModel;
 import com.puskin.sticky.model.ReminderPeriodModel;
 import com.puskin.sticky.model.StickyModel;
 
@@ -56,12 +58,14 @@ public class NewSticky extends Activity {
 	private int day = 0;
 	public int NewStickyId;
 	public String StickyType;
-	private int selectedPeriod = 0;
+	private int selectedReminderPeriod = 0;
 
 	// public String Name;
 	// public String Text;
 	public String DueDate;
 	public String Priority;
+	public String Progress;
+
 	public Bundle stickyDataBndl;
 	public int lastAddedStickyId = 0;
 
@@ -148,7 +152,7 @@ public class NewSticky extends Activity {
 
 					Intent intent = new Intent();
 					intent.putExtra("lastAddedStickyId", lastAddedStickyId);
-					setResult(10,intent);
+					setResult(10, intent);
 					finish();
 				} else {
 					setResult(RESULT_OK);
@@ -213,10 +217,10 @@ public class NewSticky extends Activity {
 			public void onItemSelected(AdapterView<?> parent, View view,
 					int pos, long id) {
 				Cursor mCursor = (Cursor) parent.getItemAtPosition(pos);
-				selectedPeriod = Integer.parseInt(mCursor.getString(0));
+				selectedReminderPeriod = Integer.parseInt(mCursor.getString(0));
 
-//				Toast.makeText(view.getContext(), mCursor.getString(0),
-//						Toast.LENGTH_LONG).show();
+				// Toast.makeText(view.getContext(), mCursor.getString(0),
+				// Toast.LENGTH_LONG).show();
 			}
 
 			@Override
@@ -266,7 +270,7 @@ public class NewSticky extends Activity {
 
 	public boolean createStickyInLocal() {
 		boolean status = true;
-		
+
 		SharedPreferences settings = getSharedPreferences("StickySettings", 0);
 		int loggedInUserId = settings.getInt("loggedInUserId", 0);
 
@@ -282,6 +286,9 @@ public class NewSticky extends Activity {
 
 		Spinner spnrStickyPriority = (Spinner) findViewById(R.id.stickyPriority);
 		String stickyPriority = spnrStickyPriority.getSelectedItem().toString();
+
+		Spinner spnrstickyProgress = (Spinner) findViewById(R.id.stickyProgress);
+		String stickyProgress = spnrstickyProgress.getSelectedItem().toString();
 
 		TextView stickydueDateObj = (TextView) findViewById(R.id.dueDateText);
 		String stickyDueDate = stickydueDateObj.getText().toString();
@@ -307,14 +314,34 @@ public class NewSticky extends Activity {
 		stickyObj.setTitle(stickyTitle);
 		stickyObj.setText(stickyText);
 		stickyObj.setPriority(stickyPriority);
-		// stickyObj.setProgress(stickyProgress);
+		stickyObj.setProgress(stickyProgress);
 		stickyObj.setDueDate(duedt);
 		stickyObj.setCreatedAt(currdt);
 		stickyObj.setStickyType(stickyType);
 
 		StickyModel stickyModel = new StickyModel(this);
 		lastAddedStickyId = stickyModel.AddSticky(stickyObj);
+
+		Log.i(NEW_STICKY, "lastAddedStickyId=="+lastAddedStickyId);
+
+		if (selectedReminderPeriod>0) {
+			createReminderInLocal(currdt, duedt);
+		}
 		return status;
+	}
+
+	private int createReminderInLocal(Date currdt, Date duedt) {
+
+		Reminder reminder = new Reminder();
+		reminder.setAddedDate(currdt);
+		reminder.setStickyId(lastAddedStickyId);
+		reminder.setPeriodId(selectedReminderPeriod);
+		reminder.setEnabled(true);
+		reminder.setDueDate(duedt);
+
+		ReminderModel reminderModel = new ReminderModel(this);
+
+		return reminderModel.AddReminder(reminder);
 	}
 
 	public boolean createSticky() {

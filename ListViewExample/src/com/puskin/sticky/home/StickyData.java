@@ -12,6 +12,8 @@ public class StickyData implements Serializable {
 	private boolean isSelected;
 	private String remainingDays;
 	private String Priority;
+	private String Progress;
+	private String ReminderPeriodId;
 
 	public int getId() {
 		return Id;
@@ -67,6 +69,22 @@ public class StickyData implements Serializable {
 
 	public void setRemainingDays(String remainingDays) {
 		this.remainingDays = remainingDays;
+	}
+
+	public String getProgress() {
+		return Progress;
+	}
+
+	public void setProgress(String progress) {
+		Progress = progress;
+	}
+
+	public String getReminderPeriod() {
+		return ReminderPeriodId;
+	}
+
+	public void setReminderPeriod(String reminderPeriod) {
+		ReminderPeriodId = reminderPeriod;
 	}
 
 

@@ -6,13 +6,12 @@
     <RelativeLayout
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:background="#3d3d3d" >
+        android:background="@drawable/loginbg1" >
 
         <LinearLayout
             xmlns:android="http://schemas.android.com/apk/res/android"
             android:layout_width="match_parent"
             android:layout_height="fill_parent"
-            android:background="#e1e2e4"
             android:orientation="vertical"
             android:weightSum="1" >
 
@@ -174,57 +173,6 @@
                 </LinearLayout>
             </LinearLayout>
 
-           
-
-            <!--
-            <TextView
-                android:id="@+id/textView3"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="5dip"
-                android:text="@string/NewSticky_Type" 
-                android:textColor="@color/Black"/>
-
-            <Spinner
-                android:id="@+id/stickyType"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:prompt="@string/NewSticky_Type" />
-
-            <TextView
-                android:id="@+id/textView4"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="5dip"
-                android:text="@string/NewSticky_Priority" 
-                android:textColor="@color/Black"/>
-
-            <Spinner
-                android:id="@+id/stickyPriority"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:prompt="@string/NewSticky_Type" />
-            -->
-
-
-            <!--
-                 <TextView
-                android:id="@+id/textView5"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="5dip"
-                android:text="@string/NewSticky_DueDate" 
-                android:textColor="@color/Black"/>
-            -->
-
-
-            <!--
-         <DatePicker
-        android:id="@+id/dueDate"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content" />
-            -->
-
             <LinearLayout
                 android:layout_width="fill_parent"
                 android:layout_height="0dip"
@@ -245,7 +193,8 @@
                     android:textColor="@color/Black" />
             </LinearLayout>
 
-            <Button
+            <!--
+                 <Button
                 android:id="@+id/saveButton"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -253,6 +202,21 @@
                 android:layout_marginRight="30dip"
                 android:gravity="center"
                 android:text="@string/NewSticky_SaveButton" />
+            -->
+
+            <Button
+                android:id="@+id/saveButton"
+                style="@style/ButtonText"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginBottom="10dp"
+                android:layout_marginLeft="40dp"
+                android:layout_marginRight="40dp"
+                android:background="@drawable/yellow_button"
+                android:gravity="center"
+                android:text="@string/NewSticky_SaveButton" >
+            </Button>
         </LinearLayout>
     </RelativeLayout>
 

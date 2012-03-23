@@ -30,7 +30,7 @@ public class StickyTblSchema {
 	public void onCreate() {
 
 		String StickyTbl = " CREATE TABLE sticky ( ";
-		StickyTbl += " _id integer NOT NULL PRIMARY KEY, _userId integer NOT NULL, _title VARCHAR( 150 ),";
+		StickyTbl += " _id integer PRIMARY KEY  AUTOINCREMENT  NOT NULL , _userId integer NOT NULL, _title VARCHAR( 150 ),";
 		StickyTbl += " _text VARCHAR( 500 ), _priority VARCHAR( 20 ),";
 		StickyTbl += " _duedate DATETIME, _created_at DATETIME,";
 		StickyTbl += " _updated_at DATETIME, _progress varchar(20),";

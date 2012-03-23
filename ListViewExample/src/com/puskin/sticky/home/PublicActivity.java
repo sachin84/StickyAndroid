@@ -52,7 +52,7 @@ public class PublicActivity extends ListActivity {
 	final int DELETE_SUCCESS = 15;
 	final int EDIT_SUCCESS = 20;
 
-	public static final String LIST_EXAMPLE = "PublicActivity";
+	public static final String PUBLIC_LISTING = "PublicActivity";
 	private List<StickyData> stickyDataList = new ArrayList<StickyData>();
 	private List<StickyData> storedDataList = new ArrayList<StickyData>();
 
@@ -66,7 +66,7 @@ public class PublicActivity extends ListActivity {
 		setContentView(R.layout.public_layout);
 
 		Date currentDate = new Date(System.currentTimeMillis());
-		Log.i(LIST_EXAMPLE, currentDate.toString());
+		Log.i(PUBLIC_LISTING, currentDate.toString());
 
 		stickyAdapter = new StickyListAdapter(this);
 		setListAdapter(stickyAdapter);
@@ -102,7 +102,7 @@ public class PublicActivity extends ListActivity {
 
 		LoadedStickyData loadedDataList = (LoadedStickyData) getLastNonConfigurationInstance();
 		if (loadedDataList == null) {
-			Log.i(LIST_EXAMPLE, "LOADING DATA....");
+			Log.i(PUBLIC_LISTING, "LOADING DATA....");
 			new LoadPublicSticky().execute("");
 		} else {
 			// do something
@@ -120,11 +120,11 @@ public class PublicActivity extends ListActivity {
 	// public void onStart() {
 	// try {
 	// super.onStart();
-	// Log.i(LIST_EXAMPLE, "OnStart Called...");
+	// Log.i(PUBLIC_LISTING, "OnStart Called...");
 	//
 	// UserModel uerModel = new UserModel(this);
 	// uerModel.open();
-	// Log.i(LIST_EXAMPLE, "User Count==" + uerModel.getUserCount());
+	// Log.i(PUBLIC_LISTING, "User Count==" + uerModel.getUserCount());
 	// uerModel.close();
 	// } catch (Exception ex) {
 	// ex.printStackTrace();
@@ -145,7 +145,7 @@ public class PublicActivity extends ListActivity {
 			@Override
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
-				Log.d(LIST_EXAMPLE, "OnClick is called");
+				Log.d(PUBLIC_LISTING, "OnClick is called");
 				Toast.makeText(v.getContext(), // <- Line changed
 						"You Can Search Your Tasks Here", Toast.LENGTH_LONG)
 						.show();
@@ -162,12 +162,14 @@ public class PublicActivity extends ListActivity {
 			@Override
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
-				Log.d(LIST_EXAMPLE, "OnClick is called");
+				Log.d(PUBLIC_LISTING, "OnClick is called");
 				new LoadPublicSticky().execute("");
-				if (stickyDataList.size() > 0) {
-					ImageView notfound = (ImageView) findViewById(R.id.PublicNotFound);
+				ImageView notfound = (ImageView) findViewById(R.id.PublicNotFound);
+				if (stickyDataList.size() <= 0) {
+					notfound.setVisibility(View.VISIBLE);
+				}
+				else{
 					notfound.setVisibility(View.GONE);
-
 				}
 			}
 
@@ -181,7 +183,7 @@ public class PublicActivity extends ListActivity {
 			@Override
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
-				Log.d(LIST_EXAMPLE, "Add Task is called");
+				Log.d(PUBLIC_LISTING, "Add Task is called");
 				ImageView addViewl = (ImageView) findViewById(R.id.PublicAdd);
 				addViewl.setImageResource(R.drawable.add_on);
 				Intent newStickyIntent = new Intent(PublicActivity.this,
@@ -203,24 +205,24 @@ public class PublicActivity extends ListActivity {
 
 		super.onActivityResult(requestCode, resultCode, data);
 		if (resultCode == LOGIN_SUCCESS) {
-			Log.i(LIST_EXAMPLE, "Login Success...");
+			Log.i(PUBLIC_LISTING, "Login Success...");
 		} else if (resultCode == ADD_SUCCESS) {
 
-			Log.i(LIST_EXAMPLE, "Add Completed");
+			Log.i(PUBLIC_LISTING, "Add Completed");
 			int lastAddedStickyId = data.getIntExtra("lastAddedStickyId", 0);
 			loadStickyDetail(lastAddedStickyId);
 			stickyAdapter.notifyDataSetChanged();
 		} else if (resultCode == EDIT_SUCCESS) {
-			Log.i(LIST_EXAMPLE, "Edit Completed...");
+			Log.i(PUBLIC_LISTING, "Edit Completed...");
 			new LoadPublicSticky().execute("");
 		} else if (resultCode == DELETE_SUCCESS) {
-			Log.i(LIST_EXAMPLE, "Delete Completed...");
+			Log.i(PUBLIC_LISTING, "Delete Completed...");
 			new LoadPublicSticky().execute("");
 		} else if (resultCode == RESULT_CANCELED) {
-			Log.i(LIST_EXAMPLE, "Add/Edit Cancelled...");
+			Log.i(PUBLIC_LISTING, "Add/Edit Cancelled...");
 		} else {
 			new LoadPublicSticky().execute("");
-			Log.i(LIST_EXAMPLE, "Edit Completed");
+			Log.i(PUBLIC_LISTING, "Edit Completed");
 		}
 	}
 
@@ -251,9 +253,12 @@ public class PublicActivity extends ListActivity {
 
 			stkData.setPriority(stickyCur.getString(stickyCur
 					.getColumnIndex("_priority")));
-
+			
+			stkData.setProgress(stickyCur.getString(stickyCur
+					.getColumnIndex("_progress")));
+			
 			if (!isNullOrBlank(dueDate)) {
-				Log.i(LIST_EXAMPLE, "dueDate==>" + dueDate);
+				Log.i(PUBLIC_LISTING, "dueDate==>" + dueDate);
 
 				SimpleDateFormat curFormater = new SimpleDateFormat(
 						"yyyy-MM-dd");
@@ -294,9 +299,11 @@ public class PublicActivity extends ListActivity {
 		bl.putString("Text", stickyObj.getText());
 		bl.putString("DueDate", stickyObj.getDueDate());
 		bl.putString("Type", "Public");
+		bl.putString("Progress", stickyObj.getProgress());
+		bl.putString("ReminderPeriod", stickyObj.getReminderPeriod());
 
-		Log.i(LIST_EXAMPLE, "Data_ID" + stickyObj.getId());
-		Log.i(LIST_EXAMPLE, "Text" + stickyObj.getText());
+		Log.i(PUBLIC_LISTING, "Data_ID" + stickyObj.getId());
+		Log.i(PUBLIC_LISTING, "Text" + stickyObj.getText());
 
 		return bl;
 
@@ -356,10 +363,15 @@ public class PublicActivity extends ListActivity {
 						.findViewById(R.id.StickyTitle);
 				holder.stickyDueDate = (TextView) convertView
 						.findViewById(R.id.StickyDueDate);
-
+				holder.stickyProgress = (TextView) convertView
+						.findViewById(R.id.StickyProgress);
+				
 				holder.stickyPriority = (ImageView) convertView
 						.findViewById(R.id.stickyPriority);
-
+				
+				holder.ReminderPeriodId = (TextView) convertView
+						.findViewById(R.id.ReminderPeriodId);
+				
 				convertView.setTag(holder);
 			} else {
 				holder = (ViewHolder) convertView.getTag();
@@ -369,14 +381,17 @@ public class PublicActivity extends ListActivity {
 			convertView.setBackgroundResource(selecterId);
 			StickyData dataObj = stickyDataList.get(position);
 
-			Log.i(LIST_EXAMPLE, "Data_ID" + dataObj.getId());
-			Log.i(LIST_EXAMPLE, "Data_Text" + dataObj.getText());
-			Log.i(LIST_EXAMPLE, "DueDate" + dataObj.getDueDate());
-			Log.i(LIST_EXAMPLE, "Priority" + dataObj.getPriority());
+			Log.i(PUBLIC_LISTING, "Data_ID" + dataObj.getId());
+			Log.i(PUBLIC_LISTING, "Progress" + dataObj.getProgress());
+			Log.i(PUBLIC_LISTING, "DueDate" + dataObj.getDueDate());
+			Log.i(PUBLIC_LISTING, "Priority" + dataObj.getPriority());
 
 			holder.stickyId.setText(String.valueOf(dataObj.getId()));
 			holder.stickyTitle.setText(dataObj.getName());
 			// holder.stickyText.setText(dataObj.getText());
+			holder.stickyProgress.setText(dataObj.getProgress());
+			holder.ReminderPeriodId.setText(dataObj.getReminderPeriod());
+
 			holder.stickyDueDate.setText(dataObj.getRemainingDays());
 			if (dataObj.getPriority().contains("high")
 					|| dataObj.getPriority().contains("High")) {
@@ -402,7 +417,9 @@ public class PublicActivity extends ListActivity {
 			TextView stickyTitle;
 			TextView stickyText;
 			TextView stickyDueDate;
+			TextView stickyProgress;			
 			ImageView stickyPriority;
+			TextView ReminderPeriodId;
 
 		}
 	}// close StickyListAdapter Class
@@ -465,7 +482,7 @@ public class PublicActivity extends ListActivity {
 			do {
 				String data = stickyCur.getString(stickyCur
 						.getColumnIndex("_title"));
-				Log.i(LIST_EXAMPLE, "DB-data==>" + data);
+				Log.i(PUBLIC_LISTING, "DB-data==>" + data);
 				StickyData stkData = new StickyData();
 
 				String dueDate = stickyCur.getString(stickyCur
@@ -484,9 +501,12 @@ public class PublicActivity extends ListActivity {
 
 				stkData.setPriority(stickyCur.getString(stickyCur
 						.getColumnIndex("_priority")));
-
+				
+				stkData.setProgress(stickyCur.getString(stickyCur
+						.getColumnIndex("_progress")));
+				
 				if (!isNullOrBlank(dueDate)) {
-					Log.i(LIST_EXAMPLE, "dueDate==>" + dueDate);
+					Log.i(PUBLIC_LISTING, "dueDate==>" + dueDate);
 
 					SimpleDateFormat curFormater = new SimpleDateFormat(
 							"yyyy-MM-dd");
@@ -539,13 +559,13 @@ public class PublicActivity extends ListActivity {
 			httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
 
 			// Execute HTTP Post Request
-			Log.w(LIST_EXAMPLE, "Execute HTTP Post Request");
+			Log.w(PUBLIC_LISTING, "Execute HTTP Post Request");
 
 			HttpResponse response = httpclient.execute(httppost);
 
 			String str = parseResponseAndPrepareData(
 					response.getEntity().getContent()).toString();
-			Log.w(LIST_EXAMPLE, str);
+			Log.w(PUBLIC_LISTING, str);
 
 		} catch (ClientProtocolException e) {
 			e.printStackTrace();
@@ -593,7 +613,7 @@ public class PublicActivity extends ListActivity {
 						"priority"));
 
 				if (!isNullOrBlank(dueDate)) {
-					Log.i(LIST_EXAMPLE, "dueDate==>" + dueDate);
+					Log.i(PUBLIC_LISTING, "dueDate==>" + dueDate);
 
 					SimpleDateFormat curFormater = new SimpleDateFormat(
 							"yyyy-MM-dd");
@@ -641,7 +661,7 @@ public class PublicActivity extends ListActivity {
 
 		Calendar cal2 = Calendar.getInstance();
 		cal2.setTime(endDate);
-		Log.w(LIST_EXAMPLE, "currentDate==>" + currentDate + "  dueDate==>"
+		Log.w(PUBLIC_LISTING, "currentDate==>" + currentDate + "  dueDate==>"
 				+ endDate);
 
 		long curTimeMilSec = cal1.getTimeInMillis();

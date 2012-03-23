@@ -83,7 +83,7 @@
         <activity android:name="com.puskin.sticky.home.PublicActivity" />
 
         <!-- Work Activity -->
-        <activity android:name="com.puskin.sticky.home.WorkActivity" />
+        <activity android:name=".WorkActivity" />
 
         <!-- Private Activity -->
         <activity android:name=".PrivateActivity" />

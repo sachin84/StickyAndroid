@@ -22,6 +22,9 @@ import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.puskin.sticky.dao.Reminder;
+import com.puskin.sticky.dbhelper.StickyTblReminderPeriod;
+import com.puskin.sticky.model.ReminderModel;
 import com.puskin.sticky.model.StickyModel;
 
 import android.app.Activity;
@@ -53,6 +56,10 @@ public class ViewSticky extends Activity {
 
 	public String DueDate;
 	public String Priority;
+	public String Progress;
+	private int ReminderPeriodId = 0;
+	private String ReminderPeriodName = "";
+
 	public Bundle stickyDataBndl;
 	protected ProgressDialog m_ProgressDialog = null;
 	AlertDialog.Builder confirmDialog = null;
@@ -76,6 +83,7 @@ public class ViewSticky extends Activity {
 		StickyId = stickyDataBndl.getInt("Id");
 		StickyType = stickyDataBndl.getString("Type");
 		Priority = stickyDataBndl.getString("Priority").toLowerCase();
+		Progress = stickyDataBndl.getString("Progress");
 		DueDate = stickyDataBndl.getString("DueDate");
 
 		if (!isNullOrBlank(DueDate)) {
@@ -100,6 +108,13 @@ public class ViewSticky extends Activity {
 		// day = Integer.parseInt(duedateArr[2]);
 		// }
 
+		loadReminderDetails();
+		// stickyDataBndl.putString("ReminderPeriod",
+		// String.valueOf(ReminderPeriodId));
+
+		TextView stickyReminderPeriodObj = (TextView) findViewById(R.id.viewStickyReminderPeriod);
+		stickyReminderPeriodObj.setText(ReminderPeriodName);
+
 		// making string CamelCase StickyPriority_Array
 		Priority = Priority.substring(0, 1).toUpperCase()
 				+ Priority.substring(1).toLowerCase();
@@ -113,6 +128,8 @@ public class ViewSticky extends Activity {
 		TextView stickyPriorityObj = (TextView) findViewById(R.id.stickyPriority);
 		stickyPriorityObj.setText(Priority);
 
+		TextView stickyProgressObj = (TextView) findViewById(R.id.viewStickyProgress);
+		stickyProgressObj.setText(Progress);
 		// m_ProgressDialog = new ProgressDialog(getApplicationContext());
 
 		createConfirmDialog();
@@ -122,7 +139,25 @@ public class ViewSticky extends Activity {
 		setDeleteClickListener();
 
 		updateDate();
+	}
 
+	private boolean loadReminderDetails() {
+
+		ReminderModel reminderModel = new ReminderModel(this);
+
+		Cursor reminderCur = reminderModel.getReminderDatafrmStickyId(StickyId);
+
+		if (reminderCur.moveToFirst()) {
+			do {
+				ReminderPeriodId = reminderCur.getInt(reminderCur
+						.getColumnIndex("_id"));
+				ReminderPeriodName = reminderCur.getString(reminderCur
+						.getColumnIndex("_period_name"));
+			} while (reminderCur.moveToNext());
+			reminderCur.close();
+		}
+		reminderModel.close();
+		return true;
 	}
 
 	private void setEditClickListener() {

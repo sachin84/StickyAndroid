@@ -38,7 +38,7 @@ public class StickyHomeActivity extends TabActivity {
 		SharedPreferences settings = getSharedPreferences("StickySettings", 0);
 		int loggedInUserId = settings.getInt("loggedInUserId", 0);
 
-		if (loggedInUserId >= 0) {
+		if (loggedInUserId <= 0) {
 			Intent editStickyIntent = new Intent(StickyHomeActivity.this,
 					Login.class);
 
@@ -83,7 +83,7 @@ public class StickyHomeActivity extends TabActivity {
 
 		// Tab for Photos
 		TabSpec publicspec = tabHost.newTabSpec("Public");
-		publicspec.setIndicator("",
+		publicspec.setIndicator("Common",
 				getResources().getDrawable(R.drawable.icon_public_tab));
 		Intent publicIntent = new Intent(this, PublicActivity.class);
 		publicspec.setContent(publicIntent);
@@ -91,14 +91,14 @@ public class StickyHomeActivity extends TabActivity {
 		// Tab for Works
 		TabSpec workspec = tabHost.newTabSpec("Work");
 		// setting Title and Icon for the Tab
-		workspec.setIndicator("",
+		workspec.setIndicator("Work",
 				getResources().getDrawable(R.drawable.icon_work_tab));
 		Intent workIntent = new Intent(this, WorkActivity.class);
 		workspec.setContent(workIntent);
-
+		
 		// Tab for Videos
 		TabSpec privatespec = tabHost.newTabSpec("Private");
-		privatespec.setIndicator("",
+		privatespec.setIndicator("Private",
 				getResources().getDrawable(R.drawable.icon_private_tab));
 
 		Intent privateIntent = new Intent(this, PrivateActivity.class);
@@ -109,8 +109,9 @@ public class StickyHomeActivity extends TabActivity {
 		tabHost.addTab(workspec); // Adding work tab
 		tabHost.addTab(privatespec); // Adding private tab
 		tabHost.setCurrentTab(0);
-	}
 
+	}
+	
 	// To Create MENU
 	public boolean onCreateOptionsMenu(Menu menu) {
 		MenuInflater Inflater = getMenuInflater();

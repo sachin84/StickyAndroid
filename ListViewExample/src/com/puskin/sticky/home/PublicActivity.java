@@ -163,6 +163,9 @@ public class PublicActivity extends ListActivity {
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
 				Log.d(PUBLIC_LISTING, "OnClick is called");
+				ImageView addViewl = (ImageView) findViewById(R.id.PublicRefresh);
+				addViewl.setImageResource(R.drawable.refresh_on);
+				
 				new LoadPublicSticky().execute("");
 				ImageView notfound = (ImageView) findViewById(R.id.PublicNotFound);
 				if (stickyDataList.size() <= 0) {
@@ -202,7 +205,10 @@ public class PublicActivity extends ListActivity {
 		overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
 		ImageView addView = (ImageView) findViewById(R.id.PublicAdd);
 		addView.setImageResource(R.drawable.add);
-
+		
+		ImageView addViewl = (ImageView) findViewById(R.id.PublicRefresh);
+		addViewl.setImageResource(R.drawable.refresh);
+		
 		super.onActivityResult(requestCode, resultCode, data);
 		if (resultCode == LOGIN_SUCCESS) {
 			Log.i(PUBLIC_LISTING, "Login Success...");
@@ -444,13 +450,13 @@ public class PublicActivity extends ListActivity {
 		protected void onPreExecute() {
 			// Things to be done before execution of long running operation. For
 			m_ProgressDialog = ProgressDialog.show(PublicActivity.this,
-					"Please wait...", "Connecting To Server...", true);
+					"Please wait...", "Fetching Public Sticky...", true);
 		}
 
 		@Override
 		protected void onPostExecute(String result) {
 			// execution of result of Long time consuming operation
-			m_ProgressDialog.setMessage("Records Loaded Successfully...");
+			//m_ProgressDialog.setMessage("Records Loaded Successfully...");
 
 			m_ProgressDialog.dismiss();
 			stickyAdapter.notifyDataSetChanged();
@@ -459,6 +465,8 @@ public class PublicActivity extends ListActivity {
 				notfound.setVisibility(View.VISIBLE);
 
 			}
+			ImageView addViewl = (ImageView) findViewById(R.id.PublicRefresh);
+			addViewl.setImageResource(R.drawable.refresh);
 		}
 
 		@Override

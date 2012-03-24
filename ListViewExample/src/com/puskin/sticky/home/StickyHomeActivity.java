@@ -9,12 +9,15 @@ import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
 import android.view.Window;
+import android.widget.ImageView;
 import android.widget.TabHost;
-import android.widget.TabHost.TabSpec;
+import android.widget.TextView;
 
 public class StickyHomeActivity extends TabActivity {
 
@@ -22,6 +25,7 @@ public class StickyHomeActivity extends TabActivity {
 	final int LOGIN_SUCCESS = 5;
 	final int LOGIN_CANCELLED = -5;
 
+	private TabHost tabHost;
 	private static List<StickyData> stickyDataList = new ArrayList<StickyData>();
 
 	@Override
@@ -79,8 +83,8 @@ public class StickyHomeActivity extends TabActivity {
 
 		Resources res = getResources(); // Resource object to get Drawables
 		// Setting Up Tabs
-		TabHost tabHost = getTabHost();
-
+		tabHost =  getTabHost();
+/*
 		// Tab for Photos
 		TabSpec publicspec = tabHost.newTabSpec("Public");
 		publicspec.setIndicator("Common",
@@ -109,9 +113,35 @@ public class StickyHomeActivity extends TabActivity {
 		tabHost.addTab(workspec); // Adding work tab
 		tabHost.addTab(privatespec); // Adding private tab
 		tabHost.setCurrentTab(0);
+*/
+		Intent publicIntent = new Intent(this, PublicActivity.class);
+		addTab("Public", R.drawable.icon_public_tab,publicIntent);
 
+		Intent workIntent = new Intent(this, WorkActivity.class);
+		addTab("Work", R.drawable.icon_work_tab,workIntent);
+		
+		Intent privateIntent = new Intent(this, PrivateActivity.class);
+		addTab("Private", R.drawable.icon_private_tab,privateIntent);
+
+		
 	}
-	
+	private void addTab(String tabText, int drawableId,Intent intent) {
+		//Intent intent = new Intent(this, MockActivity.class);
+		TabHost.TabSpec spec = tabHost.newTabSpec("tab " + tabText);		
+		
+		View tabIndicator = LayoutInflater.from(this).inflate(R.layout.tab_indicator, getTabWidget(), false);
+		
+		TextView title = (TextView) tabIndicator.findViewById(R.id.title);
+		title.setText(tabText);
+		ImageView icon = (ImageView) tabIndicator.findViewById(R.id.icon);
+		icon.setImageResource(drawableId);
+		
+		spec.setIndicator(tabIndicator);
+		spec.setContent(intent);
+		tabHost.addTab(spec);
+		
+	}
+		
 	// To Create MENU
 	public boolean onCreateOptionsMenu(Menu menu) {
 		MenuInflater Inflater = getMenuInflater();

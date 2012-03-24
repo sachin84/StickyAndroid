@@ -37,7 +37,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.puskin.sticky.model.StickyModel;
-import com.puskin.sticky.sync.LoadPublicSticky;
 
 public class PrivateActivity extends ListActivity {
 	final int LOGIN_SUCCESS = 5;
@@ -133,11 +132,19 @@ public class PrivateActivity extends ListActivity {
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
 				Log.d(PRIVATE_LISTING, "OnClick is called");
-				// Toast.makeText(v.getContext(), // <- Line changed
-				// "Sync Your Task With Server.", Toast.LENGTH_LONG)
-				// .show();
+				ImageView addViewl = (ImageView) findViewById(R.id.PublicRefresh);
+				addViewl.setImageResource(R.drawable.refresh_on);
 
 				new LoadPrivateSticky().execute("");
+
+				ImageView notfound = (ImageView) findViewById(R.id.PublicNotFound);
+				if (stickyDataList.size() <= 0) {
+					notfound.setVisibility(View.VISIBLE);
+				}
+				else{
+					notfound.setVisibility(View.GONE);
+				}
+
 
 			}
 
@@ -168,7 +175,9 @@ public class PrivateActivity extends ListActivity {
 		overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
 		ImageView addView = (ImageView) findViewById(R.id.PublicAdd);
 		addView.setImageResource(R.drawable.add);
-
+		
+		ImageView addViewl = (ImageView) findViewById(R.id.PublicRefresh);
+		addViewl.setImageResource(R.drawable.refresh);
 		super.onActivityResult(requestCode, resultCode, data);
 		if (resultCode == LOGIN_SUCCESS) {
 			Log.i(PRIVATE_LISTING, "Login Success...");
@@ -407,13 +416,13 @@ public class PrivateActivity extends ListActivity {
 		protected void onPreExecute() {
 			// Things to be done before execution of long running operation. For
 			m_ProgressDialog = ProgressDialog.show(PrivateActivity.this,
-					"Please wait...", "Connecting To Server...", true);
+					"Please wait...", "Fetching Private Sticky...", true);
 		}
 
 		@Override
 		protected void onPostExecute(String result) {
 			// execution of result of Long time consuming operation
-			m_ProgressDialog.setMessage("Records Loaded Successfully...");
+//			m_ProgressDialog.setMessage("Records Loaded Successfully...");
 
 			m_ProgressDialog.dismiss();
 			stickyAdapter.notifyDataSetChanged();
@@ -424,6 +433,9 @@ public class PrivateActivity extends ListActivity {
 			else{
 				notfound.setVisibility(View.GONE);
 			}
+			
+			ImageView addViewl = (ImageView) findViewById(R.id.PublicRefresh);
+			addViewl.setImageResource(R.drawable.refresh);
 		}
 
 		@Override

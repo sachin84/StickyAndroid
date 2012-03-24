@@ -1,5 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <color name="app_background">#50ededed</color>
+	<color name="light_red">#ba0305</color>
+	<color name="dark_red">#9d0c0f</color>
+		
+	<color name="text_tab_selected">#FFFFFF</color>
+	<color name="text_tab_unselected">#FFFFFF</color>
+    
+    
+    
 	<color name="transparent">#00000000</color>
     <color name="White">#FFFFFF</color>
     <color name="OffWhite">#EFEFEF</color>

@@ -12,6 +12,8 @@ import android.util.Log;
 
 import com.puskin.sticky.dao.Sticky;
 import com.puskin.sticky.dbhelper.DatabaseHelper;
+import com.puskin.sticky.dbhelper.StickyReminderTblSchema;
+import com.puskin.sticky.dbhelper.StickyTblReminderPeriod;
 import com.puskin.sticky.dbhelper.StickyTblSchema;
 
 public class StickyModel {
@@ -122,7 +124,9 @@ public class StickyModel {
 
 	public Cursor getAllStickys(int userId, String type) {
 		SQLiteDatabase db = dbHelper.getReadableDatabase();
-		String query = "SELECT * FROM " + StickyTblSchema.StickyTable;
+		String query = "SELECT * FROM " + StickyTblSchema.StickyTable+" as st ";
+		query += " left join "+ StickyReminderTblSchema.REMINDER_TABLE+" as sr on(st._id = sr._stickyId) ";;
+		query += " inner join "+StickyTblReminderPeriod.REMINDER_PERIOD_TABLE+" as rp on(sr._periodId = rp._id) ";		
 		query += " where _userId = "+userId;
 		query += " and _sticky_type = '"+type+"'";
 		

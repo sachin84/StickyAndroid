@@ -23,7 +23,8 @@
     <string name="LoginSticky_Header">Sticky Manager</string>
     <string name="LoginSticky_UserName">UserName</string>
     <string name="LoginSticky_Password">Password</string>
-
+    <string name="SearchSticky_Title">Search</string>
+    
     <string-array name="StickyType_Array">
         <item>Public</item>
         <item>Private</item>

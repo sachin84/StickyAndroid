@@ -39,22 +39,23 @@ public class StickyHomeActivity extends TabActivity {
 
 		setContentView(R.layout.main);
 
-		SharedPreferences settings = getSharedPreferences("StickySettings", 0);
-		int loggedInUserId = settings.getInt("loggedInUserId", 0);
-
-		if (loggedInUserId <= 0) {
-			Intent editStickyIntent = new Intent(StickyHomeActivity.this,
-					Login.class);
-
-			startActivityForResult(editStickyIntent, LOGIN_SUCCESS);
-			overridePendingTransition(R.anim.slide_in_right,
-					R.anim.slide_out_left);
-		} else {
-			Log.w(STICKY_HOME, "loggedInUserId==>" + loggedInUserId);
-
-			// creating main screen
-			createMainTab();
-		}
+//		SharedPreferences settings = getSharedPreferences("StickySettings", 0);
+//		int loggedInUserId = settings.getInt("loggedInUserId", 0);
+//
+//		if (loggedInUserId <= 0) {
+//			Intent editStickyIntent = new Intent(StickyHomeActivity.this,
+//					Login.class);
+//
+//			startActivityForResult(editStickyIntent, LOGIN_SUCCESS);
+//			overridePendingTransition(R.anim.slide_in_right,
+//					R.anim.slide_out_left);
+//		} else {
+//			Log.w(STICKY_HOME, "loggedInUserId==>" + loggedInUserId);
+//
+//			// creating main screen
+//			createMainTab();
+//		}
+		createMainTab();
 
 	}
 

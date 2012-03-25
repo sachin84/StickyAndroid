@@ -161,6 +161,7 @@ public class PrivateActivity extends ListActivity {
 				Log.d(PRIVATE_LISTING, "Add Task is called");
 				Intent newStickyIntent = new Intent(PrivateActivity.this,
 						NewSticky.class);
+				newStickyIntent.putExtra("Type", "Private");
 
 				startActivityForResult(newStickyIntent, 1);
 				overridePendingTransition(R.anim.slide_in_right,
@@ -479,8 +480,12 @@ public class PrivateActivity extends ListActivity {
 				stkData.setPriority(stickyCur.getString(stickyCur
 						.getColumnIndex("_priority")));
 				
-				stkData.setProgress(stickyCur.getString(stickyCur
-						.getColumnIndex("_progress")));
+//				stkData.setProgress(stickyCur.getString(stickyCur
+//						.getColumnIndex("_progress")));
+				
+				String progress = stickyCur.getString(stickyCur.getColumnIndex("_progress"));
+				progress += " (Repeat: "+stickyCur.getString(stickyCur.getColumnIndex("_period_name"))+")";
+				stkData.setProgress(progress);
 				
 				if (!isNullOrBlank(dueDate)) {
 					Log.i(PRIVATE_LISTING, "dueDate==>" + dueDate);

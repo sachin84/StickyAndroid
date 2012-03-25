@@ -29,20 +29,26 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.BaseAdapter;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.PopupWindow;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.puskin.sticky.model.StickyModel;
 
@@ -51,6 +57,7 @@ public class PublicActivity extends ListActivity {
 	final int ADD_SUCCESS = 10;
 	final int DELETE_SUCCESS = 15;
 	final int EDIT_SUCCESS = 20;
+	final int SEARCH_DONE = 25;
 
 	public static final String PUBLIC_LISTING = "PublicActivity";
 	private List<StickyData> stickyDataList = new ArrayList<StickyData>();
@@ -58,7 +65,8 @@ public class PublicActivity extends ListActivity {
 
 	private StickyListAdapter stickyAdapter;
 	protected ProgressDialog m_ProgressDialog = null;
-
+	private PopupWindow popUp;
+	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		// Collections.synchronizedList(stickyDataList);
@@ -145,11 +153,11 @@ public class PublicActivity extends ListActivity {
 			@Override
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
-				Log.d(PUBLIC_LISTING, "OnClick is called");
-				Toast.makeText(v.getContext(), // <- Line changed
-						"You Can Search Your Tasks Here", Toast.LENGTH_LONG)
-						.show();
-
+				Log.d(PUBLIC_LISTING, "Add Task is called");
+//				Intent searchStickyIntent = new Intent(PublicActivity.this,
+//						SearchActivity.class);
+//				startActivityForResult(searchStickyIntent, SEARCH_DONE);
+				displayPopup();
 			}
 
 		});
@@ -165,13 +173,12 @@ public class PublicActivity extends ListActivity {
 				Log.d(PUBLIC_LISTING, "OnClick is called");
 				ImageView addViewl = (ImageView) findViewById(R.id.PublicRefresh);
 				addViewl.setImageResource(R.drawable.refresh_on);
-				
+
 				new LoadPublicSticky().execute("");
 				ImageView notfound = (ImageView) findViewById(R.id.PublicNotFound);
 				if (stickyDataList.size() <= 0) {
 					notfound.setVisibility(View.VISIBLE);
-				}
-				else{
+				} else {
 					notfound.setVisibility(View.GONE);
 				}
 			}
@@ -186,12 +193,13 @@ public class PublicActivity extends ListActivity {
 			@Override
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
+			
 				Log.d(PUBLIC_LISTING, "Add Task is called");
 				ImageView addViewl = (ImageView) findViewById(R.id.PublicAdd);
 				addViewl.setImageResource(R.drawable.add_on);
 				Intent newStickyIntent = new Intent(PublicActivity.this,
 						NewSticky.class);
-
+				newStickyIntent.putExtra("Type", "Public");
 				startActivityForResult(newStickyIntent, ADD_SUCCESS);
 				overridePendingTransition(R.anim.slide_in_right,
 						R.anim.slide_out_left);
@@ -205,10 +213,10 @@ public class PublicActivity extends ListActivity {
 		overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
 		ImageView addView = (ImageView) findViewById(R.id.PublicAdd);
 		addView.setImageResource(R.drawable.add);
-		
+
 		ImageView addViewl = (ImageView) findViewById(R.id.PublicRefresh);
 		addViewl.setImageResource(R.drawable.refresh);
-		
+
 		super.onActivityResult(requestCode, resultCode, data);
 		if (resultCode == LOGIN_SUCCESS) {
 			Log.i(PUBLIC_LISTING, "Login Success...");
@@ -259,10 +267,10 @@ public class PublicActivity extends ListActivity {
 
 			stkData.setPriority(stickyCur.getString(stickyCur
 					.getColumnIndex("_priority")));
-			
+
 			stkData.setProgress(stickyCur.getString(stickyCur
 					.getColumnIndex("_progress")));
-			
+
 			if (!isNullOrBlank(dueDate)) {
 				Log.i(PUBLIC_LISTING, "dueDate==>" + dueDate);
 
@@ -371,13 +379,13 @@ public class PublicActivity extends ListActivity {
 						.findViewById(R.id.StickyDueDate);
 				holder.stickyProgress = (TextView) convertView
 						.findViewById(R.id.StickyProgress);
-				
+
 				holder.stickyPriority = (ImageView) convertView
 						.findViewById(R.id.stickyPriority);
-				
+
 				holder.ReminderPeriodId = (TextView) convertView
 						.findViewById(R.id.ReminderPeriodId);
-				
+
 				convertView.setTag(holder);
 			} else {
 				holder = (ViewHolder) convertView.getTag();
@@ -423,7 +431,7 @@ public class PublicActivity extends ListActivity {
 			TextView stickyTitle;
 			TextView stickyText;
 			TextView stickyDueDate;
-			TextView stickyProgress;			
+			TextView stickyProgress;
 			ImageView stickyPriority;
 			TextView ReminderPeriodId;
 
@@ -456,7 +464,7 @@ public class PublicActivity extends ListActivity {
 		@Override
 		protected void onPostExecute(String result) {
 			// execution of result of Long time consuming operation
-			//m_ProgressDialog.setMessage("Records Loaded Successfully...");
+			// m_ProgressDialog.setMessage("Records Loaded Successfully...");
 
 			m_ProgressDialog.dismiss();
 			stickyAdapter.notifyDataSetChanged();
@@ -509,10 +517,12 @@ public class PublicActivity extends ListActivity {
 
 				stkData.setPriority(stickyCur.getString(stickyCur
 						.getColumnIndex("_priority")));
-				
-				stkData.setProgress(stickyCur.getString(stickyCur
-						.getColumnIndex("_progress")));
-				
+
+				String progress = stickyCur.getString(stickyCur.getColumnIndex("_progress"));
+				progress += " (Repeat: "+stickyCur.getString(stickyCur.getColumnIndex("_period_name"))+")";
+				stkData.setProgress(progress);
+
+
 				if (!isNullOrBlank(dueDate)) {
 					Log.i(PUBLIC_LISTING, "dueDate==>" + dueDate);
 
@@ -681,5 +691,55 @@ public class PublicActivity extends ListActivity {
 		// long diffHours = diff / (60 * 60 * 1000);
 		int diffDays = (int) (diff / (24 * 60 * 60 * 1000));
 		return diffDays;
+	}
+
+	public void displayPopup()
+	{
+//        LayoutInflater inflater = (LayoutInflater) PublicActivity.this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+//        PopupWindow popupWindow = new PopupWindow(inflater.inflate(R.layout.searchsticky,null, false),300,100,true);
+//RelativeLayout01 is Main Activity Root Layout
+//        popupWindow.showAtLocation(findViewById(R.id.PublicRefresh), Gravity.CENTER, 0,0);
+		
+
+		popUp = new PopupWindow(this);
+        LayoutInflater inflater = (LayoutInflater) PublicActivity.this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+
+
+		View layout = inflater.inflate(R.layout.searchsticky, null, true);
+		
+		popUp = new PopupWindow(layout,300,80,true);
+		popUp.setTouchable(true);
+		popUp.setFocusable(true);
+		popUp.setBackgroundDrawable(new BitmapDrawable());
+		popUp.setOutsideTouchable(false);
+		// popUp.setAnimationStyle(R.style.Animations_GrowFromBottom);
+		popUp.setTouchInterceptor(new OnTouchListener() {
+			public boolean onTouch(View v, MotionEvent event)
+			{
+				if (event.getAction() == MotionEvent.ACTION_OUTSIDE) {
+					popUp.dismiss();
+					return true;
+				}
+				return false;
+			}
+
+		});
+
+		final EditText searchCriteria = (EditText) layout
+				.findViewById(R.id.searchText);
+		Button searchButton = (Button) layout.findViewById(R.id.searchButton);
+		searchButton.setOnClickListener(new OnClickListener()
+		{
+			public void onClick(View v)
+			{
+				String searchFor = searchCriteria.getText().toString();
+				//performSearch(searchFor, Constants.CNX_SEARCH, context);
+				popUp.dismiss();
+				
+			}
+		});
+
+		popUp.showAtLocation(layout, Gravity.TOP, 0, 0);
+
 	}
 }

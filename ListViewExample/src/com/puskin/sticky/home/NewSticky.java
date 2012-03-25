@@ -75,6 +75,9 @@ public class NewSticky extends Activity {
 
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.newsticky);
+		
+		stickyDataBndl = getIntent().getExtras();
+		StickyType = stickyDataBndl.getString("Type");
 
 		Spinner spinnerType = (Spinner) findViewById(R.id.stickyType);
 		ArrayAdapter<CharSequence> adapterType = ArrayAdapter
@@ -84,7 +87,10 @@ public class NewSticky extends Activity {
 		adapterType
 				.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 		spinnerType.setAdapter(adapterType);
-
+		
+		int typePos = adapterType.getPosition(StickyType);
+		spinnerType.setSelection(typePos);
+		
 		spinnerType.setOnItemSelectedListener(new OnItemSelectedListener() {
 			@Override
 			public void onItemSelected(AdapterView<?> parent, View view,

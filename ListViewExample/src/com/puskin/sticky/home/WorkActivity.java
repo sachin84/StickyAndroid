@@ -161,6 +161,7 @@ public class WorkActivity extends ListActivity {
 				Log.d(WORK_LISTING, "Add Task is called");
 				Intent newStickyIntent = new Intent(WorkActivity.this,
 						NewSticky.class);
+				newStickyIntent.putExtra("Type", "Work");
 
 				startActivityForResult(newStickyIntent, 1);
 				overridePendingTransition(R.anim.slide_in_right,
@@ -478,8 +479,11 @@ public class WorkActivity extends ListActivity {
 				stkData.setPriority(stickyCur.getString(stickyCur
 						.getColumnIndex("_priority")));
 				
-				stkData.setProgress(stickyCur.getString(stickyCur
-						.getColumnIndex("_progress")));
+//				stkData.setProgress(stickyCur.getString(stickyCur
+//						.getColumnIndex("_progress")));
+				String progress = stickyCur.getString(stickyCur.getColumnIndex("_progress"));
+				progress += " (Repeat: "+stickyCur.getString(stickyCur.getColumnIndex("_period_name"))+")";
+				stkData.setProgress(progress);
 				
 				if (!isNullOrBlank(dueDate)) {
 					Log.i(WORK_LISTING, "dueDate==>" + dueDate);

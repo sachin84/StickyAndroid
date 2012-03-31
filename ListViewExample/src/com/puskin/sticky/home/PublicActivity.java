@@ -504,8 +504,8 @@ public class PublicActivity extends ListActivity {
 				String dueDate = stickyCur.getString(stickyCur
 						.getColumnIndex("_duedate"));
 
-				int stkId = Integer.parseInt(stickyCur.getString(stickyCur
-						.getColumnIndex("_id")));
+				int stkId =stickyCur.getInt(stickyCur
+						.getColumnIndex("_id"));
 
 				stkData.setId(stkId);
 				stkData.setDueDate(dueDate);
@@ -518,8 +518,12 @@ public class PublicActivity extends ListActivity {
 				stkData.setPriority(stickyCur.getString(stickyCur
 						.getColumnIndex("_priority")));
 
+				String periodName = stickyCur.getString(stickyCur.getColumnIndex("_period_name"));
 				String progress = stickyCur.getString(stickyCur.getColumnIndex("_progress"));
-				progress += " (Repeat: "+stickyCur.getString(stickyCur.getColumnIndex("_period_name"))+")";
+				if(periodName != null)
+					progress += " (Repeat: "+periodName+")";
+				else 
+					progress += " (Repeat: Not Set )";
 				stkData.setProgress(progress);
 
 

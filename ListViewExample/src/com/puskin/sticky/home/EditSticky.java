@@ -19,7 +19,6 @@ import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -46,7 +45,6 @@ import android.widget.TextView;
 
 import com.puskin.sticky.dao.Reminder;
 import com.puskin.sticky.dao.Sticky;
-import com.puskin.sticky.home.R;
 import com.puskin.sticky.model.ReminderModel;
 import com.puskin.sticky.model.ReminderPeriodModel;
 import com.puskin.sticky.model.StickyModel;
@@ -68,9 +66,10 @@ public class EditSticky extends Activity {
 	public String DueDate;
 	public String Priority;
 	public String Progress;
-
 	public Bundle stickyDataBndl;
-
+	
+	private String ReminderPeriodName = "";
+	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -91,6 +90,8 @@ public class EditSticky extends Activity {
 		Priority = stickyDataBndl.getString("Priority").toLowerCase();
 		DueDate = stickyDataBndl.getString("DueDate");
 		Progress = stickyDataBndl.getString("Progress");
+
+		Log.i(EDIT_STICKY, "StickyId==>" + StickyId);
 
 		// if (!isNullOrBlank(DueDate)) {
 		// String duedateArr[] = DueDate.split("-");
@@ -190,6 +191,25 @@ public class EditSticky extends Activity {
 		setstickyProgressClickListener();
 	}
 
+	private boolean loadReminderDetails() {
+
+		ReminderModel reminderModel = new ReminderModel(this);
+
+		Cursor reminderCur = reminderModel.getReminderDatafrmStickyId(StickyId);
+
+		if (reminderCur.moveToFirst()) {
+			do {
+				selectedReminderPeriod = reminderCur.getInt(reminderCur
+						.getColumnIndex("_id"));
+				ReminderPeriodName = reminderCur.getString(reminderCur
+						.getColumnIndex("_period_name"));
+			} while (reminderCur.moveToNext());
+			reminderCur.close();
+		}
+		reminderModel.close();
+		return true;
+	}
+	
 	private void setstickyProgressClickListener() {
 		Spinner spinnerProgress = (Spinner) findViewById(R.id.stickyProgress);
 		ArrayAdapter<CharSequence> adapterPriority = ArrayAdapter
@@ -401,6 +421,8 @@ public class EditSticky extends Activity {
 		ReminderModel reminderModel = new ReminderModel(this);
 
 
+		Log.i(EDIT_STICKY, "selectedReminderPeriod=="+selectedReminderPeriod);
+		Log.i(EDIT_STICKY, "StickyId=="+StickyId);
 
 		if (selectedReminderPeriod == 1) {
 			reminderModel.deleteStickyReminder(StickyId);

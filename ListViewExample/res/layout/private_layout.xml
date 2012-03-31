@@ -26,7 +26,7 @@
         style="@android:style/ButtonBar"
         android:layout_width="fill_parent"
         android:layout_height="45dip"
-        android:background="@drawable/stickyheader1"
+        android:background="@drawable/activityheader"
         android:gravity="center"
         android:orientation="horizontal" >
 
